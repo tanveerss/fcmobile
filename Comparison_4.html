@@ -128,11 +128,37 @@ body {
   font-weight: 700;
   font-size: 17px;
   color: #fff;
-  background: rgba(255,255,255,0.03);
+
+  /* Neutral non-highlight look: no inset shadow, soft outer shadow */
+  background: rgba(14, 28, 46, 0.6); /* slightly bluish dark */
   border-radius: 10px;
-  box-shadow: inset 0 0 4px rgba(0,0,0,0.4);
-  transition: all 0.25s ease;
+  border: 1px solid rgba(255,255,255,0.03);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.35); /* outer soft shadow */
+  transition: all 0.22s ease;
 }
+
+/* explicit neutral class (ensures predictable override) */
+.val.neutral {
+  background: rgba(14, 28, 46, 0.55);
+  color: #f1f7fb;
+}
+
+/* when a value is the row max */
+.val.high {
+  background: rgba(36,161,72,0.15);
+  color: #cfffdb;
+  box-shadow: 0 6px 14px rgba(36,161,72,0.14);
+  border: 1px solid rgba(36,161,72,0.12);
+}
+
+/* when a value is the row min */
+.val.low {
+  background: rgba(194,54,54,0.12);
+  color: #ffc5c5;
+  box-shadow: 0 6px 14px rgba(194,54,54,0.12);
+  border: 1px solid rgba(194,54,54,0.10);
+}
+
 
 /* High & Low Highlights */
 .val.high {
@@ -301,19 +327,41 @@ function highlightStats() {
   const vals = Array.from(capture.querySelectorAll('.val'));
   if (vals.length === 0) return;
   const rows = STATS.length;
+
+  // normalize: add neutral to all so we get a consistent baseline
+  vals.forEach(v => {
+    v.classList.remove('high', 'low');
+    v.classList.add('neutral');
+  });
+
   for (let r = 0; r < rows; r++) {
     const start = r * playerCount;
     const rowVals = vals.slice(start, start + playerCount);
-    const nums = rowVals.map(v => parseInt(v.textContent) || 0);
+
+    // try to extract numeric part robustly
+    const nums = rowVals.map(v => {
+      const t = (v.textContent || '').trim();
+      const digits = t.replace(/[^\d-]/g,''); // allow negatives if ever used
+      return digits === '' ? 0 : parseInt(digits, 10);
+    });
+
     const max = Math.max(...nums);
     const min = Math.min(...nums);
+
     rowVals.forEach((v, i) => {
-      v.classList.remove('high', 'low');
-      if (nums[i] === max && max !== min) v.classList.add('high');
-      if (nums[i] === min && max !== min) v.classList.add('low');
+      // baseline neutral removed when replaced by high/low
+      v.classList.remove('high', 'low', 'neutral');
+      if (nums[i] === max && max !== min) {
+        v.classList.add('high');
+      } else if (nums[i] === min && max !== min) {
+        v.classList.add('low');
+      } else {
+        v.classList.add('neutral');
+      }
     });
   }
 }
+
 
 async function downloadCard() {
   document.activeElement.blur();
