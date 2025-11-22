@@ -159,6 +159,7 @@ body {
   gap: 10px;
   justify-content: center;
   margin: 25px auto 35px;
+  
 }
 .btn {
   background: var(--muted-gold);
@@ -196,6 +197,12 @@ body {
 </div>
 
 <div class="controls">
+  <!-- Background Selector -->
+  <select id="bgSelect" onchange="changeBG()" class="btn">
+    <option value="ComparisonImage.jpg">Background 1</option>
+    <option value="NeonImage.jpg">Neon Background</option>
+  </select>
+
   <button class="btn" onclick="addPlayer()">+ Add Player</button>
   <button class="btn" onclick="downloadCard()">Download</button>
 </div>
@@ -257,6 +264,11 @@ function rebuildGrid() {
 
   capture.appendChild(watermark);
   highlightStats();
+}
+function changeBG() {
+  const file = document.getElementById("bgSelect").value;
+  const url = `https://tanveerss.github.io/fcmobile/${file}`;
+  document.getElementById("capture").style.backgroundImage = `url('${url}')`;
 }
 
 function makeCell(text, cls) {
