@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Fcmobile — Tools</title>
+  <style>
+    :root{--bg:#f7f8fb;--card:#fff;--muted:#666;--border:#e6e9ef;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial}
+    html,body{height:100%}
+    body{margin:0;background:var(--bg);color:#111;min-height:100%;display:flex;align-items:flex-start;justify-content:center;padding:36px}
+    .wrap{width:100%;max-width:980px}
+    header{display:flex;align-items:center;gap:14px}
+    h1{margin:0;font-size:1.6rem}
+    p.lead{color:var(--muted);margin-top:8px;margin-bottom:18px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px}
+    .card{background:var(--card);border:1px solid var(--border);padding:16px;border-radius:12px;box-shadow:0 6px 18px rgba(12,18,26,0.04);transition:transform .18s ease,box-shadow .18s ease}
+    .card:hover{transform:translateY(-6px);box-shadow:0 14px 30px rgba(12,18,26,0.08)}
+    a.title{display:inline-block;font-weight:600;text-decoration:none;color:#111;font-size:1.04rem}
+    .desc{margin-top:8px;color:var(--muted);font-size:.92rem}
+    footer{margin-top:26px;color:var(--muted);font-size:.9rem}
+    .meta {font-size:.82rem;color:#999;margin-top:10px}
+    @media (max-width:520px){body{padding:18px}.wrap{padding-bottom:30px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Fcmobile — HTML Tools</h1>
+    </header>
+    <p class="lead">Open any page below. This site is served directly from this GitHub repository via GitHub Pages.</p>
+
+    <div class="grid" id="file-grid">
+      <!-- Static links (your current files) -->
+      <div class="card">
+        <a class="title" href="./Players_Comparison.html">Players_Comparison.html</a>
+        <div class="desc">Compare attributes of multiple players.</div>
+        <div class="meta">/Players_Comparison.html</div>
+      </div>
+
+      <div class="card">
+        <a class="title" href="./TeamFormation.html">TeamFormation.html</a>
+        <div class="desc">Build and visualize team formations.</div>
+        <div class="meta">/TeamFormation.html</div>
+      </div>
+
+      <div class="card">
+        <a class="title" href="./Two_Player_Comparison.html">Two_Player_Comparison.html</a>
+        <div class="desc">Detailed head-to-head comparison.</div>
+        <div class="meta">/Two_Player_Comparison.html</div>
+      </div>
+    </div>
+
+    <footer>
+      Tip: if you add more `.html` files and want the index updated automatically, add the included GitHub Action file `.github/workflows/generate-index.yml` to this repo (provided below).
+    </footer>
+  </div>
+</body>
+</html>
