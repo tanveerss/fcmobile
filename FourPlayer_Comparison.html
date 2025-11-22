@@ -15,7 +15,7 @@
 body {
   margin: 0;
   font-family: "Poppins", sans-serif;
-  background: url("https://tanveerss.github.io/fcmobile/ComparisonImage.jpg") center/cover no-repeat;
+  background: url("https://raw.githubusercontent.com/tanveerss/fcmobile/main/ComparisonImage.jpg") center/cover no-repeat;
   color: #fff;
   display: flex;
   flex-direction: column;
@@ -26,40 +26,25 @@ body {
 /* === Container === */
 #capture {
   margin-top: 25px;
-  padding: 28px 18px;
+  padding: 20px 10px;
   border-radius: 18px;
-  /* default background (will be overridden by selector) */
   background: url("https://tanveerss.github.io/fcmobile/ComparisonImage.jpg") center/cover no-repeat;
   background-size: cover;
   background-position: center;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+  box-shadow: 0 0 1px rgba(212,180,95,0.2), 0 10px 25px rgba(0,0,0,0.6);
   display: grid;
-  gap: 18px 18px;
+  gap: 10px 10px;
   justify-items: center;
   max-width: 1200px;
-  width: 100%;
   position: relative;
-  color: #fff;
 }
 
-/* overlay so text is readable on top of vibrant images */
-#capture::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 18px;
-  background: linear-gradient(180deg, rgba(0,0,0,0.55), rgba(0,0,0,0.65));
-  pointer-events: none;
-}
-
-/* place inner content above overlay */
-#capture > * { position: relative; z-index: 1; }
 
 /* === Header === */
 .capture-title {
   grid-column: 1 / -1;
   text-align: center;
-  font-size: 26px;
+  font-size: 22px;
   font-weight: 800;
   color: var(--muted-gold);
   text-shadow: 0 0 8px rgba(212,180,95,0.4);
@@ -86,8 +71,7 @@ body {
   font-size: 13px;
   color: var(--muted-gold);
   font-weight: 600;
-  opacity: 0.9;
-  z-index: 2;
+  opacity: 0.8;
 }
 
 /* === Labels === */
@@ -99,8 +83,8 @@ body {
   justify-content: center;
   font-weight: 600;
   font-size: 15px;
-  color: rgba(212,180,95,0.95);
-  background: rgba(0,0,0,0.45);
+  color: rgba(212,180,95,0.85);
+  background: rgba(212,180,95,0.08);
   border-radius: 10px;
 }
 
@@ -111,7 +95,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
 }
 .upload-label input[type=file] {
   position: absolute;
@@ -122,11 +106,17 @@ body {
 .player-img {
   height: 160px;
   object-fit: contain;
-  filter: drop-shadow(0 8px 20px rgba(0,0,0,0.6));
+  filter: drop-shadow(0 8px 20px rgba(212,180,95,0.25));
   transition: transform 0.25s ease;
 }
-.player-img:hover { transform: translateY(-3px); }
-.upload-text { font-size: 12px; color: var(--muted-gold); opacity: 0.8; }
+.player-img:hover {
+  transform: translateY(-3px);
+}
+.upload-text {
+  font-size: 11px;
+  color: var(--muted-gold);
+  opacity: 0.7;
+}
 
 /* === Stat Values === */
 .val {
@@ -138,24 +128,37 @@ body {
   font-weight: 700;
   font-size: 17px;
   color: #fff;
-  background: rgba(0,0,0,0.45);
+  background: rgba(255,255,255,0.03);
   border-radius: 10px;
-  box-shadow: inset 0 0 6px rgba(0,0,0,0.6);
+  box-shadow: inset 0 0 4px rgba(0,0,0,0.4);
   transition: all 0.25s ease;
 }
-.val.high { background: rgba(36,161,72,0.9); color: #fff; }
-.val.low  { background: rgba(194,54,54,0.9); color: #fff; }
+
+/* High & Low Highlights */
+.val.high {
+  background: rgba(36,161,72,0.12);
+  color: #cfffdb;
+  box-shadow: 0 0 6px rgba(36,161,72,0.25);
+}
+.val.low {
+  background: rgba(194,54,54,0.12);
+  color: #ffc5c5;
+  box-shadow: 0 0 6px rgba(194,54,54,0.25);
+}
 
 /* === Separator === */
-.sep { grid-column: 1 / -1; height: 1px; background: rgba(255,255,255,0.04); }
+.sep {
+  grid-column: 1 / -1;
+  height: 1px;
+  background: rgba(255,255,255,0.05);
+}
 
 /* === Controls === */
 .controls {
   display: flex;
-  gap: 12px;
-  align-items: center;
+  gap: 10px;
   justify-content: center;
-  margin: 18px auto 30px;
+  margin: 25px auto 35px;
 }
 .btn {
   background: var(--muted-gold);
@@ -167,18 +170,22 @@ body {
   cursor: pointer;
   transition: all 0.2s ease;
 }
-.btn:hover { box-shadow: 0 0 10px rgba(212,180,95,0.4); }
-
-/* selector styling */
-.select { padding: 8px 10px; border-radius: 8px; border: none; font-weight:700; }
-
-/* thumbnails */
-.bg-thumb { width: 64px; height: 40px; object-fit: cover; border-radius: 6px; cursor: pointer; box-shadow: 0 6px 18px rgba(0,0,0,0.5); border: 2px solid transparent; }
-.bg-thumb.selected { border-color: var(--muted-gold); }
+.btn:hover {
+  box-shadow: 0 0 10px rgba(212,180,95,0.4);
+}
+.btn:active {
+  transform: translateY(1px);
+}
 
 /* === Responsive === */
-@media (max-width:900px) { #capture { max-width: 95%; } .player-img { height: 120px; } .val { width: 60px; height: 38px; font-size: 15px; } }
-@media (max-width:500px) { .player-img { height: 100px; } }
+@media (max-width:900px) {
+  #capture { max-width: 95%; }
+  .player-img { height: 120px; }
+  .val { width: 60px; height: 38px; font-size: 15px; }
+}
+@media (max-width:500px) {
+  .player-img { height: 100px; }
+}
 </style>
 </head>
 <body>
@@ -189,22 +196,7 @@ body {
 </div>
 
 <div class="controls">
-  <label style="display:flex;align-items:center;gap:8px;">
-    <strong style="color:#fff">Background:</strong>
-    <select id="bgSelect" class="select">
-      <option value="https://tanveerss.github.io/fcmobile/ComparisonImage.jpg">Default</option>
-      <option value="https://tanveerss.github.io/fcmobile/ComparisonImage2.jpg">Variant 2</option>
-    </select>
-  </label>
-
-  <div id="thumbs" style="display:flex;gap:8px;align-items:center;">
-    <img src="https://tanveerss.github.io/fcmobile/ComparisonImage.jpg" class="bg-thumb selected" data-src="https://tanveerss.github.io/fcmobile/ComparisonImage.jpg" onclick="selectThumb(this)">
-    <img src="https://tanveerss.github.io/fcmobile/ComparisonImage2.jpg" class="bg-thumb" data-src="https://tanveerss.github.io/fcmobile/ComparisonImage2.jpg" onclick="selectThumb(this)">
-  </div>
-
-  <input id="customBg" class="select" placeholder="Or paste a public image URL" style="min-width:260px">
-
-  <button class="btn" onclick="applySelectedBackground()">Apply</button>
+  <button class="btn" onclick="addPlayer()">+ Add Player</button>
   <button class="btn" onclick="downloadCard()">Download</button>
 </div>
 
@@ -216,6 +208,7 @@ const MAX_PLAYERS = 4; // updated to support 4 players
 const capture = document.getElementById('capture');
 
 function rebuildGrid() {
+  // preserve title & watermark elements if present
   const title = capture.querySelector('.capture-title') || document.createElement('div');
   title.className = 'capture-title';
   title.textContent = 'Comparison';
@@ -223,13 +216,16 @@ function rebuildGrid() {
   watermark.className = 'watermark';
   watermark.textContent = 'GameEnclave';
 
+  // clear and re-append
   capture.innerHTML = '';
   capture.appendChild(title);
 
+  // Grid: 1st column = labels | next = player images & stats
   capture.style.gridTemplateColumns = `80px repeat(${playerCount}, minmax(180px,1fr))`;
 
+  // Labels + Players header row
   const corner = document.createElement('div');
-  capture.appendChild(corner);
+  capture.appendChild(corner); // Empty corner
 
   for (let i = 0; i < playerCount; i++) {
     const div = document.createElement('div');
@@ -242,6 +238,7 @@ function rebuildGrid() {
     capture.appendChild(div);
   }
 
+  // Stats rows
   STATS.forEach(stat => {
     const labelCell = makeCell(stat, 'label');
     capture.appendChild(labelCell);
@@ -268,11 +265,25 @@ function makeCell(text, cls) {
   d.textContent = text;
   return d;
 }
-function makeSep() { const s = document.createElement('div'); s.className = 'sep'; return s; }
+function makeSep() {
+  const s = document.createElement('div');
+  s.className = 'sep';
+  return s;
+}
 
-function addPlayer() { if (playerCount >= MAX_PLAYERS) return alert(`Max ${MAX_PLAYERS} players allowed.`); playerCount++; rebuildGrid(); }
+function addPlayer() {
+  if (playerCount >= MAX_PLAYERS) return alert(`Max ${MAX_PLAYERS} players allowed.`);
+  playerCount++;
+  rebuildGrid();
+}
 
-function previewImage(e, id) { const file = e.target.files[0]; if (!file) return; const url = URL.createObjectURL(file); const img = document.getElementById(id); if (img) img.src = url; }
+function previewImage(e, id) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const url = URL.createObjectURL(file);
+  const img = document.getElementById(id);
+  if (img) img.src = url;
+}
 
 function highlightStats() {
   const vals = Array.from(capture.querySelectorAll('.val'));
@@ -294,31 +305,18 @@ function highlightStats() {
 
 async function downloadCard() {
   document.activeElement.blur();
-  // useCORS:true helps when images are hosted on same-origin CDNs; allowTaint allows html2canvas to capture images
-  const canvas = await html2canvas(capture, { scale: 3, backgroundColor: null, useCORS: true, allowTaint: true });
+  const canvas = await html2canvas(capture, { scale: 3, backgroundColor: null });
   const a = document.createElement('a');
   a.download = 'GameEnclave_Comparison_4Players.png';
   a.href = canvas.toDataURL('image/png');
   a.click();
 }
 
-// Background selector handlers
-function selectThumb(el) {
-  document.querySelectorAll('.bg-thumb').forEach(i => i.classList.remove('selected'));
-  el.classList.add('selected');
-  document.getElementById('bgSelect').value = el.dataset.src;
-}
-function applySelectedBackground() {
-  const sel = document.getElementById('bgSelect').value.trim();
-  const custom = document.getElementById('customBg').value.trim();
-  const url = custom || sel;
-  if (!url) return alert('Please choose or paste a public image URL for the background.');
-  // set background on #capture (this will be captured by html2canvas when served from same origin)
-  capture.style.backgroundImage = `url("${url}")`;
-}
-
-// Init: start with 4 players
-addPlayer(); addPlayer(); addPlayer(); addPlayer();
+// Start with 4 players
+addPlayer();
+addPlayer();
+addPlayer();
+addPlayer();
 </script>
 </body>
 </html>
