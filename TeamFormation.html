@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>GameEnclave — Formation Builder</title>
+<style>
+:root{
+  --muted-gold:#d4b45f;
+  --bg-1:#0d0f14;
+  --card:#121416;
+  --accent:#0b6cff;
+  --slot-size:84px;
+  --slot-size-sm:64px;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:"Poppins",system-ui,Roboto,Segoe UI;
+  background:linear-gradient(180deg,var(--bg-1),#070809);
+  color:#fff;
+  -webkit-font-smoothing:antialiased;
+  padding:18px;
+}
+/* Container */
+.app{
+  max-width:1100px;margin:0 auto;
+}
+/* header */
+.header{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;
+}
+.title{
+  font-weight:800;color:var(--muted-gold);font-size:20px;
+}
+.controls{display:flex;gap:8px;align-items:center;}
+.select{
+  background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px 10px;border-radius:10px;color:#fff;
+  font-weight:600;
+}
+.small-btn{
+  background:var(--muted-gold);border:none;padding:8px 10px;border-radius:10px;color:#000;font-weight:700;cursor:pointer;
+}
+.note{font-size:12px;color:rgba(255,255,255,0.6);margin-top:6px}
+
+/* formation area */
+.stage-wrap{display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start}
+.stage{
+  background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));
+  border-radius:14px;padding:14px;width:720px;max-width:100%;
+  box-shadow:0 6px 20px rgba(0,0,0,0.5);
+  position:relative;
+}
+.stage-title{font-weight:700;margin-bottom:8px;color:var(--muted-gold);text-align:center}
+
+/* pitch */
+.pitch{
+  position:relative;
+  width: 680px; max-width:100%;
+  height: 820px;
+  background: linear-gradient(180deg,#0b1114,#071014);
+  border-radius:10px;
+  overflow:hidden;
+  display:block;
+  margin:0 auto;
+  padding:12px;
+  box-shadow: inset 0 0 40px rgba(0,0,0,0.6);
+  border:1px solid rgba(255,255,255,0.03);
+}
+
+/* watermark inside pitch */
+.pitch .watermark{position:absolute;right:10px;bottom:10px;color:var(--muted-gold);font-weight:700;opacity:.75;font-size:13px;}
+
+/* slot (absolute) */
+.slot{
+  position:absolute;
+  width:var(--slot-size);
+  height:var(--slot-size);
+  transform:translate(-50%,-50%);
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  text-align:center;
+}
+.slot .player{
+  width:var(--slot-size);height:var(--slot-size);
+  border-radius:10px;
+  background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(0,0,0,0.18));
+  border:1px solid rgba(255,255,255,0.03);
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;position:relative;cursor:pointer;
+}
+.slot .player img{width:100%;height:100%;object-fit:cover;display:block}
+.slot .meta{font-size:12px}
+.slot .number{font-weight:800;font-size:14px;color:var(--muted-gold)}
+.slot .name{font-weight:600;font-size:12px;color:rgba(255,255,255,0.9)}
+
+/* small / mobile */
+@media (max-width:760px){
+  .slot{width:var(--slot-size-sm);height:var(--slot-size-sm)}
+  .slot .player{width:var(--slot-size-sm);height:var(--slot-size-sm);border-radius:10px}
+  .pitch{height:680px}
+}
+
+/* helpers for editable inputs overlay */
+.hidden-input{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer}
+
+/* tiny upload icon overlay */
+.upload-icon{
+  position:absolute;right:6px;bottom:6px;background:rgba(0,0,0,0.45);
+  border-radius:6px;padding:4px;font-size:11px;color:var(--muted-gold);backdrop-filter: blur(2px);
+  border:1px solid rgba(255,255,255,0.03);
+}
+
+/* footer controls next to pitch */
+.side-controls{display:flex;flex-direction:column;gap:12px;margin-left:8px;min-width:200px}
+.form-row{display:flex;gap:8px;align-items:center}
+.label-inline{font-size:13px;color:rgba(255,255,255,0.8);min-width:110px}
+
+/* download button */
+.download-btn{background:var(--muted-gold);border:none;padding:10px 12px;border-radius:10px;color:#000;font-weight:800;cursor:pointer}
+
+/* placement debug (optional) */
+/* .slot{outline:1px dashed rgba(255,255,255,0.02);} */
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div>
+      <div class="title">GameEnclave — Formation Builder</div>
+      <div class="note">Upload 11 players and switch formation. Tap a player to upload image. Tap number/name to edit.</div>
+    </div>
+    <div class="controls">
+      <select id="formationSelect" class="select">
+        <option value="433_att">4-3-3 (Attack)</option>
+        <option value="433_hold">4-3-3 (Holding)</option>
+        <option value="424">4-2-4</option>
+      </select>
+      <button id="autoFill" class="small-btn" title="Auto fill sample images">Sample</button>
+      <button id="resetBtn" class="small-btn" title="Clear all">Reset</button>
+    </div>
+  </div>
+
+  <div class="stage-wrap">
+    <div class="stage" id="stage">
+      <div class="stage-title">Pitch</div>
+      <div class="pitch" id="pitch">
+        <div class="watermark">GameEnclave</div>
+        <!-- slots injected here -->
+      </div>
+    </div>
+
+    <!-- side controls for download/notes -->
+    <div class="side-controls" aria-hidden>
+      <div style="background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);padding:10px;border-radius:10px;">
+        <div style="font-weight:700;color:var(--muted-gold);margin-bottom:8px">Export</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.85);margin-bottom:8px">Download pitch as PNG (includes watermark).</div>
+        <button id="downloadBtn" class="download-btn">Download PNG</button>
+      </div>
+
+      <div style="background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);padding:10px;border-radius:10px;">
+        <div style="font-weight:700;color:var(--muted-gold);margin-bottom:8px">Tips</div>
+        <ul style="padding-left:16px;margin:0;font-size:13px;color:rgba(255,255,255,0.8)">
+          <li>Tap player card to upload.</li>
+          <li>Tap number/name to edit inline.</li>
+          <li>Use <strong>Sample</strong> to auto-fill placeholders.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- html2canvas -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+/*
+  Formation Builder v7.1 -> dynamic 11 players.
+
+  Approach:
+  - Formations defined as arrays of 11 positions with x/y percentage coords (relative to pitch).
+  - We create 11 slot elements, position them per chosen formation.
+  - Each slot contains: clickable image area (upload), hidden file input, editable number and name.
+  - Download uses html2canvas on pitch element.
+*/
+
+// Formation definitions: array of 11 {x,y,label,posName} where x,y are % of pitch width/height
+const FORMATIONS = {
+  "433_att": [
+    // keeper
+    {x:50, y:94, role:'GK'},
+    // defenders (left->right)
+    {x:18, y:74, role:'LB'}, {x:38, y:74, role:'LCB'}, {x:62, y:74, role:'RCB'}, {x:82, y:74, role:'RB'},
+    // midfield 3 (attack)
+    {x:30, y:50, role:'LM'}, {x:50, y:44, role:'CM'}, {x:70, y:50, role:'RM'},
+    // front 3
+    {x:26, y:20, role:'LW'}, {x:50, y:18, role:'ST'}, {x:74, y:20, role:'RW'}
+  ],
+  "433_hold": [
+    {x:50,y:94,role:'GK'},
+    {x:18,y:74,role:'LB'},{x:38,y:72,role:'LCB'},{x:62,y:72,role:'RCB'},{x:82,y:74,role:'RB'},
+    // holding midfield: two are deeper, one is ahead
+    {x:32,y:54,role:'LDM'},{x:50,y:48,role:'CM'},{x:68,y:54,role:'RDM'},
+    {x:26,y:22,role:'LW'},{x:50,y:18,role:'ST'},{x:74,y:22,role:'RW'}
+  ],
+  "424": [
+    {x:50,y:94,role:'GK'},
+    {x:14,y:75,role:'LB'},{x:34,y:72,role:'LCB'},{x:50,y:72,role:'CB'},{x:66,y:72,role:'RCB'},{x:86,y:75,role:'RB'},
+    // 2 mids
+    {x:36,y:50,role:'CM'},{x:64,y:50,role:'CM'},
+    // 4 attack
+    {x:18,y:26,role:'LW'},{x:36,y:18,role:'LF'},{x:64,y:18,role:'RF'},{x:82,y:26,role:'RW'}
+  ]
+};
+
+const pitch = document.getElementById('pitch');
+const formationSelect = document.getElementById('formationSelect');
+const downloadBtn = document.getElementById('downloadBtn');
+const autoFill = document.getElementById('autoFill');
+const resetBtn = document.getElementById('resetBtn');
+
+let currentFormation = formationSelect.value;
+let slots = []; // will hold slot elements and data
+
+// create 11 slots once (we will re-position & attach)
+function createSlots(){
+  // clear any existing slots
+  slots = [];
+  // ensure pitch cleared except watermark (we will re-add later)
+  const watermark = pitch.querySelector('.watermark');
+  pitch.innerHTML = '';
+  if(watermark) pitch.appendChild(watermark);
+
+  for(let i=0;i<11;i++){
+    const slot = document.createElement('div');
+    slot.className = 'slot';
+    slot.dataset.index = i;
+
+    // inner HTML: label role will be set later
+    slot.innerHTML = `
+      <div class="player" title="Tap to upload">
+        <img id="img-${i}" src="" alt="Player ${i+1}" />
+        <input id="file-${i}" type="file" accept="image/*" class="hidden-input" />
+        <div class="upload-icon">✚</div>
+      </div>
+      <div class="meta">
+        <div class="number" contenteditable="true" spellcheck="false">--</div>
+        <div class="name" contenteditable="true" spellcheck="false">Player ${i+1}</div>
+      </div>
+    `;
+    // event listeners: file change
+    const fileInput = slot.querySelector(`#file-${i}`);
+    const img = slot.querySelector(`#img-${i}`);
+    const playerDiv = slot.querySelector('.player');
+
+    // clicking player opens file chooser
+    playerDiv.addEventListener('click', ()=> fileInput.click());
+
+    fileInput.addEventListener('change', (e)=>{
+      const f = e.target.files && e.target.files[0];
+      if(!f) return;
+      const url = URL.createObjectURL(f);
+      img.src = url;
+      // if number is '--', set default to (i+1)
+      const numEl = slot.querySelector('.number');
+      if(numEl.textContent.trim()==='--') numEl.textContent = (i+1);
+    });
+
+    // prevent return/newlines in contenteditable
+    slot.querySelectorAll('[contenteditable]').forEach(el=>{
+      el.addEventListener('keydown', (ev)=>{
+        if(ev.key === 'Enter'){ ev.preventDefault(); el.blur(); }
+      });
+    });
+
+    pitch.appendChild(slot);
+    slots.push(slot);
+  }
+}
+
+// position slots according to formation data
+function applyFormation(key){
+  currentFormation = key;
+  const def = FORMATIONS[key];
+  if(!def) return;
+  // ensure we have exactly 11 slots
+  if(slots.length !== 11) createSlots();
+
+  // set CSS grid template columns on container for layout stability
+  const colCount = def.length>0 ? def.length : 3;
+  // We won't use CSS grid columns; instead place absolute positions relative to pitch size
+  const rect = pitch.getBoundingClientRect();
+  const pw = rect.width;
+  const ph = rect.height;
+
+  // place each defined position onto slots (first 11)
+  for(let i=0;i<11;i++){
+    const pos = def[i];
+    const slot = slots[i];
+    // fallback pos if missing
+    const xPerc = (pos && pos.x) ? pos.x : 50;
+    const yPerc = (pos && pos.y) ? pos.y : 50;
+    // set role label as title and small overlay (optional)
+    slot.dataset.role = pos && pos.role ? pos.role : '';
+    // set style
+    slot.style.left = xPerc + '%';
+    slot.style.top = yPerc + '%';
+    // set default number placeholder if empty
+    const numEl = slot.querySelector('.number');
+    if(!numEl.textContent || numEl.textContent.trim()==='') numEl.textContent='--';
+    // ensure name exists
+    const nameEl = slot.querySelector('.name');
+    if(!nameEl.textContent || nameEl.textContent.trim()==='') nameEl.textContent = 'Player ' + (i+1);
+  }
+}
+
+// recalc on resize to keep percent-based positions accurate (slots use percent so no recalc needed)
+// but ensure pitch relative sizing is stable
+window.addEventListener('resize', ()=> {
+  // no-op: slots positioned with percentages so they follow automatically
+});
+
+// formation select change
+formationSelect.addEventListener('change', (e)=>{
+  applyFormation(e.target.value);
+});
+
+// download handler
+downloadBtn.addEventListener('click', async ()=>{
+  // blur any focused editable
+  document.activeElement && document.activeElement.blur();
+  // temporarily remove upload-icon text for clean export? keep it — you chose
+  await html2canvas(pitch, { scale: 3, backgroundColor: null }).then(canvas=>{
+    const a = document.createElement('a');
+    a.download = 'GameEnclave_Formation.png';
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+  });
+});
+
+// auto fill sample images (placeholders)
+autoFill.addEventListener('click', ()=>{
+  // sample images (public placeholder). Replace with better links if you want.
+  const sample = [
+    'https://i.imgur.com/1.png','https://i.imgur.com/2.png','https://i.imgur.com/3.png',
+    'https://i.imgur.com/4.png','https://i.imgur.com/5.png','https://i.imgur.com/6.png',
+    'https://i.imgur.com/7.png','https://i.imgur.com/8.png','https://i.imgur.com/9.png',
+    'https://i.imgur.com/10.png','https://i.imgur.com/11.png'
+  ];
+  // if those sample URLs 404, it's fine — users can upload from gallery
+  slots.forEach((slot,i)=>{
+    const img = slot.querySelector('img');
+    img.src = sample[i] || '';
+    const numEl = slot.querySelector('.number'); numEl.textContent = (i+1);
+    const nameEl = slot.querySelector('.name'); nameEl.textContent = 'Player ' + (i+1);
+  });
+});
+
+// reset (clear images & names & numbers)
+resetBtn.addEventListener('click', ()=>{
+  slots.forEach((slot,i)=>{
+    const img = slot.querySelector('img'); img.src='';
+    slot.querySelector('.number').textContent='--';
+    slot.querySelector('.name').textContent='Player '+(i+1);
+  });
+});
+
+// initialize
+createSlots();
+applyFormation(currentFormation);
+
+// start with two clicks to ensure layout looks good (if you want pre-add players UI)
+// but here we have slots ready — you can upload directly
+</script>
+</body>
+</html>

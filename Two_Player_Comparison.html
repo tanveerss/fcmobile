@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"/>
+<title>GameEnclave — Final Gold Comparison</title>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<style>
+:root{
+  --bg1:#0b0b0b;--bg2:#1a1308;
+  --gold1:#facc15;--gold2:#b08904;
+  --silver1:#e0e0e0;--silver2:#a8a8a8;
+}
+body{
+  margin:0;min-height:100vh;
+  background:linear-gradient(180deg,var(--bg1),var(--bg2));
+  font-family:Inter,system-ui,Arial;color:#f4f4f4;
+  display:flex;justify-content:center;align-items:center;padding:8px;
+}
+.frame{
+  width:100%;max-width:420px;border-radius:18px;
+  background:rgba(255,255,255,0.04);
+  box-shadow:0 20px 50px rgba(0,0,0,0.6);
+  padding:16px;position:relative;overflow:hidden;
+}
+.sil-left,.sil-right{
+  position:absolute;top:20px;width:150px;height:240px;
+  background-size:contain;background-repeat:no-repeat;background-position:center;
+  opacity:.25;pointer-events:none;z-index:0;
+}
+.sil-left{left:-20px;background-image:linear-gradient(90deg,rgba(250,204,21,.4),rgba(176,134,20,.1));}
+.sil-right{right:-20px;transform:scaleX(-1);background-image:linear-gradient(270deg,rgba(224,224,224,.4),rgba(168,168,168,.1));}
+.content{position:relative;z-index:1;}
+h1{text-align:center;font-size:24px;font-weight:900;letter-spacing:2px;margin:4px 0 16px;
+  background:linear-gradient(90deg,var(--gold1),var(--silver1),var(--gold1));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.players{display:flex;justify-content:center;gap:28px;align-items:center;position:relative;}
+.player{display:flex;flex-direction:column;align-items:center;width:130px;}
+.player-card{width:120px;height:120px;border-radius:14px;background:rgba(255,255,255,.05);
+  display:grid;place-items:center;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,.5);}
+.player-card img{width:110px;height:110px;object-fit:cover;border-radius:10px;}
+input[type=file]{display:none;}
+.upload-btn{margin-top:4px;background:var(--gold1);border:none;border-radius:6px;padding:4px 8px;
+  color:#111;font-weight:600;font-size:12px;cursor:pointer;}
+/* ✅ Smaller VS badge */
+.vs-badge{
+  position:absolute;top:45px;left:50%;transform:translateX(-50%);
+  width:40px;height:40px;border-radius:50%;
+  background:radial-gradient(circle at 30% 30%,rgba(250,204,21,.5),rgba(255,255,255,.2));
+  box-shadow:0 0 10px rgba(250,204,21,.25),0 0 6px rgba(255,255,255,.08);
+  display:flex;align-items:center;justify-content:center;z-index:5;
+}
+.vs-inner{
+  width:30px;height:30px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(90deg,var(--gold1),var(--silver1));
+  color:#111;font-weight:900;font-size:13px;
+  box-shadow:0 3px 5px rgba(0,0,0,.3);
+}
+.totals-row{display:flex;justify-content:center;gap:60px;margin-top:8px;}
+.total{font-weight:900;font-size:14px;color:#fff;background:rgba(0,0,0,0.25);
+  padding:6px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);}
+.stats{margin-top:24px;display:flex;flex-direction:column;gap:14px;}
+.stat-group{display:flex;flex-direction:column;align-items:center;}
+.stat-name{text-transform:uppercase;font-weight:800;font-size:14px;margin-bottom:6px;}
+.stat-row{display:flex;align-items:center;gap:10px;width:100%;justify-content:center;}
+.badge{
+  min-width:54px;height:36px;border-radius:10px;background:rgba(0,0,0,0.5);
+  display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;font-size:14px;
+}
+.bar-container{flex:1;max-width:260px;height:18px;background:rgba(255,255,255,.04);
+  border-radius:10px;display:flex;align-items:center;padding:2px;gap:4px;}
+.bar-left,.bar-right{height:100%;border-radius:8px;transition:width .25s ease;}
+.bar-left{background:linear-gradient(90deg,var(--gold1),var(--gold2));}
+.bar-right{background:linear-gradient(90deg,var(--silver1),var(--silver2));}
+.actions{display:flex;justify-content:center;gap:10px;margin-top:14px;}
+.btn{padding:8px 14px;border:none;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;}
+.render{background:var(--silver1);color:#111;}
+.download{background:var(--gold1);color:#111;}
+.watermark{text-align:center;margin-top:10px;font-size:11px;color:rgba(255,255,255,.5);}
+</style>
+</head>
+<body>
+<div class="frame" id="cardArea">
+  <div class="sil-left"></div><div class="sil-right"></div>
+  <div class="content">
+    <h1>COMPARISON</h1>
+    <div class="players">
+      <div class="player">
+        <div class="player-card"><img id="img1Preview" src="https://via.placeholder.com/110x110?text=P1"></div>
+        <label class="upload-btn" for="img1Input">Upload</label>
+        <input type="file" id="img1Input" accept="image/*">
+      </div>
+      <div class="vs-badge"><div class="vs-inner">VS</div></div>
+      <div class="player">
+        <div class="player-card"><img id="img2Preview" src="https://via.placeholder.com/110x110?text=P2"></div>
+        <label class="upload-btn" for="img2Input">Upload</label>
+        <input type="file" id="img2Input" accept="image/*">
+      </div>
+    </div>
+    <div class="totals-row">
+      <div class="total" id="totalLeft">Total: 0</div>
+      <div class="total" id="totalRight">Total: 0</div>
+    </div>
+    <div class="stats">
+      <div class="stat-group" data-stat="pace"><span class="stat-name">Pace</span>
+        <div class="stat-row">
+          <div class="badge left">190</div>
+          <div class="bar-container"><div class="bar-left"></div><div class="bar-right"></div></div>
+          <div class="badge right">189</div>
+        </div>
+      </div>
+      <div class="stat-group" data-stat="shooting"><span class="stat-name">Shooting</span>
+        <div class="stat-row">
+          <div class="badge left">190</div>
+          <div class="bar-container"><div class="bar-left"></div><div class="bar-right"></div></div>
+          <div class="badge right">180</div>
+        </div>
+      </div>
+      <div class="stat-group" data-stat="passing"><span class="stat-name">Passing</span>
+        <div class="stat-row">
+          <div class="badge left">110</div>
+          <div class="bar-container"><div class="bar-left"></div><div class="bar-right"></div></div>
+          <div class="badge right">118</div>
+        </div>
+      </div>
+      <div class="stat-group" data-stat="dribbling"><span class="stat-name">Dribbling</span>
+        <div class="stat-row">
+          <div class="badge left">106</div>
+          <div class="bar-container"><div class="bar-left"></div><div class="bar-right"></div></div>
+          <div class="badge right">114</div>
+        </div>
+      </div>
+      <div class="stat-group" data-stat="defending"><span class="stat-name">Defending</span>
+        <div class="stat-row">
+          <div class="badge left">87</div>
+          <div class="bar-container"><div class="bar-left"></div><div class="bar-right"></div></div>
+          <div class="badge right">97</div>
+        </div>
+      </div>
+      <div class="stat-group" data-stat="physical"><span class="stat-name">Physical</span>
+        <div class="stat-row">
+          <div class="badge left">141</div>
+          <div class="bar-container"><div class="bar-left"></div><div class="bar-right"></div></div>
+          <div class="badge right">135</div>
+        </div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn render">Render</button>
+      <button class="btn download">Download PNG</button>
+    </div>
+    <div class="watermark">Designed for FC Mobile comparison • <b>GameEnclave</b> ⚽</div>
+  </div>
+</div>
+<script>
+const groups=document.querySelectorAll('.stat-group');
+const totalL=document.getElementById('totalLeft');
+const totalR=document.getElementById('totalRight');
+function updateBars(){
+  let sumL=0,sumR=0;
+  groups.forEach(g=>{
+    const l=parseInt(g.querySelector('.badge.left').textContent)||0;
+    const r=parseInt(g.querySelector('.badge.right').textContent)||0;
+    sumL+=l;sumR+=r;
+    const max=Math.max(l,r,1);
+    g.querySelector('.bar-left').style.width=(l/max*100)+'%';
+    g.querySelector('.bar-right').style.width=(r/max*100)+'%';
+  });
+  totalL.textContent='Total: '+sumL;
+  totalR.textContent='Total: '+sumR;
+}
+updateBars();
+groups.forEach(g=>{
+  const left=g.querySelector('.badge.left');
+  const right=g.querySelector('.badge.right');
+  left.addEventListener('click',()=>{
+    const n=prompt('Enter '+g.dataset.stat+' (Left):',left.textContent);
+    if(n!==null){left.textContent=parseInt(n)||0;updateBars();}
+  });
+  right.addEventListener('click',()=>{
+    const n=prompt('Enter '+g.dataset.stat+' (Right):',right.textContent);
+    if(n!==null){right.textContent=parseInt(n)||0;updateBars();}
+  });
+});
+document.querySelector('.render').addEventListener('click',updateBars);
+document.querySelector('.download').addEventListener('click',()=>{
+  updateBars();
+  const hideEls=document.querySelectorAll('.upload-btn,.actions');
+  hideEls.forEach(e=>e.style.display='none');
+  html2canvas(document.getElementById('cardArea'),{backgroundColor:'#0b0b0b',scale:2})
+    .then(canvas=>{
+      const link=document.createElement('a');
+      link.download='GameEnclave_Final.png';
+      link.href=canvas.toDataURL('image/png');
+      link.click();
+      hideEls.forEach(e=>e.style.display='');
+    });
+});
+document.getElementById('img1Input').addEventListener('change',e=>{
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();r.onload=ev=>document.getElementById('img1Preview').src=ev.target.result;r.readAsDataURL(f);
+});
+document.getElementById('img2Input').addEventListener('change',e=>{
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();r.onload=ev=>document.getElementById('img2Preview').src=ev.target.result;r.readAsDataURL(f);
+});
+</script>
+</body>
+</html>
