@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>GameEnclave – TOTAL VS</title>
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+<style>
+body{
+  margin:0;
+  background:#000;
+  font-family:Arial, sans-serif;
+  color:#fff;
+}
+
+/* ================= STAGE ================= */
+#stage{
+  position:relative;
+  width:1080px;
+  height:1350px;
+  margin:20px auto;
+  background:#000;
+  overflow:hidden;
+  border-radius:24px;
+}
+
+/* Background */
+#bg{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  filter: blur(10px) brightness(0.55);
+  transform: scale(1.08);
+}
+
+/* Center divider */
+#divider{
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:50%;
+  width:2px;
+  background:linear-gradient(
+    to bottom,
+    transparent,
+    rgba(120,170,255,0.25),
+    transparent
+  );
+}
+
+/* Caption */
+#caption{
+  position:absolute;
+  top:22px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:28px;
+  letter-spacing:2px;
+  color:#eaf3ff;
+  text-shadow:0 0 18px rgba(140,190,255,.6);
+  z-index:5;
+}
+
+/* Player cards */
+.card{
+  position:absolute;
+  width:310px;
+  z-index:4;
+}
+
+/* ================= TOTAL BOARD (IMPROVED) ================= */
+#totalBoard{
+  position:absolute;
+  top:190px;
+  left:50%;
+  transform:translateX(-50%);
+  width:660px;
+
+  background:linear-gradient(
+    180deg,
+    rgba(10,16,30,0.92),
+    rgba(18,26,48,0.92)
+  );
+
+  border-radius:28px;
+  padding:22px 30px;
+  text-align:center;
+
+  box-shadow:
+    0 18px 40px rgba(0,0,0,0.55),
+    inset 0 0 0 1px rgba(120,170,255,0.10);
+
+  backdrop-filter: blur(8px);
+  z-index:5;
+}
+
+#totalTitle{
+  font-size:15px;
+  letter-spacing:3px;
+  color:#9fb7ff;
+  margin-bottom:10px;
+}
+
+#totalRow{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:46px;
+  font-weight:800;
+}
+
+.totalVal{
+  width:200px;
+  text-align:center;
+  color:#cfdcff;
+  opacity:0.55;
+}
+
+/* WINNER VALUE */
+.totalVal.win{
+  opacity:1;
+  color:#ffffff;
+  text-shadow:
+    0 0 10px rgba(140,190,255,0.9),
+    0 0 26px rgba(100,160,255,0.7);
+  transform:scale(1.08);
+}
+
+/* VS BADGE */
+#vs{
+  font-size:18px;
+  padding:6px 16px;
+  border-radius:999px;
+  background:linear-gradient(135deg,#ffb45a,#ff9440);
+  color:#1a1206;
+  font-weight:700;
+  letter-spacing:2px;
+  box-shadow:0 0 12px rgba(255,180,90,0.6);
+}
+
+#winnerLabel{
+  margin-top:10px;
+  font-size:16px;
+  letter-spacing:2px;
+  color:#eaf3ff;
+}
+
+/* ================= STATS ================= */
+.stats{
+  position:absolute;
+  width:420px;
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+#leftStats{ left:30px; bottom:80px; }
+#rightStats{ right:30px; bottom:80px; }
+
+.stat{
+  background:linear-gradient(
+    90deg,
+    rgba(45,85,160,.9),
+    rgba(65,115,200,.9)
+  );
+  border-radius:16px;
+  padding:22px 26px;
+  font-size:28px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.stat span{
+  min-width:90px;
+  text-align:right;
+}
+
+.stat.win{
+  background:linear-gradient(
+    90deg,
+    rgba(80,140,240,.95),
+    rgba(110,170,255,.95)
+  );
+  box-shadow:0 0 14px rgba(100,160,255,.4);
+}
+
+/* Branding */
+#brand{
+  position:absolute;
+  bottom:18px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:22px;
+  letter-spacing:1px;
+  color:#eaf3ff;
+  text-shadow:0 0 12px rgba(120,170,255,.4);
+  font-weight:600;
+}
+
+/* ================= CONTROLS ================= */
+.top-controls{
+  width:1080px;
+  margin:10px auto;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.controls{
+  width:1080px;
+  margin:20px auto;
+  background:#0b1225;
+  border-radius:14px;
+  padding:16px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
+}
+
+.panel{
+  background:#121a33;
+  border-radius:12px;
+  padding:14px;
+}
+
+.panel h3{
+  margin:0 0 10px;
+  text-align:center;
+  font-size:16px;
+  color:#9fb7ff;
+}
+
+.row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:8px;
+}
+.row label{ font-size:14px; }
+.row input{
+  width:90px;
+  padding:6px;
+  border-radius:6px;
+  border:none;
+  font-size:14px;
+}
+
+button{
+  padding:10px 18px;
+  border:none;
+  border-radius:8px;
+  background:#4f6cff;
+  color:#fff;
+  cursor:pointer;
+}
+button:hover{ background:#3d5cff; }
+</style>
+</head>
+
+<body>
+
+<div id="stage">
+  <img id="bg">
+  <div id="divider"></div>
+
+  <div id="caption">TOTAL STATS WINNER 🏆</div>
+
+  <div id="totalBoard">
+    <div id="totalTitle">TOTAL STATS</div>
+    <div id="totalRow">
+      <div id="ltotal" class="totalVal">0</div>
+      <div id="vs">VS</div>
+      <div id="rtotal" class="totalVal">0</div>
+    </div>
+    <div id="winnerLabel"></div>
+  </div>
+
+  <img id="leftCard" class="card" style="left:70px;top:390px">
+  <img id="rightCard" class="card" style="left:710px;top:390px">
+
+  <div id="leftStats" class="stats">
+    <div class="stat" id="l_pace">Pace <span id="lp">-</span></div>
+    <div class="stat" id="l_shoot">Shooting <span id="ls">-</span></div>
+    <div class="stat" id="l_pass">Passing <span id="lpa">-</span></div>
+    <div class="stat" id="l_drib">Dribbling <span id="ld">-</span></div>
+    <div class="stat" id="l_def">Defending <span id="lde">-</span></div>
+    <div class="stat" id="l_phy">Physical <span id="lph">-</span></div>
+  </div>
+
+  <div id="rightStats" class="stats">
+    <div class="stat" id="r_pace">Pace <span id="rp">-</span></div>
+    <div class="stat" id="r_shoot">Shooting <span id="rs">-</span></div>
+    <div class="stat" id="r_pass">Passing <span id="rpa">-</span></div>
+    <div class="stat" id="r_drib">Dribbling <span id="rd">-</span></div>
+    <div class="stat" id="r_def">Defending <span id="rde">-</span></div>
+    <div class="stat" id="r_phy">Physical <span id="rph">-</span></div>
+  </div>
+
+  <div id="brand">GameEnclave</div>
+</div>
+
+<!-- ================= CONTROLS ================= -->
+<div class="top-controls">
+  <input type="file" accept="image/*" onchange="loadImg(this, bg)">
+  <input type="file" accept="image/*" onchange="loadImg(this, leftCard)">
+  <input type="file" accept="image/*" onchange="loadImg(this, rightCard)">
+  <button onclick="download()">Download Image</button>
+</div>
+
+<div class="controls">
+  <div class="panel">
+    <h3>Left Player Stats</h3>
+    <div class="row"><label>Pace</label><input oninput="setStat('pace',this.value,'l')"></div>
+    <div class="row"><label>Shooting</label><input oninput="setStat('shoot',this.value,'l')"></div>
+    <div class="row"><label>Passing</label><input oninput="setStat('pass',this.value,'l')"></div>
+    <div class="row"><label>Dribbling</label><input oninput="setStat('drib',this.value,'l')"></div>
+    <div class="row"><label>Defending</label><input oninput="setStat('def',this.value,'l')"></div>
+    <div class="row"><label>Physical</label><input oninput="setStat('phy',this.value,'l')"></div>
+  </div>
+
+  <div class="panel">
+    <h3>Right Player Stats</h3>
+    <div class="row"><label>Pace</label><input oninput="setStat('pace',this.value,'r')"></div>
+    <div class="row"><label>Shooting</label><input oninput="setStat('shoot',this.value,'r')"></div>
+    <div class="row"><label>Passing</label><input oninput="setStat('pass',this.value,'r')"></div>
+    <div class="row"><label>Dribbling</label><input oninput="setStat('drib',this.value,'r')"></div>
+    <div class="row"><label>Defending</label><input oninput="setStat('def',this.value,'r')"></div>
+    <div class="row"><label>Physical</label><input oninput="setStat('phy',this.value,'r')"></div>
+  </div>
+</div>
+
+<script>
+const stats={
+  pace:{l:0,r:0},shoot:{l:0,r:0},pass:{l:0,r:0},
+  drib:{l:0,r:0},def:{l:0,r:0},phy:{l:0,r:0}
+};
+
+const map={
+  pace:{l:'lp',r:'rp'},shoot:{l:'ls',r:'rs'},
+  pass:{l:'lpa',r:'rpa'},drib:{l:'ld',r:'rd'},
+  def:{l:'lde',r:'rde'},phy:{l:'lph',r:'rph'}
+};
+
+function setStat(type,val,side){
+  stats[type][side]=Number(val)||0;
+  document.getElementById(map[type][side]).textContent = val||'-';
+  updateStat(type);
+  updateTotal();
+}
+
+function updateStat(type){
+  const l=document.getElementById('l_'+type);
+  const r=document.getElementById('r_'+type);
+  l.classList.remove('win'); r.classList.remove('win');
+  if(stats[type].l>stats[type].r) l.classList.add('win');
+  else if(stats[type].r>stats[type].l) r.classList.add('win');
+}
+
+function updateTotal(){
+  const l=Object.values(stats).reduce((a,s)=>a+s.l,0);
+  const r=Object.values(stats).reduce((a,s)=>a+s.r,0);
+
+  const lt=document.getElementById('ltotal');
+  const rt=document.getElementById('rtotal');
+  const label=document.getElementById('winnerLabel');
+
+  lt.textContent=l;
+  rt.textContent=r;
+  lt.classList.remove('win');
+  rt.classList.remove('win');
+
+  if(l>r){
+    lt.classList.add('win');
+    label.textContent='LEFT PLAYER WINS 🏆';
+  }else if(r>l){
+    rt.classList.add('win');
+    label.textContent='RIGHT PLAYER WINS 🏆';
+  }else{
+    label.textContent='DRAW';
+  }
+}
+
+function loadImg(input,img){
+  const f=input.files[0];
+  if(!f) return;
+  const r=new FileReader();
+  r.onload=e=>img.src=e.target.result;
+  r.readAsDataURL(f);
+}
+
+function download(){
+  html2canvas(stage,{backgroundColor:null,scale:1}).then(c=>{
+    const a=document.createElement('a');
+    a.href=c.toDataURL('image/png');
+    a.download='GameEnclave-TOTAL-VS.png';
+    a.click();
+  });
+}
+</script>
+
+</body>
+</html>
