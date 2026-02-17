@@ -36,7 +36,30 @@ h1{margin-bottom:14px;font-weight:700}
 </table>
 </div>
 <button class="download" onclick="downloadImage()">Download as Image</button><script>
-// AUTO CALCULATE + SORT
+// ===== LOCAL STORAGE =====
+const STORAGE_KEY = "fcm_tournament_v1";
+
+function saveData(){
+  const data=[];
+  document.querySelectorAll('tbody tr').forEach(row=>{
+    const inputs=row.querySelectorAll('input');
+    data.push(Array.from(inputs).map(i=>i.value));
+  });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function loadData(){
+  const saved=localStorage.getItem(STORAGE_KEY);
+  if(!saved) return;
+  const data=JSON.parse(saved);
+  document.querySelectorAll('tbody tr').forEach((row,r)=>{
+    const inputs=row.querySelectorAll('input');
+    if(!data[r]) return;
+    inputs.forEach((inp,i)=>{ if(data[r][i]!==undefined) inp.value=data[r][i]; });
+  });
+}
+
+// ===== AUTO CALCULATE + SORT =====
 const rows = document.querySelectorAll("tbody tr");
 
 function recalc(){
@@ -48,6 +71,7 @@ function recalc(){
   inputs[4].value = pts;
  });
  sortTable();
+ saveData();
 }
 
 function sortTable(){
@@ -70,9 +94,11 @@ rows.forEach(row=>{
  const inputs=row.querySelectorAll("input");
  inputs.forEach((inp,i)=>{ if(i<4) inp.addEventListener("input",recalc); });
 });
+
+loadData();
 recalc();
 
-// DOWNLOAD IMAGE (MOBILE SAFE)
+// ===== DOWNLOAD IMAGE =====
 function downloadImage(){
  const element=document.getElementById('capture');
  html2canvas(element,{scale:3,useCORS:true,backgroundColor:'#020617'}).then(canvas=>{
