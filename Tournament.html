@@ -1,0 +1,52 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6 Player Tournament Standings</title>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<style>
+body{font-family:Inter,Arial,Helvetica,sans-serif;background:linear-gradient(135deg,#020617,#0f172a);color:white;display:flex;flex-direction:column;align-items:center;padding:20px}
+h1{margin-bottom:14px;font-weight:700}
+.board{background:linear-gradient(180deg,#0f172a,#020617);padding:28px;border-radius:22px;box-shadow:0 25px 60px rgba(0,0,0,.7);border:1px solid #1f2937}table{border-collapse:separate;border-spacing:0;width:760px;border-radius:16px;overflow:hidden} th{background:#1e293b;color:#e2e8f0;padding:13px;font-weight:600;border-bottom:2px solid #334155} td{padding:14px 13px;border-bottom:1px solid #1f2937;text-align:center} tr:last-child td{border-bottom:none} tr:nth-child(even){background:rgba(255,255,255,0.02)} tr:nth-child(odd){background:rgba(255,255,255,0.01)}
+
+.barcol{width:10px;padding:0} .rank1 .bar{background:#22c55e} .rank2 .bar{background:#38bdf8} .bar{width:6px;height:34px;border-radius:6px;margin:auto}
+
+.player{text-align:left;padding-left:12px;color:#e5e7eb} input{width:52px;background:transparent;border:none;color:#f8fafc;text-align:center;font-size:15px} input:focus{outline:1px solid #22c55e;border-radius:6px;background:rgba(34,197,94,0.08)}
+
+.download{margin-top:22px;padding:13px 26px;background:#22c55e;color:#022c22;font-weight:700;border:none;border-radius:12px;cursor:pointer} </style>
+
+</head>
+<body>
+<h1>🏆 Tournament Standings</h1>
+<div id="capture" class="board">
+<table>
+<thead>
+<tr>
+<th class="barcol"></th><th>Pos</th><th class="player">Player</th><th>P</th><th>W</th><th>D</th><th>L</th><th>Pts</th>
+</tr>
+</thead>
+<tbody>
+<tr class="rank1"><td class="barcol"><div class="bar"></div></td><td>1</td><td class="player">@real.madridxreels</td><td><input value="1"></td><td><input value="1"></td><td><input value="0"></td><td><input value="0"></td><td><input value="3"></td></tr>
+<tr class="rank2"><td class="barcol"><div class="bar"></div></td><td>2</td><td class="player">@al_amin_antor_110</td><td><input value="1"></td><td><input value="1"></td><td><input value="0"></td><td><input value="0"></td><td><input value="3"></td></tr>
+<tr><td class="barcol"></td><td>3</td><td class="player">@pri_yan_shu_baruah_</td><td><input value="1"></td><td><input value="0"></td><td><input value="0"></td><td><input value="1"></td><td><input value="0"></td></tr>
+<tr><td class="barcol"></td><td>4</td><td class="player">@a4q1bx</td><td><input value="1"></td><td><input value="0"></td><td><input value="0"></td><td><input value="1"></td><td><input value="0"></td></tr>
+<tr><td class="barcol"></td><td>5</td><td class="player">@vasil_y</td><td><input value="0"></td><td><input value="0"></td><td><input value="0"></td><td><input value="0"></td><td><input value="0"></td></tr>
+<tr><td class="barcol"></td><td>6</td><td class="player">@kaushal_op777</td><td><input value="0"></td><td><input value="0"></td><td><input value="0"></td><td><input value="0"></td><td><input value="0"></td></tr>
+</tbody>
+</table>
+</div>
+<button class="download" onclick="downloadImage()">Download as Image</button>
+<script>
+// AUTO CALCULATE + SORT
+const rows = document.querySelectorAll("tbody tr");function recalc(){ rows.forEach(row=>{ const inputs = row.querySelectorAll("input"); const P = parseInt(inputs[0].value)||0; const W = parseInt(inputs[1].value)||0; const D = parseInt(inputs[2].value)||0; const L = parseInt(inputs[3].value)||0; const pts = (W*3)+D; inputs[4].value = pts; // pts column auto }); sortTable(); }
+
+function sortTable(){ const tbody = document.querySelector("tbody"); const sorted = Array.from(tbody.querySelectorAll("tr")).sort((a,b)=>{ const ap = parseInt(a.querySelectorAll("input")[4].value)||0; const bp = parseInt(b.querySelectorAll("input")[4].value)||0; return bp-ap; }); sorted.forEach((row,i)=>{ row.children[1].textContent=i+1; // update position tbody.appendChild(row); }); }
+
+// disable manual pts edit + listeners rows.forEach(row=>{ const inputs=row.querySelectorAll("input"); inputs[4].setAttribute("readonly",true); inputs.forEach((inp,i)=>{ if(i<4) inp.addEventListener("input",recalc); }); });
+
+recalc();
+
+// DOWNLOAD IMAGE function downloadImage(){ const element=document.getElementById('capture'); html2canvas(element,{backgroundColor:null,scale:3}).then(canvas=>{ const link=document.createElement('a'); link.download='standings.png'; link.href=canvas.toDataURL('image/png'); link.click(); }); } </script>
+
+</body>
+</html>
