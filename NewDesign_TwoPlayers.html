@@ -67,6 +67,10 @@ body {
   width:100%;
   height:100%;
   object-fit:contain;
+  object-position:center; /* ✅ ADD THIS LINE */
+  filter: drop-shadow(0 10px 28px rgba(0,0,0,0.65));
+  transition: transform .3s;
+  display: block;
 }
 
 .player-name, .meta-tag, .stat-num, .ovr-num {
@@ -108,7 +112,7 @@ button {
 
 <body>
 
-<button onclick="downloadCard()">⬇ Download</button>
+<button id="dlBtn" onclick="downloadCard()">⬇ Download</button>
 
 <div id="card">
 
@@ -198,15 +202,22 @@ function highlight(){
  });
 }
 
-function loadImg(e,id){
- const file=e.target.files[0];
- if(!file)return;
+function loadImg(e, id) {
+  const file = e.target.files[0];
+  if (!file) return;
 
- const url=URL.createObjectURL(file);
- const img=document.getElementById(id);
+  const url = URL.createObjectURL(file);
+  const img = document.getElementById(id);
 
- img.onload=()=>URL.revokeObjectURL(url);
- img.src=url;
+  if (img) {
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      img.dataset.loaded = "true"; // ✅ mark as loaded
+    };
+    img.dataset.loaded = "false";
+    img.src = url;
+    img.style.objectFit = 'contain';
+  }
 }
 
 function triggerUpload(id,e){
@@ -217,23 +228,44 @@ function triggerUpload(id,e){
 function onOvrInput(side){}
 
 async function downloadCard(){
- const btn=event.target;
- btn.textContent="⏳ Generating...";
- btn.disabled=true;
+  const btn = document.getElementById('dlBtn'); // ✅ safer than event.target
+  btn.textContent = "⏳ Generating...";
+  btn.disabled = true;
 
- try{
-  const canvas=await html2canvas(document.getElementById('card'),{scale:2});
-  const a=document.createElement('a');
-  a.download="fcmobile.png";
-  a.href=canvas.toDataURL();
-  a.click();
- }catch(err){
-  console.error(err);
-  btn.textContent="❌ Failed";
-  setTimeout(()=>btn.textContent="⬇ Download",2000);
- }
+  // ✅ check if images loaded
+  const imgs = [document.getElementById('imgL'), document.getElementById('imgR')];
+  for (let img of imgs) {
+   if (img.src && img.dataset.loaded !== "true"){
+      alert("Please wait for images to load properly");
+      btn.textContent = "⬇ Download";
+      btn.disabled = false;
+      return;
+    }
+  }
 
- btn.disabled=false;
+  // ✅ small delay ensures rendering is complete
+  await new Promise(res => setTimeout(res, 300));
+
+  try{
+    const canvas = await html2canvas(document.getElementById('card'), {
+      scale: 3, // 🔥 better quality
+      useCORS: true,
+      backgroundColor: "#0d1219"
+    });
+
+    const a = document.createElement('a');
+    a.download = "fcmobile.png";
+    a.href = canvas.toDataURL("image/png");
+    a.click();
+
+  }catch(err){
+    console.error(err);
+    btn.textContent = "❌ Failed";
+    setTimeout(()=>btn.textContent="⬇ Download",2000);
+  }
+
+  btn.textContent = "⬇ Download";
+  btn.disabled = false;
 }
 
 buildStats();
