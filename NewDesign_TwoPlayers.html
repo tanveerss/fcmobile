@@ -165,6 +165,13 @@ body {
   background: rgba(212,168,67,0.06); border: 1px dashed rgba(212,168,67,0.2);
   border-radius:10px; opacity:0; transition: opacity .2s; cursor:pointer;
 }
+/* ✅ FIX upload click conflict */
+.upload-overlay {
+  pointer-events: none;
+}
+.upload-overlay input {
+  pointer-events: auto;
+}
 .img-wrapper:hover .upload-overlay { opacity:1; }
 .upload-overlay span { font-size:11px; color:var(--gold); letter-spacing:1px; font-weight:600; }
 .upload-overlay input { position:absolute; inset:0; opacity:0; cursor:pointer; }
@@ -348,13 +355,12 @@ body.dl-mode .upload-overlay { display:none; }
 
     <!-- LEFT -->
     <div class="player-col left" id="col-L">
-      <div class="img-wrapper" onclick="triggerUpload('upL', event)">
+     <div class="img-wrapper">
         <img id="imgL" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='190' height='200'%3E%3Crect width='190' height='200' rx='10' fill='rgba(79,195,247,0.05)' stroke='rgba(79,195,247,0.15)' stroke-width='1'/%3E%3Ctext x='95' y='88' text-anchor='middle' font-size='38' fill='rgba(79,195,247,0.3)'%3E📷%3C/text%3E%3Ctext x='95' y='118' text-anchor='middle' font-size='11' fill='rgba(79,195,247,0.3)' font-family='monospace'%3ETap to Upload%3C/text%3E%3C/svg%3E" alt="P1">
-        <div class="upload-overlay">
-          <span>📷 Upload Card</span>
-          <input type="file" id="upL" accept="image/*" onchange="loadImg(event,'imgL')">
-        </div>
-        <label class="upload-pill">📷 Photo<input type="file" accept="image/*" onchange="loadImg(event,'imgL')"></label>
+       <label class="upload-pill">
+        📷 Photo
+        <input type="file" accept="image/*" onchange="loadImg(event,'imgL')">
+</label>
       </div>
 
       <div class="player-name" contenteditable="true" spellcheck="false">PLAYER ONE</div>
@@ -383,13 +389,12 @@ body.dl-mode .upload-overlay { display:none; }
 
     <!-- RIGHT -->
     <div class="player-col right" id="col-R">
-      <div class="img-wrapper" onclick="triggerUpload('upR', event)">
+   <div class="img-wrapper">
         <img id="imgR" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='190' height='200'%3E%3Crect width='190' height='200' rx='10' fill='rgba(255,107,53,0.05)' stroke='rgba(255,107,53,0.15)' stroke-width='1'/%3E%3Ctext x='95' y='88' text-anchor='middle' font-size='38' fill='rgba(255,107,53,0.3)'%3E📷%3C/text%3E%3Ctext x='95' y='118' text-anchor='middle' font-size='11' fill='rgba(255,107,53,0.3)' font-family='monospace'%3ETap to Upload%3C/text%3E%3C/svg%3E" alt="P2">
-        <div class="upload-overlay">
-          <span>📷 Upload Card</span>
-          <input type="file" id="upR" accept="image/*" onchange="loadImg(event,'imgR')">
-        </div>
-        <label class="upload-pill">📷 Photo<input type="file" accept="image/*" onchange="loadImg(event,'imgR')"></label>
+      <label class="upload-pill">
+        📷 Photo
+        <input type="file" accept="image/*" onchange="loadImg(event,'imgR')">
+</label>
       </div>
 
       <div class="player-name" contenteditable="true" spellcheck="false">PLAYER TWO</div>
@@ -539,17 +544,18 @@ function loadImg(e, id) {
   const file = e.target.files[0];
   if (!file) return;
 
-  const url = URL.createObjectURL(file);
+  const reader = new FileReader();
   const img = document.getElementById(id);
 
-  if (img) {
+  reader.onload = function(ev) {
     img.onload = () => {
-      URL.revokeObjectURL(url);
       img.dataset.loaded = "true";
     };
     img.dataset.loaded = "false";
-    img.src = url;
-  }
+    img.src = ev.target.result;
+  };
+
+  reader.readAsDataURL(file);
 }
 
 function triggerUpload(inputId, e) {
@@ -593,12 +599,13 @@ async function downloadCard(){
   btn.textContent = "⏳ Generating...";
   btn.disabled = true;
 
- const imgs = [
-  document.getElementById('imgL'),
-  document.getElementById('imgR')
-];
+  const imgs = [
+    document.getElementById('imgL'),
+    document.getElementById('imgR')
+  ];
+
   for (let img of imgs) {
-    if (img.src && img.dataset.loaded !== "true") {
+   if (img.dataset.loaded === "false") {
       alert("Wait for image to load");
       btn.disabled = false;
       btn.textContent = "⬇ Download Post";
@@ -608,16 +615,22 @@ async function downloadCard(){
 
   await new Promise(res => setTimeout(res, 300));
 
-  const canvas = await html2canvas(card, {
-    scale: 3,
-    useCORS: true,
-    backgroundColor: '#0d1219'
-  });
+  try {
+    const canvas = await html2canvas(document.getElementById('card'), {
+      scale: 3,
+      useCORS: true,
+      backgroundColor: '#0d1219'
+    });
 
-  const a = document.createElement('a');
-  a.download = 'FCMobile.png';
-  a.href = canvas.toDataURL();
-  a.click();
+    const a = document.createElement('a');
+    a.download = 'FCMobile.png';
+    a.href = canvas.toDataURL("image/png");
+    a.click();
+
+  } catch(err) {
+    console.error(err);
+    alert("Download failed");
+  }
 
   btn.disabled = false;
   btn.textContent = "⬇ Download Post";
