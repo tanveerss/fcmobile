@@ -4,8 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>FC Mobile — Head to Head</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 :root {
@@ -13,16 +12,15 @@
   --gold-light: #f0c96a;
   --gold-dim: rgba(212,168,67,0.15);
   --dark: #080b10;
-  --dark2: #0e1420;
+  --dark2: #0d1219;
   --dark3: #141b27;
   --green: #00e676;
-  --red: #ff3d3d;
-  --blue-l: #4fc3f7;
-  --blue-r: #ff6b35;
+  --red: #ff4444;
+  --accent-l: #4fc3f7;
+  --accent-r: #ff6b35;
   --text: #e8edf5;
-  --muted: #7a8ba0;
+  --muted: #5a6a7e;
 }
-
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
@@ -33,560 +31,330 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 24px 16px 48px;
+  padding: 20px 16px 48px;
 }
 
-/* ── Page Header ── */
+/* ── Controls ── */
 .page-header {
   width: 100%;
-  max-width: 900px;
+  max-width: 860px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 24px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid rgba(212,168,67,0.2);
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(212,168,67,0.15);
 }
-.page-logo {
-  font-family: 'Bebas Neue', cursive;
-  font-size: 28px;
-  letter-spacing: 2px;
-  color: var(--gold);
-}
+.page-logo { font-family:'Bebas Neue',cursive; font-size:24px; letter-spacing:3px; color:var(--gold); }
 .page-logo span { color: var(--text); }
-.page-subtitle {
-  font-size: 13px;
-  color: var(--muted);
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
 
-/* ── Controls Panel ── */
 .controls-panel {
-  width: 100%;
-  max-width: 900px;
+  width: 100%; max-width: 860px;
   background: var(--dark2);
-  border: 1px solid rgba(212,168,67,0.12);
-  border-radius: 14px;
-  padding: 16px 20px;
-  margin-bottom: 24px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  align-items: center;
+  border: 1px solid rgba(212,168,67,0.1);
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
 }
-.ctrl-group { display: flex; flex-direction: column; gap: 4px; }
-.ctrl-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); }
-.ctrl-input {
-  background: var(--dark3);
-  border: 1px solid rgba(212,168,67,0.2);
-  border-radius: 8px;
-  color: var(--text);
-  padding: 7px 11px;
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  outline: none;
-  transition: border-color .2s;
+.ctrl-group { display:flex; flex-direction:column; gap:3px; }
+.ctrl-label { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); }
+.ctrl-select {
+  background: var(--dark3); border: 1px solid rgba(212,168,67,0.2); border-radius:7px;
+  color: var(--text); padding: 6px 10px;
+  font-family:'Barlow Condensed',sans-serif; font-size:14px; font-weight:600; outline:none;
 }
-.ctrl-input:focus { border-color: var(--gold); }
-.ctrl-input option { background: var(--dark2); }
-.ctrl-separator { flex: 1; }
+.ctrl-sep { flex:1; }
 .btn {
-  background: var(--gold);
-  color: #000;
-  border: none;
-  border-radius: 9px;
-  padding: 9px 20px;
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: .5px;
-  cursor: pointer;
-  transition: all .2s;
+  background: var(--gold); color: #000; border: none; border-radius: 8px;
+  padding: 8px 18px; font-family:'Barlow Condensed',sans-serif;
+  font-size:15px; font-weight:700; letter-spacing:.5px; cursor:pointer; transition:all .2s;
 }
-.btn:hover { background: var(--gold-light); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(212,168,67,0.25); }
-.btn:active { transform: translateY(0); }
-.btn-ghost {
-  background: transparent;
-  border: 1px solid rgba(212,168,67,0.35);
-  color: var(--gold);
-}
-.btn-ghost:hover { background: var(--gold-dim); }
+.btn:hover { background: var(--gold-light); transform:translateY(-1px); box-shadow:0 6px 18px rgba(212,168,67,0.25); }
+.btn-ghost { background:transparent; border:1px solid rgba(212,168,67,0.3); color:var(--gold); }
+.btn-ghost:hover { background:var(--gold-dim); transform:none; box-shadow:none; }
 
-/* ══════════════════════════════════
-   CARD — the downloadable post
-══════════════════════════════════ */
+/* ══════════════════════════════
+   THE CARD
+══════════════════════════════ */
 #card {
-  width: 900px;
+  width: 860px;
   position: relative;
-  border-radius: 20px;
+  border-radius: 18px;
   overflow: hidden;
   background: var(--dark2);
-  box-shadow: 0 30px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(212,168,67,0.15);
+  box-shadow: 0 24px 70px rgba(0,0,0,0.8), 0 0 0 1px rgba(212,168,67,0.12);
 }
 
-/* Background image layer */
+/* BG image */
 #card-bg {
-  position: absolute;
-  inset: 0;
-  background-size: cover;
-  background-position: center;
-  opacity: 0.18;
+  position:absolute; inset:0;
+  background-size:cover; background-position:center;
+  opacity:0.12; z-index:0;
   transition: opacity .3s;
 }
 
-/* Grid noise overlay */
+/* grid overlay */
 #card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: 
-    linear-gradient(rgba(212,168,67,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(212,168,67,0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
-  pointer-events: none;
-  z-index: 1;
+  content:''; position:absolute; inset:0; z-index:1; pointer-events:none;
+  background-image:
+    linear-gradient(rgba(212,168,67,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(212,168,67,0.025) 1px, transparent 1px);
+  background-size: 36px 36px;
 }
 
-/* Center divider glow */
-#card::after {
-  content: '';
-  position: absolute;
-  top: 0; bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 1px;
-  background: linear-gradient(to bottom, transparent, var(--gold), transparent);
-  opacity: 0.4;
-  z-index: 2;
-  pointer-events: none;
+/* center divider */
+.center-divider {
+  position:absolute; top:0; bottom:0; left:50%; transform:translateX(-50%);
+  width:1px; z-index:3; pointer-events:none;
+  background: linear-gradient(to bottom, transparent 0%, rgba(212,168,67,0.35) 20%, rgba(212,168,67,0.35) 80%, transparent 100%);
 }
 
-/* ── Card Top Bar ── */
+/* ── Top bar ── */
 .card-topbar {
-  position: relative;
-  z-index: 5;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 18px 28px 0;
+  position:relative; z-index:5;
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 16px 24px 0;
 }
-.card-brand {
-  font-family: 'Bebas Neue', cursive;
-  font-size: 20px;
-  letter-spacing: 3px;
-  color: var(--gold);
-  opacity: 0.8;
-}
+.card-brand { font-family:'Bebas Neue',cursive; font-size:18px; letter-spacing:3px; color:var(--gold); opacity:.75; }
 .card-tag {
-  background: var(--gold);
-  color: #000;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  padding: 3px 10px;
-  border-radius: 4px;
+  background:var(--gold); color:#000; font-size:9px; font-weight:700;
+  letter-spacing:2px; text-transform:uppercase; padding:3px 10px; border-radius:4px;
 }
 
-/* ── VS Badge (center top) ── */
+/* VS badge */
 .vs-badge {
-  position: absolute;
-  top: 50px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
-  width: 56px;
-  height: 56px;
-  background: linear-gradient(135deg, var(--gold), #8b5e00);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Bebas Neue', cursive;
-  font-size: 22px;
-  color: #000;
-  box-shadow: 0 0 0 3px var(--dark2), 0 0 30px rgba(212,168,67,0.5);
+  position:absolute; top:44px; left:50%; transform:translateX(-50%);
+  z-index:10; width:50px; height:50px;
+  background: linear-gradient(135deg, #c49428, #7a5800);
+  border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-family:'Bebas Neue',cursive; font-size:20px; color:#000;
+  box-shadow: 0 0 0 3px var(--dark2), 0 0 24px rgba(212,168,67,0.45);
 }
 
-/* ── Player Columns ── */
+/* ── Two player columns ── */
 .players-row {
-  position: relative;
-  z-index: 5;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;
-  padding: 20px 0 0;
+  position:relative; z-index:5;
+  display:grid; grid-template-columns:1fr 1fr;
+  padding-top:16px;
 }
 
 .player-col {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 0 24px 24px;
-  position: relative;
+  display:flex; flex-direction:column; align-items:center;
+  padding: 0 20px 20px;
 }
+.player-col.left  { --accent: var(--accent-l); }
+.player-col.right { --accent: var(--accent-r); }
 
-/* left player accent */
-.player-col.left { border-right: none; }
-.player-col.left .player-accent {
-  background: linear-gradient(135deg, rgba(79,195,247,0.08), transparent);
-}
-.player-col.right .player-accent {
-  background: linear-gradient(135deg, rgba(255,107,53,0.08), transparent);
-}
-
-/* Accent color sides */
-.player-col.left { --accent: var(--blue-l); }
-.player-col.right { --accent: var(--blue-r); }
-
-/* ── Player Image Upload ── */
+/* ── Image ── */
 .img-wrapper {
-  position: relative;
-  width: 200px;
-  height: 210px;
-  margin-bottom: 8px;
+  position:relative; width:190px; height:200px; margin-bottom:6px;
+  cursor:pointer;
 }
 .img-wrapper img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  filter: drop-shadow(0 12px 30px rgba(0,0,0,0.6));
+  width:100%; height:100%; object-fit:contain;
+  filter: drop-shadow(0 10px 28px rgba(0,0,0,0.65));
   transition: transform .3s;
+  display: block;
 }
-.img-wrapper:hover img { transform: scale(1.03); }
+.img-wrapper:hover img { transform: scale(1.03) translateY(-3px); }
 
-.img-upload-btn {
-  position: absolute;
-  bottom: 6px;
-  right: 6px;
-  background: rgba(0,0,0,0.7);
-  border: 1px solid rgba(212,168,67,0.4);
-  border-radius: 6px;
-  color: var(--gold);
-  font-size: 11px;
-  font-weight: 600;
-  padding: 4px 8px;
-  cursor: pointer;
-  letter-spacing: .5px;
-  transition: all .2s;
+.upload-overlay {
+  position:absolute; inset:0; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:6px;
+  background: rgba(212,168,67,0.06); border: 1px dashed rgba(212,168,67,0.2);
+  border-radius:10px; opacity:0; transition: opacity .2s; cursor:pointer;
 }
-.img-upload-btn:hover { background: var(--gold-dim); }
-.img-upload-btn input { display: none; }
+.img-wrapper:hover .upload-overlay { opacity:1; }
+.upload-overlay span { font-size:11px; color:var(--gold); letter-spacing:1px; font-weight:600; }
+.upload-overlay input { position:absolute; inset:0; opacity:0; cursor:pointer; }
 
-/* ── Player Name & Info ── */
+/* small upload btn always visible */
+.upload-pill {
+  position:absolute; bottom:6px; right:6px;
+  background: rgba(10,15,22,0.85); border:1px solid rgba(212,168,67,0.35);
+  border-radius:5px; color:var(--gold); font-size:10px; font-weight:700;
+  padding:3px 8px; letter-spacing:.5px; cursor:pointer; transition:all .2s;
+  z-index:2;
+}
+.upload-pill:hover { background:var(--gold-dim); }
+.upload-pill input { display:none; }
+
+/* ── Name & badges ── */
 .player-name {
-  font-family: 'Bebas Neue', cursive;
-  font-size: 32px;
-  letter-spacing: 2px;
-  color: #fff;
-  text-align: center;
-  outline: none;
-  border-bottom: 1px dashed rgba(212,168,67,0.3);
-  min-width: 80px;
-  width: 100%;
-  text-align: center;
-  padding: 2px 4px;
-  transition: border-color .2s;
-  cursor: text;
+  font-family:'Bebas Neue',cursive; font-size:30px; letter-spacing:2px;
+  color:#fff; text-align:center; width:100%;
+  outline:none; border-bottom:1px dashed rgba(212,168,67,0.25);
+  padding:2px 4px; margin-bottom:6px; cursor:text; transition:border-color .2s;
 }
-.player-name:hover, .player-name:focus { border-color: var(--gold); }
+.player-name:focus { border-color:var(--gold); }
 
-.player-meta {
-  display: flex;
-  gap: 8px;
-  margin-top: 6px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
+.player-meta { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; margin-bottom:10px; }
 .meta-tag {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  padding: 3px 9px;
-  border-radius: 5px;
-  border: 1px solid rgba(212,168,67,0.25);
-  color: var(--gold);
-  background: var(--gold-dim);
-  outline: none;
-  cursor: text;
-  min-width: 30px;
-  text-align: center;
+  font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase;
+  padding:3px 9px; border-radius:5px;
+  border:1px solid rgba(212,168,67,0.22); color:var(--gold); background:var(--gold-dim);
+  outline:none; cursor:text; min-width:28px; text-align:center; transition:border-color .2s;
 }
-.meta-tag:hover, .meta-tag:focus { border-color: var(--gold); }
+.meta-tag:focus { border-color:var(--gold); }
 
-/* ── OVR Rating ── */
-.ovr-ring {
-  margin: 14px 0 6px;
-  width: 76px;
-  height: 76px;
-  position: relative;
-  flex-shrink: 0;
+/* ── OVR ring ── */
+.ovr-wrap {
+  display:flex; flex-direction:column; align-items:center; margin-bottom:10px;
 }
-.ovr-ring svg { width: 76px; height: 76px; transform: rotate(-90deg); }
-.ovr-ring circle {
-  fill: none;
-  stroke-width: 5;
-  stroke-linecap: round;
-}
-.ovr-ring .track { stroke: rgba(255,255,255,0.08); }
-.ovr-ring .fill { 
-  stroke: var(--accent);
-  stroke-dasharray: 201;
-  stroke-dashoffset: 201;
-  transition: stroke-dashoffset 1s cubic-bezier(.4,0,.2,1);
-}
-.ovr-label {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+.ovr-ring { position:relative; width:72px; height:72px; }
+.ovr-ring svg { width:72px; height:72px; transform:rotate(-90deg); }
+.ovr-ring circle { fill:none; stroke-width:5; stroke-linecap:round; }
+.ovr-track { stroke: rgba(255,255,255,0.07); }
+.ovr-fill  { stroke: var(--accent); stroke-dasharray:201; stroke-dashoffset:201; transition: stroke-dashoffset 1s cubic-bezier(.4,0,.2,1); }
+.ovr-inner {
+  position:absolute; inset:0; display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
 }
 .ovr-num {
-  font-family: 'Bebas Neue', cursive;
-  font-size: 26px;
-  line-height: 1;
-  color: #fff;
-  outline: none;
-  cursor: text;
-  min-width: 30px;
-  text-align: center;
+  font-family:'Bebas Neue',cursive; font-size:24px; line-height:1; color:#fff;
+  outline:none; cursor:text; min-width:26px; text-align:center;
 }
-.ovr-text {
-  font-size: 9px;
-  letter-spacing: 2px;
-  color: var(--muted);
-  text-transform: uppercase;
-  margin-top: 1px;
-}
+.ovr-num:focus { color: var(--gold-light); }
+.ovr-lbl { font-size:8px; letter-spacing:2px; color:var(--muted); text-transform:uppercase; margin-top:1px; }
 
-/* ── Stats Section ── */
-.stats-block {
-  width: 100%;
-  margin-top: 4px;
-}
+/* ── Stats ── */
+.stats-block { width:100%; }
+
 .stat-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 5px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.04);
+  display:flex; align-items:center; gap:8px;
+  padding: 5px 0; border-bottom:1px solid rgba(255,255,255,0.035);
 }
-.stat-label {
-  font-size: 11px;
-  letter-spacing: 2px;
-  color: var(--muted);
-  text-transform: uppercase;
-  width: 34px;
-  flex-shrink: 0;
-}
-.stat-bar-wrap {
-  flex: 1;
-  height: 5px;
-  background: rgba(255,255,255,0.07);
-  border-radius: 3px;
-  overflow: hidden;
-}
-.stat-bar-fill {
-  height: 100%;
-  border-radius: 3px;
-  background: var(--accent);
-  transition: width .8s cubic-bezier(.4,0,.2,1), background .3s;
-}
-.stat-val {
-  font-family: 'Bebas Neue', cursive;
-  font-size: 20px;
-  color: #fff;
-  width: 36px;
-  text-align: right;
-  outline: none;
-  cursor: text;
-  min-width: 20px;
-}
-.stat-val:hover, .stat-val:focus { color: var(--gold-light); }
-.stat-val.winner { color: var(--green); }
-.stat-val.loser  { color: var(--red); }
+.player-col.right .stat-row { flex-direction:row-reverse; }
 
-/* Right column: bar flipped */
-.player-col.right .stat-row { flex-direction: row-reverse; }
-.player-col.right .stat-label { text-align: right; }
-.player-col.right .stat-val { text-align: left; }
+.stat-lbl {
+  width:32px; flex-shrink:0; font-size:10px; letter-spacing:2px;
+  color:var(--muted); text-transform:uppercase;
+}
+.player-col.right .stat-lbl { text-align:right; }
 
-/* ── Center Stat Labels (absolute) ── */
-.center-labels {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 8;
-  top: 0;
-  bottom: 0;
-  width: 60px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 0;
-  pointer-events: none;
+.bar-wrap {
+  flex:1; height:4px; background:rgba(255,255,255,0.07);
+  border-radius:3px; overflow:hidden;
+}
+.bar-fill {
+  height:100%; border-radius:3px; background:var(--accent);
+  transition: width .7s cubic-bezier(.4,0,.2,1);
 }
 
-/* ── Card Footer ── */
+.stat-num {
+  font-family:'Bebas Neue',cursive; font-size:22px; line-height:1;
+  color:#fff; width:38px; flex-shrink:0;
+  outline:none; cursor:text;
+  transition:color .2s;
+}
+.player-col.left  .stat-num { text-align:right; }
+.player-col.right .stat-num { text-align:left; }
+.stat-num:focus { color:var(--gold-light); }
+.stat-num.win { color:var(--green) !important; }
+.stat-num.lose { color:var(--red) !important; }
+
+/* ── Footer ── */
 .card-footer {
-  position: relative;
-  z-index: 5;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 28px 20px;
-  border-top: 1px solid rgba(255,255,255,0.05);
+  position:relative; z-index:5;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:10px 24px 16px;
+  border-top:1px solid rgba(255,255,255,0.04);
+  margin-top:4px;
 }
-.footer-watermark {
-  font-family: 'Bebas Neue', cursive;
-  font-size: 16px;
-  letter-spacing: 3px;
-  color: var(--gold);
-  opacity: 0.5;
-  outline: none;
-  cursor: text;
+.footer-brand {
+  font-family:'Bebas Neue',cursive; font-size:14px; letter-spacing:3px;
+  color:var(--gold); opacity:.5; outline:none; cursor:text;
 }
-.footer-watermark:hover, .footer-watermark:focus { opacity: 1; }
-.footer-date {
-  font-size: 11px;
-  color: var(--muted);
-  letter-spacing: 1px;
+.footer-brand:focus { opacity:1; }
+.footer-date { font-size:11px; color:var(--muted); letter-spacing:.5px; }
+.footer-tag {
+  font-size:11px; color:rgba(212,168,67,0.4); letter-spacing:.3px;
+  outline:none; cursor:text;
 }
-.footer-hashtag {
-  font-size: 11px;
-  color: rgba(212,168,67,0.5);
-  letter-spacing: .5px;
-  outline: none;
-  cursor: text;
-}
-.footer-hashtag:hover, .footer-hashtag:focus { color: var(--gold); }
+.footer-tag:focus { color:var(--gold); }
 
-/* ── Winner Banner ── */
-.winner-banner {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, var(--blue-l), transparent 45%, transparent 55%, var(--blue-r));
-  z-index: 10;
-  opacity: 0;
-  transition: opacity .5s;
+/* winner strip */
+.win-strip {
+  position:absolute; bottom:0; left:0; right:0; height:3px; z-index:10;
+  opacity:0; transition:opacity .5s;
 }
-.winner-banner.visible { opacity: 1; }
-.winner-banner.left-wins {
-  background: linear-gradient(90deg, var(--green) 40%, transparent);
-}
-.winner-banner.right-wins {
-  background: linear-gradient(90deg, transparent, var(--green) 60%);
+.win-strip.show { opacity:1; }
+
+/* ── Hint ── */
+.page-hint {
+  margin-top:12px; font-size:12px; color:var(--muted);
+  text-align:center; letter-spacing:.3px;
 }
 
-/* ── Mobile ── */
-@media (max-width: 960px) {
-  #card { width: 100%; min-width: 0; border-radius: 14px; }
-  .players-row { gap: 0; }
-  .player-col { padding: 0 12px 16px; }
-  .img-wrapper { width: 130px; height: 140px; }
-  .player-name { font-size: 22px; }
-  .ovr-num { font-size: 20px; }
-  .vs-badge { width: 42px; height: 42px; font-size: 16px; top: 40px; }
-  .card-topbar { padding: 12px 16px 0; }
-  .card-footer { padding: 10px 16px 14px; }
-  .controls-panel { padding: 12px 14px; }
-  .stat-val { font-size: 16px; }
-}
-
-/* Download state — hide editing affordances */
-body.downloading .img-upload-btn,
-body.downloading [contenteditable]:hover,
-body.downloading [contenteditable]:focus {
+/* download mode — hide dashed borders */
+body.dl-mode .player-name,
+body.dl-mode .meta-tag,
+body.dl-mode .ovr-num,
+body.dl-mode .stat-num,
+body.dl-mode .footer-brand,
+body.dl-mode .footer-tag {
   border-color: transparent !important;
-  outline: none !important;
 }
-
-/* Pulse hint on editable fields */
-@keyframes pulse-hint {
-  0%, 100% { opacity: .4; }
-  50% { opacity: .9; }
-}
-.hint-pulse { animation: pulse-hint 2s ease-in-out 3; }
-
-/* Card enter animation */
-@keyframes card-in {
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-#card { animation: card-in .5s ease forwards; }
+body.dl-mode .upload-pill { display:none; }
+body.dl-mode .upload-overlay { display:none; }
 </style>
 </head>
 <body>
 
-<!-- Page Header -->
 <div class="page-header">
-  <div>
-    <div class="page-logo">FC<span>Mobile</span> Studio</div>
-    <div class="page-subtitle">Head to Head Comparison</div>
-  </div>
-  <div style="font-size:12px;color:var(--muted);text-align:right;line-height:1.8;">
-    Click any text to edit &nbsp;·&nbsp; Upload player images<br>
-    Then hit <strong style="color:var(--gold)">Download Post</strong>
+  <div class="page-logo">FC<span>Mobile</span> Studio</div>
+  <div style="font-size:11px;color:var(--muted);text-align:right;line-height:1.9;">
+    Click any text to edit &nbsp;·&nbsp; Click card image to upload<br>
+    Adjust stats → Download Post
   </div>
 </div>
 
-<!-- Controls -->
 <div class="controls-panel">
   <div class="ctrl-group">
     <div class="ctrl-label">Background</div>
-    <select class="ctrl-input" id="bgSelect" onchange="changeBG()">
+    <select class="ctrl-select" id="bgSel" onchange="changeBG()">
       <option value="ComparisonImage.jpg">Stadium</option>
       <option value="NeonImage.jpg">Neon</option>
-      <option value="none">None (Dark)</option>
+      <option value="none">Dark (None)</option>
     </select>
   </div>
   <div class="ctrl-group">
-    <div class="ctrl-label">Left Accent</div>
-    <input type="color" class="ctrl-input" id="colorL" value="#4fc3f7" oninput="updateAccents()" style="width:56px;height:36px;padding:2px 4px;cursor:pointer;">
+    <div class="ctrl-label">Left Color</div>
+    <input type="color" id="colorL" value="#4fc3f7" oninput="updateColors()" style="width:50px;height:34px;padding:2px 3px;border-radius:6px;border:1px solid rgba(212,168,67,0.2);background:#141b27;cursor:pointer;">
   </div>
   <div class="ctrl-group">
-    <div class="ctrl-label">Right Accent</div>
-    <input type="color" class="ctrl-input" id="colorR" value="#ff6b35" oninput="updateAccents()" style="width:56px;height:36px;padding:2px 4px;cursor:pointer;">
+    <div class="ctrl-label">Right Color</div>
+    <input type="color" id="colorR" value="#ff6b35" oninput="updateColors()" style="width:50px;height:34px;padding:2px 3px;border-radius:6px;border:1px solid rgba(212,168,67,0.2);background:#141b27;cursor:pointer;">
   </div>
-  <div class="ctrl-separator"></div>
-  <button class="btn btn-ghost" onclick="resetAll()">Reset</button>
-  <button class="btn" onclick="downloadCard()">⬇ Download Post</button>
+  <div class="ctrl-sep"></div>
+  <button class="btn btn-ghost" onclick="resetStats()">Reset Stats</button>
+  <button class="btn" id="dlBtn" onclick="downloadCard()">⬇ Download Post</button>
 </div>
 
-<!-- THE CARD -->
+<!-- ═══════ CARD ═══════ -->
 <div id="card">
   <div id="card-bg"></div>
+  <div class="center-divider"></div>
 
-  <!-- Top Bar -->
   <div class="card-topbar">
     <div class="card-brand">GameEnclave</div>
     <div class="card-tag">FC Mobile</div>
   </div>
 
-  <!-- VS Badge -->
   <div class="vs-badge">VS</div>
 
-  <!-- Players Row -->
   <div class="players-row">
 
-    <!-- LEFT PLAYER -->
-    <div class="player-col left" id="col-left">
-
-      <div class="img-wrapper">
-        <img id="img-left" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='210'%3E%3Crect width='200' height='210' rx='12' fill='rgba(212,168,67,0.06)' stroke='rgba(212,168,67,0.18)' stroke-width='1'/%3E%3Ctext x='100' y='95' text-anchor='middle' fill='rgba(212,168,67,0.4)' font-size='40'%3E⬆%3C/text%3E%3Ctext x='100' y='130' text-anchor='middle' fill='rgba(212,168,67,0.35)' font-size='12' font-family='monospace'%3EUpload Player%3C/text%3E%3C/svg%3E" alt="Player 1">
-        <label class="img-upload-btn">
-          📷 Photo
-          <input type="file" accept="image/*" onchange="uploadImg(event,'img-left')">
-        </label>
+    <!-- LEFT -->
+    <div class="player-col left" id="col-L">
+      <div class="img-wrapper" onclick="triggerUpload('upL')">
+        <img id="imgL" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='190' height='200'%3E%3Crect width='190' height='200' rx='10' fill='rgba(79,195,247,0.05)' stroke='rgba(79,195,247,0.15)' stroke-width='1'/%3E%3Ctext x='95' y='88' text-anchor='middle' font-size='38' fill='rgba(79,195,247,0.3)'%3E📷%3C/text%3E%3Ctext x='95' y='118' text-anchor='middle' font-size='11' fill='rgba(79,195,247,0.3)' font-family='monospace'%3ETap to Upload%3C/text%3E%3C/svg%3E" alt="P1">
+        <div class="upload-overlay">
+          <span>📷 Upload Card</span>
+          <input type="file" id="upL" accept="image/*" onchange="loadImg(event,'imgL')">
+        </div>
+        <label class="upload-pill">📷 Photo<input type="file" accept="image/*" onchange="loadImg(event,'imgL')"></label>
       </div>
 
       <div class="player-name" contenteditable="true" spellcheck="false">PLAYER ONE</div>
@@ -596,31 +364,32 @@ body.downloading [contenteditable]:focus {
         <div class="meta-tag" contenteditable="true" spellcheck="false">ICON</div>
       </div>
 
-      <div class="ovr-ring" id="ovr-left">
-        <svg viewBox="0 0 76 76">
-          <circle class="track" cx="38" cy="38" r="32"/>
-          <circle class="fill" id="ovr-left-fill" cx="38" cy="38" r="32"/>
-        </svg>
-        <div class="ovr-label">
-          <div class="ovr-num" contenteditable="true" spellcheck="false" oninput="updateOVR('left',this)">88</div>
-          <div class="ovr-text">OVR</div>
+      <div class="ovr-wrap">
+        <div class="ovr-ring">
+          <svg viewBox="0 0 72 72">
+            <circle class="ovr-track" cx="36" cy="36" r="32"/>
+            <circle class="ovr-fill" id="ovrFillL" cx="36" cy="36" r="32"/>
+          </svg>
+          <div class="ovr-inner">
+            <div class="ovr-num" id="ovrNumL" contenteditable="true" spellcheck="false"
+                 oninput="onOvrInput('L')">88</div>
+            <div class="ovr-lbl">OVR</div>
+          </div>
         </div>
       </div>
 
-      <div class="stats-block" id="stats-left">
-        <!-- injected by JS -->
-      </div>
+      <div class="stats-block" id="statsL"></div>
     </div>
 
-    <!-- RIGHT PLAYER -->
-    <div class="player-col right" id="col-right">
-
-      <div class="img-wrapper">
-        <img id="img-right" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='210'%3E%3Crect width='200' height='210' rx='12' fill='rgba(255,107,53,0.06)' stroke='rgba(255,107,53,0.18)' stroke-width='1'/%3E%3Ctext x='100' y='95' text-anchor='middle' fill='rgba(255,107,53,0.4)' font-size='40'%3E⬆%3C/text%3E%3Ctext x='100' y='130' text-anchor='middle' fill='rgba(255,107,53,0.35)' font-size='12' font-family='monospace'%3EUpload Player%3C/text%3E%3C/svg%3E" alt="Player 2">
-        <label class="img-upload-btn">
-          📷 Photo
-          <input type="file" accept="image/*" onchange="uploadImg(event,'img-right')">
-        </label>
+    <!-- RIGHT -->
+    <div class="player-col right" id="col-R">
+      <div class="img-wrapper" onclick="triggerUpload('upR')">
+        <img id="imgR" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='190' height='200'%3E%3Crect width='190' height='200' rx='10' fill='rgba(255,107,53,0.05)' stroke='rgba(255,107,53,0.15)' stroke-width='1'/%3E%3Ctext x='95' y='88' text-anchor='middle' font-size='38' fill='rgba(255,107,53,0.3)'%3E📷%3C/text%3E%3Ctext x='95' y='118' text-anchor='middle' font-size='11' fill='rgba(255,107,53,0.3)' font-family='monospace'%3ETap to Upload%3C/text%3E%3C/svg%3E" alt="P2">
+        <div class="upload-overlay">
+          <span>📷 Upload Card</span>
+          <input type="file" id="upR" accept="image/*" onchange="loadImg(event,'imgR')">
+        </div>
+        <label class="upload-pill">📷 Photo<input type="file" accept="image/*" onchange="loadImg(event,'imgR')"></label>
       </div>
 
       <div class="player-name" contenteditable="true" spellcheck="false">PLAYER TWO</div>
@@ -630,206 +399,238 @@ body.downloading [contenteditable]:focus {
         <div class="meta-tag" contenteditable="true" spellcheck="false">HERO</div>
       </div>
 
-      <div class="ovr-ring" id="ovr-right">
-        <svg viewBox="0 0 76 76">
-          <circle class="track" cx="38" cy="38" r="32"/>
-          <circle class="fill" id="ovr-right-fill" cx="38" cy="38" r="32"/>
-        </svg>
-        <div class="ovr-label">
-          <div class="ovr-num" contenteditable="true" spellcheck="false" oninput="updateOVR('right',this)">91</div>
-          <div class="ovr-text">OVR</div>
+      <div class="ovr-wrap">
+        <div class="ovr-ring">
+          <svg viewBox="0 0 72 72">
+            <circle class="ovr-track" cx="36" cy="36" r="32"/>
+            <circle class="ovr-fill" id="ovrFillR" cx="36" cy="36" r="32"/>
+          </svg>
+          <div class="ovr-inner">
+            <div class="ovr-num" id="ovrNumR" contenteditable="true" spellcheck="false"
+                 oninput="onOvrInput('R')">91</div>
+            <div class="ovr-lbl">OVR</div>
+          </div>
         </div>
       </div>
 
-      <div class="stats-block" id="stats-right">
-        <!-- injected by JS -->
-      </div>
+      <div class="stats-block" id="statsR"></div>
     </div>
   </div>
 
-  <!-- Footer -->
   <div class="card-footer">
-    <div class="footer-watermark" contenteditable="true" spellcheck="false">GameEnclave</div>
-    <div class="footer-date" id="footer-date"></div>
-    <div class="footer-hashtag" contenteditable="true" spellcheck="false">#FCMobile #HeadToHead</div>
+    <div class="footer-brand" contenteditable="true" spellcheck="false">GameEnclave</div>
+    <div class="footer-date" id="fDate"></div>
+    <div class="footer-tag" contenteditable="true" spellcheck="false">#FCMobile #H2H</div>
   </div>
 
-  <!-- Winner Bar -->
-  <div class="winner-banner" id="winner-banner"></div>
+  <svg class="win-strip" id="winStrip" height="3" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="gL" x1="0" x2="1" y1="0" y2="0">
+        <stop offset="0%" stop-color="#00e676"/>
+        <stop offset="50%" stop-color="transparent"/>
+      </linearGradient>
+      <linearGradient id="gR" x1="0" x2="1" y1="0" y2="0">
+        <stop offset="50%" stop-color="transparent"/>
+        <stop offset="100%" stop-color="#00e676"/>
+      </linearGradient>
+      <linearGradient id="gTie" x1="0" x2="1" y1="0" y2="0">
+        <stop offset="0%" stop-color="#4fc3f7"/>
+        <stop offset="50%" stop-color="transparent"/>
+        <stop offset="100%" stop-color="#ff6b35"/>
+      </linearGradient>
+    </defs>
+    <rect id="winRectL" width="50%" height="3" fill="url(#gL)" opacity="0"/>
+    <rect id="winRectR" x="50%" width="50%" height="3" fill="url(#gR)" opacity="0"/>
+    <rect id="winRectT" width="100%" height="3" fill="url(#gTie)" opacity="0"/>
+  </svg>
 </div>
 
-<!-- Bottom hint -->
-<div style="margin-top:14px;font-size:12px;color:var(--muted);text-align:center;letter-spacing:.5px;">
-  All fields are editable — click to change names, positions, stats &amp; watermark
-</div>
+<div class="page-hint">Click player image or 📷 Photo button to upload · All text is editable</div>
 
 <script>
+// ── Data ─────────────────────────────────────────────────
 const STATS = ['PAC','SHO','PAS','DRI','DEF','PHY'];
-const DEFAULTS = {
-  left:  [82, 89, 75, 88, 45, 78],
-  right: [90, 83, 88, 91, 52, 72]
-};
+const DEF_L = [82, 89, 75, 88, 45, 78];
+const DEF_R = [89, 83, 88, 91, 52, 72];
 
-let accentL = '#4fc3f7';
-let accentR = '#ff6b35';
-
-// ── Build stat rows ──────────────────────────────────────
+// ── Build stat rows ───────────────────────────────────────
 function buildStats() {
-  ['left','right'].forEach(side => {
-    const block = document.getElementById('stats-' + side);
+  ['L','R'].forEach(side => {
+    const block = document.getElementById('stats' + side);
     block.innerHTML = '';
-    STATS.forEach((s, i) => {
+    const defs = side === 'L' ? DEF_L : DEF_R;
+    STATS.forEach((stat, i) => {
+      const val = defs[i];
+      const barPct = Math.min(99, val); // bar % capped at 99
       const row = document.createElement('div');
       row.className = 'stat-row';
       row.innerHTML = `
-        <div class="stat-label">${s}</div>
-        <div class="stat-bar-wrap">
-          <div class="stat-bar-fill" id="bar-${side}-${s}" style="width:${DEFAULTS[side][i]}%"></div>
-        </div>
-        <div class="stat-val" id="val-${side}-${s}" contenteditable="true" spellcheck="false"
-             oninput="onStatInput('${s}',this,'${side}')">${DEFAULTS[side][i]}</div>`;
+        <div class="stat-lbl">${stat}</div>
+        <div class="bar-wrap"><div class="bar-fill" id="bar${side}${stat}" style="width:${barPct}%"></div></div>
+        <div class="stat-num" id="num${side}${stat}" contenteditable="true" spellcheck="false"
+             oninput="onStatEdit('${side}','${stat}',this)">${val}</div>`;
       block.appendChild(row);
     });
   });
-  updateAllHighlights();
+  highlight();
 }
 
-// ── Stat input handler ───────────────────────────────────
-function onStatInput(stat, el, side) {
-  const raw = parseInt(el.textContent.replace(/\D/g,'')) || 0;
-  const val = Math.min(99, Math.max(0, raw));
-  const bar = document.getElementById('bar-' + side + '-' + stat);
-  if (bar) bar.style.width = val + '%';
-  updateAllHighlights();
+// ── Stat edited ───────────────────────────────────────────
+function onStatEdit(side, stat, el) {
+  // extract only digits from typed content
+  const raw = el.textContent.replace(/\D/g,'');
+  const val = raw === '' ? 0 : Math.min(999, parseInt(raw));
+  // update bar (capped at 99 for visual)
+  const bar = document.getElementById('bar' + side + stat);
+  if (bar) bar.style.width = Math.min(99, val) + '%';
+  highlight();
 }
 
-function getVal(side, stat) {
-  const el = document.getElementById('val-' + side + '-' + stat);
-  return parseInt((el && el.textContent) || 0) || 0;
+function getNum(side, stat) {
+  const el = document.getElementById('num' + side + stat);
+  if (!el) return 0;
+  return parseInt(el.textContent.replace(/\D/g,'')) || 0;
 }
 
-// ── Highlight winner/loser per stat ─────────────────────
-function updateAllHighlights() {
-  let leftWins = 0, rightWins = 0;
+// ── Highlight winners ─────────────────────────────────────
+function highlight() {
+  let lw = 0, rw = 0;
   STATS.forEach(stat => {
-    const lv = getVal('left', stat);
-    const rv = getVal('right', stat);
-    const lEl = document.getElementById('val-left-' + stat);
-    const rEl = document.getElementById('val-right-' + stat);
+    const lv = getNum('L', stat), rv = getNum('R', stat);
+    const lEl = document.getElementById('numL' + stat);
+    const rEl = document.getElementById('numR' + stat);
     if (!lEl || !rEl) return;
-    lEl.className = 'stat-val';
-    rEl.className = 'stat-val';
-    if (lv > rv)  { lEl.classList.add('winner'); rEl.classList.add('loser');  leftWins++; }
-    else if (rv > lv) { rEl.classList.add('winner'); lEl.classList.add('loser'); rightWins++; }
+    lEl.className = 'stat-num';
+    rEl.className = 'stat-num';
+    if (lv > rv)       { lEl.classList.add('win'); rEl.classList.add('lose'); lw++; }
+    else if (rv > lv)  { rEl.classList.add('win'); lEl.classList.add('lose'); rw++; }
   });
-  updateWinnerBanner(leftWins, rightWins);
+  // winner strip
+  const rL = document.getElementById('winRectL');
+  const rR = document.getElementById('winRectR');
+  const rT = document.getElementById('winRectT');
+  const strip = document.getElementById('winStrip');
+  rL.setAttribute('opacity','0'); rR.setAttribute('opacity','0'); rT.setAttribute('opacity','0');
+  strip.classList.add('show');
+  if (lw > rw)      rL.setAttribute('opacity','1');
+  else if (rw > lw) rR.setAttribute('opacity','1');
+  else              rT.setAttribute('opacity','1');
 }
 
-function updateWinnerBanner(l, r) {
-  const banner = document.getElementById('winner-banner');
-  banner.className = 'winner-banner';
-  if (l > r) { banner.classList.add('visible','left-wins'); }
-  else if (r > l) { banner.classList.add('visible','right-wins'); }
-  else { banner.classList.add('visible'); }
-}
+// ── OVR ring ──────────────────────────────────────────────
+const CIRC = 2 * Math.PI * 32; // ≈ 201.06
 
-// ── OVR ring ────────────────────────────────────────────
-function updateOVR(side, el) {
-  const val = Math.min(99, Math.max(0, parseInt(el.textContent) || 0));
-  const circ = 201;
-  const offset = circ - (val / 99) * circ;
-  const fill = document.getElementById('ovr-' + side + '-fill');
+function setOvrRing(side, val) {
+  const capped = Math.min(120, Math.max(0, val)); // allow up to 120 for FC Mobile
+  const pct = capped / 120; // normalize to 120 max
+  const offset = CIRC - pct * CIRC;
+  const fill = document.getElementById('ovrFill' + side);
   if (fill) fill.style.strokeDashoffset = offset;
 }
 
-function initOVRs() {
-  setTimeout(() => {
-    updateOVR('left',  { textContent: '88' });
-    updateOVR('right', { textContent: '91' });
-  }, 100);
+function onOvrInput(side) {
+  const el = document.getElementById('ovrNum' + side);
+  const val = parseInt(el.textContent.replace(/\D/g,'')) || 0;
+  setOvrRing(side, val);
 }
 
-// ── Background ───────────────────────────────────────────
-function changeBG() {
-  const val = document.getElementById('bgSelect').value;
-  const bg = document.getElementById('card-bg');
-  if (val === 'none') { bg.style.backgroundImage = 'none'; }
-  else { bg.style.backgroundImage = `url('https://tanveerss.github.io/fcmobile/${val}')`; }
-}
-
-// ── Accent Colors ────────────────────────────────────────
-function updateAccents() {
-  accentL = document.getElementById('colorL').value;
-  accentR = document.getElementById('colorR').value;
-  document.getElementById('col-left').style.setProperty('--accent', accentL);
-  document.getElementById('col-right').style.setProperty('--accent', accentR);
-}
-
-// ── Image Upload ─────────────────────────────────────────
-function uploadImg(e, id) {
+// ── Image upload ──────────────────────────────────────────
+function loadImg(e, id) {
   const file = e.target.files[0];
   if (!file) return;
   const url = URL.createObjectURL(file);
-  document.getElementById(id).src = url;
+  const img = document.getElementById(id);
+  if (img) { img.src = url; img.style.objectFit = 'contain'; }
 }
 
-// ── Reset ────────────────────────────────────────────────
-function resetAll() {
+function triggerUpload(inputId) {
+  // only trigger if clicking directly on the wrapper (not the pill)
+  const inp = document.getElementById(inputId);
+  if (inp) inp.click();
+}
+
+// ── Background ────────────────────────────────────────────
+function changeBG() {
+  const val = document.getElementById('bgSel').value;
+  const bg = document.getElementById('card-bg');
+  bg.style.backgroundImage = val === 'none' ? 'none'
+    : `url('https://tanveerss.github.io/fcmobile/${val}')`;
+}
+
+// ── Colors ────────────────────────────────────────────────
+function updateColors() {
+  const l = document.getElementById('colorL').value;
+  const r = document.getElementById('colorR').value;
+  document.getElementById('col-L').style.setProperty('--accent', l);
+  document.getElementById('col-R').style.setProperty('--accent', r);
+}
+
+// ── Reset ─────────────────────────────────────────────────
+function resetStats() {
   STATS.forEach((stat, i) => {
-    ['left','right'].forEach(side => {
-      const el = document.getElementById('val-' + side + '-' + stat);
-      const bar = document.getElementById('bar-' + side + '-' + stat);
-      if (el) el.textContent = DEFAULTS[side][i];
-      if (bar) bar.style.width = DEFAULTS[side][i] + '%';
+    ['L','R'].forEach(side => {
+      const defs = side === 'L' ? DEF_L : DEF_R;
+      const el  = document.getElementById('num' + side + stat);
+      const bar = document.getElementById('bar' + side + stat);
+      if (el)  el.textContent = defs[i];
+      if (bar) bar.style.width = Math.min(99, defs[i]) + '%';
     });
   });
-  updateAllHighlights();
-  initOVRs();
+  highlight();
 }
 
-// ── Download ─────────────────────────────────────────────
+// ── Download ──────────────────────────────────────────────
 async function downloadCard() {
-  document.body.classList.add('downloading');
-  document.activeElement.blur();
-  const card = document.getElementById('card');
+  const btn = document.getElementById('dlBtn');
+  btn.textContent = '⏳ Generating...';
+  btn.disabled = true;
 
-  // temporarily remove border-radius for cleaner export
-  const origBR = card.style.borderRadius;
+  document.activeElement?.blur();
+  document.body.classList.add('dl-mode');
+
+  const card = document.getElementById('card');
+  const origRadius = card.style.borderRadius;
   card.style.borderRadius = '0';
 
   try {
     const canvas = await html2canvas(card, {
       scale: 3,
       useCORS: true,
-      backgroundColor: '#0e1420',
-      logging: false,
       allowTaint: true,
+      backgroundColor: '#0d1219',
+      logging: false,
+      imageTimeout: 8000,
     });
-    const link = document.createElement('a');
-    link.download = 'FCMobile_H2H_' + Date.now() + '.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-  } catch(e) {
-    alert('Download failed. Try without background image first.');
+    const a = document.createElement('a');
+    a.download = 'FCMobile_H2H_' + Date.now() + '.png';
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+  } catch(err) {
+    alert('Download failed — try switching to Dark background first, then retry.');
+    console.error(err);
   }
 
-  card.style.borderRadius = origBR;
-  document.body.classList.remove('downloading');
+  card.style.borderRadius = origRadius;
+  document.body.classList.remove('dl-mode');
+  btn.textContent = '⬇ Download Post';
+  btn.disabled = false;
 }
 
-// ── Date Test ─────────────────────────────────────────────────
-function setDate() {
-  const d = new Date();
-  document.getElementById('footer-date').textContent =
-    d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }).toUpperCase();
+// ── Init ──────────────────────────────────────────────────
+function init() {
+  buildStats();
+  // OVR rings with slight delay so CSS transition fires
+  setTimeout(() => {
+    setOvrRing('L', parseInt(document.getElementById('ovrNumL').textContent) || 88);
+    setOvrRing('R', parseInt(document.getElementById('ovrNumR').textContent) || 91);
+  }, 150);
+  // date
+  document.getElementById('fDate').textContent =
+    new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}).toUpperCase();
+  changeBG();
+  updateColors();
 }
-
-// ── Init ─────────────────────────────────────────────────
-buildStats();
-initOVRs();
-setDate();
-changeBG();
-updateAccents();
+init();
 </script>
 </body>
 </html>
