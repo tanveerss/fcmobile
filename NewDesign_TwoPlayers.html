@@ -348,7 +348,7 @@ body.dl-mode .upload-overlay { display:none; }
 
     <!-- LEFT -->
     <div class="player-col left" id="col-L">
-      <div class="img-wrapper" onclick="triggerUpload('upL')">
+      <div class="img-wrapper" onclick="triggerUpload('upL', event)">
         <img id="imgL" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='190' height='200'%3E%3Crect width='190' height='200' rx='10' fill='rgba(79,195,247,0.05)' stroke='rgba(79,195,247,0.15)' stroke-width='1'/%3E%3Ctext x='95' y='88' text-anchor='middle' font-size='38' fill='rgba(79,195,247,0.3)'%3E📷%3C/text%3E%3Ctext x='95' y='118' text-anchor='middle' font-size='11' fill='rgba(79,195,247,0.3)' font-family='monospace'%3ETap to Upload%3C/text%3E%3C/svg%3E" alt="P1">
         <div class="upload-overlay">
           <span>📷 Upload Card</span>
@@ -383,7 +383,7 @@ body.dl-mode .upload-overlay { display:none; }
 
     <!-- RIGHT -->
     <div class="player-col right" id="col-R">
-      <div class="img-wrapper" onclick="triggerUpload('upR')">
+      <div class="img-wrapper" onclick="triggerUpload('upR', event)">
         <img id="imgR" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='190' height='200'%3E%3Crect width='190' height='200' rx='10' fill='rgba(255,107,53,0.05)' stroke='rgba(255,107,53,0.15)' stroke-width='1'/%3E%3Ctext x='95' y='88' text-anchor='middle' font-size='38' fill='rgba(255,107,53,0.3)'%3E📷%3C/text%3E%3Ctext x='95' y='118' text-anchor='middle' font-size='11' fill='rgba(255,107,53,0.3)' font-family='monospace'%3ETap to Upload%3C/text%3E%3C/svg%3E" alt="P2">
         <div class="upload-overlay">
           <span>📷 Upload Card</span>
@@ -593,7 +593,10 @@ async function downloadCard(){
   btn.textContent = "⏳ Generating...";
   btn.disabled = true;
 
-  const imgs = [imgL, imgR];
+ const imgs = [
+  document.getElementById('imgL'),
+  document.getElementById('imgR')
+];
   for (let img of imgs) {
     if (img.src && img.dataset.loaded !== "true") {
       alert("Wait for image to load");
