@@ -38,9 +38,33 @@ body {
   max-width: 1200px;
   position: relative;
 }
+.capture-title {
+  border: none;
+  outline: none;
+  text-align: center;
+  width: 100%;
 
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 1px;
 
-/* === Header === */
+  color: var(--muted-gold);
+  background: rgba(0,0,0,0.2);
+
+  padding: 10px;
+  border-radius: 10px;
+
+  backdrop-filter: blur(4px);
+  box-shadow: 0 0 10px rgba(212,180,95,0.15);
+
+  transition: all 0.25s ease;
+}
+
+.capture-title:focus {
+  box-shadow: 0 0 18px rgba(212,180,95,0.35);
+}
+
+/* === Header === 
 .capture-title {
   grid-column: 1 / -1;
   text-align: center;
@@ -50,7 +74,7 @@ body {
   text-shadow: 0 0 8px rgba(212,180,95,0.4);
   padding: 12px 0 6px;
   position: relative;
-}
+}*/
 .capture-title::after {
   content: "";
   position: absolute;
@@ -218,7 +242,7 @@ body {
 <body>
 
 <div id="capture">
-  <div class="capture-title">Comparison</div>
+  <input class="capture-title" value="Comparison" />
   <div class="watermark">GameEnclave</div>
 </div>
 
