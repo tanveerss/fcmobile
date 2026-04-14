@@ -131,7 +131,7 @@
     /* BUTTONS */
     .button-group {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr;
       gap: 12px;
       margin-top: 25px;
     }
@@ -149,18 +149,6 @@
       letter-spacing: 0.5px;
     }
 
-    .btn-add {
-      background: linear-gradient(135deg, #00d4ff 0%, #0095ff 100%);
-      color: #000;
-      grid-column: 1 / -1;
-      padding: 14px;
-    }
-
-    .btn-add:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 25px rgba(0, 212, 255, 0.4);
-    }
-
     .btn-download {
       background: linear-gradient(135deg, #ff006e 0%, #a2005e 100%);
       color: white;
@@ -176,7 +164,7 @@
     /* CANVAS */
     #canvas {
       width: 360px;
-      height: 640px;
+      height: 450px;
       position: relative;
       border-radius: 32px;
       overflow: hidden;
@@ -192,7 +180,7 @@
       position: relative;
       overflow: hidden;
       background: linear-gradient(135deg, #0a0e27 0%, #1a1f4e 50%, #0f0f2e 100%);
-      padding-bottom: 60px;
+      padding-bottom: 50px;
     }
 
     /* ANIMATED BACKGROUND */
@@ -233,29 +221,29 @@
 
     /* HEADER SECTION */
     .canvas-header {
-      padding: 10px 12px 8px;
+      padding: 8px 12px 6px;
       text-align: center;
       position: relative;
       z-index: 2;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
     }
 
     .header-title {
       font-family: 'Poppins', sans-serif;
-      font-size: 22px;
+      font-size: 18px;
       font-weight: 900;
       color: #ffffff;
       background: #00d4ff;
-      padding: 6px 12px;
-      margin-bottom: 4px;
+      padding: 4px 10px;
+      margin-bottom: 2px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       display: inline-block;
-      border-radius: 12px;
-      box-shadow: 0 6px 16px rgba(0, 212, 255, 0.3);
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3);
     }
 
     .header-badge {
@@ -275,16 +263,16 @@
 
     .match-info {
       background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(91, 140, 255, 0.15));
-      padding: 10px 18px;
-      border-radius: 25px;
+      padding: 6px 14px;
+      border-radius: 20px;
       border: 2px solid #00d4ff;
-      font-size: 14px;
+      font-size: 11px;
       font-weight: 800;
       color: #ffffff;
       display: inline-block;
-      box-shadow: 0 6px 20px rgba(0, 212, 255, 0.35);
+      box-shadow: 0 4px 16px rgba(0, 212, 255, 0.3);
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
     }
 
     /* PLAYER IMAGE SECTION */
@@ -293,55 +281,55 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 12px 15px 8px;
+      padding: 10px 15px 6px;
       position: relative;
       z-index: 2;
     }
 
     .player-image-wrapper {
       position: relative;
-      width: 150px;
-      height: 150px;
+      width: 140px;
+      height: 140px;
     }
 
     .player-image-wrapper img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      border-radius: 18px;
-      border: 3px solid #00d4ff;
-      box-shadow: 0 15px 40px rgba(0, 212, 255, 0.4);
+      border-radius: 16px;
+      border: 2px solid #00d4ff;
+      box-shadow: 0 12px 35px rgba(0, 212, 255, 0.35);
     }
 
     .player-image-placeholder {
       width: 100%;
       height: 100%;
       background: rgba(0, 212, 255, 0.1);
-      border-radius: 18px;
-      border: 3px dashed #00d4ff;
+      border-radius: 16px;
+      border: 2px dashed #00d4ff;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 12px;
+      font-size: 11px;
       color: rgba(0, 212, 255, 0.5);
     }
 
     .ovr-badge {
       position: absolute;
-      top: -5px;
-      right: -5px;
-      width: 58px;
-      height: 58px;
+      top: -4px;
+      right: -4px;
+      width: 52px;
+      height: 52px;
       border-radius: 50%;
       background: linear-gradient(135deg, #00ffcc 0%, #00bfff 100%);
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 900;
-      font-size: 14px;
+      font-size: 13px;
       color: #000;
-      box-shadow: 0 6px 18px rgba(0, 255, 204, 0.5);
-      border: 3px solid #0a0e27;
+      box-shadow: 0 5px 16px rgba(0, 255, 204, 0.4);
+      border: 2px solid #0a0e27;
       font-family: 'Poppins', sans-serif;
       z-index: 15;
       flex-direction: column;
@@ -361,6 +349,7 @@
       gap: 8px;
       position: relative;
       z-index: 2;
+      justify-content: center;
     }
 
     .text-boxes-section::-webkit-scrollbar {
@@ -380,18 +369,18 @@
     .text-box {
       background: rgba(0, 0, 0, 0.3);
       border: 2px solid rgba(255, 255, 255, 0.1);
-      border-radius: 18px;
-      padding: 10px 12px;
-      font-size: 12px;
+      border-radius: 16px;
+      padding: 10px 13px;
+      font-size: 11px;
       font-weight: 700;
       display: grid;
-      grid-template-columns: 1fr 30px;
+      grid-template-columns: 1fr 26px;
       grid-template-rows: auto;
       align-items: center;
       cursor: pointer;
       transition: all 0.2s ease;
-      min-height: auto;
-      gap: 8px;
+      min-height: 40px;
+      gap: 9px;
     }
 
     .text-box:hover {
@@ -444,7 +433,7 @@
       bottom: 0;
       left: 0;
       right: 0;
-      padding: 8px 16px;
+      padding: 6px 14px;
       background: rgba(0, 212, 255, 0.1);
       border-top: 1px solid rgba(0, 212, 255, 0.3);
       text-align: center;
@@ -453,11 +442,11 @@
     }
 
     .total-boost {
-      font-size: 12px;
+      font-size: 10px;
       font-weight: 600;
       color: #00d4ff;
       display: inline-block;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.3px;
       opacity: 0.9;
     }
 
@@ -511,7 +500,6 @@
       </div>
 
       <div class="button-group">
-        <button class="btn-add" onclick="addTextBox()">➕ Add Condition</button>
         <button class="btn-download" onclick="downloadImage()">📥 Download Post</button>
       </div>
     </div>
@@ -642,14 +630,7 @@
       reader.readAsDataURL(e.target.files[0]);
     };
 
-    // Add text box
-    function addTextBox() {
-      if (textContainer.children.length < 6) {
-        textContainer.appendChild(createBox());
-      }
-    }
-
-    // Initialize with default boxes
+    // Initialize with default boxes (2 conditions only)
     textContainer.appendChild(createBox("Win", "fail"));
     textContainer.appendChild(createBox("Clean Sheet", "fail"));
 
