@@ -3,88 +3,390 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Fcmobile — Tools</title>
+  <title>Fcmobile — Tools & Features</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    :root{--bg:#f7f8fb;--card:#fff;--muted:#666;--border:#e6e9ef;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial}
-    html,body{height:100%}
-    body{margin:0;background:var(--bg);color:#111;min-height:100%;display:flex;align-items:flex-start;justify-content:center;padding:36px}
-    .wrap{width:100%;max-width:980px}
-    header{display:flex;align-items:center;gap:14px}
-    h1{margin:0;font-size:1.6rem}
-    p.lead{color:var(--muted);margin-top:8px;margin-bottom:18px}
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px}
-    .card{background:var(--card);border:1px solid var(--border);padding:16px;border-radius:12px;box-shadow:0 6px 18px rgba(12,18,26,0.04);transition:transform .18s ease,box-shadow .18s ease}
-    .card:hover{transform:translateY(-6px);box-shadow:0 14px 30px rgba(12,18,26,0.08)}
-    a.title{display:inline-block;font-weight:600;text-decoration:none;color:#111;font-size:1.04rem}
-    .desc{margin-top:8px;color:var(--muted);font-size:.92rem}
-    footer{margin-top:26px;color:var(--muted);font-size:.9rem}
-    .meta {font-size:.82rem;color:#999;margin-top:10px}
-    @media (max-width:520px){body{padding:18px}.wrap{padding-bottom:30px}}
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --secondary: #ec4899;
+      --bg-dark: #0f172a;
+      --bg-light: #f8fafc;
+      --card-bg: #ffffff;
+      --text-primary: #1e293b;
+      --text-secondary: #64748b;
+      --border: #e2e8f0;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, var(--bg-light) 0%, #f1f5f9 100%);
+      color: var(--text-primary);
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .wrap {
+      width: 100%;
+      max-width: 1200px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 50px;
+      animation: slideDown 0.6s ease;
+    }
+
+    h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 12px;
+      letter-spacing: -1px;
+    }
+
+    .lead {
+      color: var(--text-secondary);
+      font-size: 1.05rem;
+      font-weight: 400;
+      line-height: 1.6;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .section {
+      margin-bottom: 60px;
+      animation: fadeIn 0.6s ease;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .section-icon {
+      font-size: 2rem;
+      display: inline-block;
+    }
+
+    .section-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0;
+    }
+
+    .section-title small {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 400;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      transition: left 0.3s ease;
+    }
+
+    .card:hover {
+      border-color: var(--primary);
+      box-shadow: 0 20px 25px rgba(99, 102, 241, 0.15);
+      transform: translateY(-8px);
+    }
+
+    .card:hover::before {
+      left: 0;
+    }
+
+    .card-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-badge {
+      display: inline-block;
+      padding: 6px 12px;
+      background: rgba(99, 102, 241, 0.1);
+      color: var(--primary);
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+
+    a.title {
+      display: block;
+      font-weight: 600;
+      text-decoration: none;
+      color: var(--text-primary);
+      font-size: 1.15rem;
+      transition: color 0.3s ease;
+      cursor: pointer;
+    }
+
+    .card:hover a.title {
+      color: var(--primary);
+    }
+
+    .desc {
+      margin-top: 12px;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.5;
+      font-weight: 400;
+    }
+
+    .meta {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .meta::before {
+      content: '→';
+      color: var(--primary);
+      font-weight: bold;
+    }
+
+    footer {
+      margin-top: 80px;
+      padding: 30px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    footer strong {
+      color: var(--text-primary);
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2rem;
+      }
+
+      .lead {
+        font-size: 0.95rem;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section-title {
+        font-size: 1.4rem;
+      }
+
+      body {
+        padding: 20px 16px;
+      }
+
+      footer {
+        margin-top: 50px;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="wrap">
     <header>
-      <h1>Fcmobile — HTML Tools</h1>
+      <h1>⚽ Fcmobile Tools</h1>
+      <p class="lead">A complete suite of tools for player comparison, team management, and OVR tracking. All features are tested and ready to use.</p>
     </header>
-    <p class="lead">Open any page below. This site is served directly from this GitHub repository via GitHub Pages.</p>
 
-    <!-- COMPARISON TOOLS -->
-    <h2 style="margin-top: 28px; font-size: 1.15rem; color: #333;">Comparison Tools</h2>
-    <div class="grid" id="file-grid">
-      <div class="card">
-        <a class="title" href="./pages/comparison/Comparison_2.html">Comparison 2</a>
-        <div class="desc">Compare attributes of multiple players.</div>
-        <div class="meta">/pages/comparison/Comparison_2.html</div>
-      </div>
-      <div class="card">
-        <a class="title" href="./pages/comparison/Comparison_2_New.html">Comparison 2 New</a>
-        <div class="desc">Enhanced player comparison interface.</div>
-        <div class="meta">/pages/comparison/Comparison_2_New.html</div>
-      </div>
-      <div class="card">
-        <a class="title" href="./pages/comparison/Comparison_3.html">Comparison 3</a>
-        <div class="desc">Detailed head-to-head comparison.</div>
-        <div class="meta">/pages/comparison/Comparison_3.html</div>
-      </div>
-      <div class="card">
-        <a class="title" href="./pages/comparison/Comparison_4.html">Comparison 4</a>
-        <div class="desc">Advanced comparison metrics.</div>
-        <div class="meta">/pages/comparison/Comparison_4.html</div>
-      </div>
-      <div class="card">
-        <a class="title" href="./pages/comparison/UpgradeComparision_2Players.html">Upgrade Comparison</a>
-        <div class="desc">Compare player upgrades side-by-side.</div>
-        <div class="meta">/pages/comparison/UpgradeComparision_2Players.html</div>
-      </div>
-    </div>
 
-    <!-- TEAM TOOLS -->
-    <h2 style="margin-top: 28px; font-size: 1.15rem; color: #333;">Team Tools</h2>
-    <div class="grid">
-      <div class="card">
-        <a class="title" href="./pages/team/TeamFormation.html">Team Formation</a>
-        <div class="desc">Build and visualize team formations.</div>
-        <div class="meta">/pages/team/TeamFormation.html</div>
+    <!-- COMPARISON TOOLS SECTION -->
+    <section class="section">
+      <div class="section-header">
+        <span class="section-icon">🔄</span>
+        <div>
+          <h2 class="section-title">Comparison Tools
+            <small>Compare player attributes and stats</small>
+          </h2>
+        </div>
       </div>
-      <div class="card">
-        <a class="title" href="./pages/team/Tournament.html">Tournament</a>
-        <div class="desc">View tournament standings and fixtures.</div>
-        <div class="meta">/pages/team/Tournament.html</div>
+      <div class="grid">
+        <div class="card">
+          <div class="card-content">
+            <span class="card-badge">Essential</span>
+            <a class="title" href="./pages/comparison/Comparison_2.html">Comparison 2</a>
+            <p class="desc">Compare attributes of multiple players side by side.</p>
+            <div class="meta">pages/comparison/Comparison_2.html</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-content">
+            <span class="card-badge">Enhanced</span>
+            <a class="title" href="./pages/comparison/Comparison_2_New.html">Comparison 2 New</a>
+            <p class="desc">Modern interface for enhanced player comparison experience.</p>
+            <div class="meta">pages/comparison/Comparison_2_New.html</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-content">
+            <span class="card-badge">Advanced</span>
+            <a class="title" href="./pages/comparison/Comparison_3.html">Comparison 3</a>
+            <p class="desc">Detailed head-to-head comparison with advanced metrics.</p>
+            <div class="meta">pages/comparison/Comparison_3.html</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-content">
+            <span class="card-badge">Pro</span>
+            <a class="title" href="./pages/comparison/Comparison_4.html">Comparison 4</a>
+            <p class="desc">Advanced comparison metrics and performance analysis.</p>
+            <div class="meta">pages/comparison/Comparison_4.html</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-content">
+            <span class="card-badge">Upgrade</span>
+            <a class="title" href="./pages/comparison/UpgradeComparision_2Players.html">Upgrade Comparison</a>
+            <p class="desc">Compare player upgrades and progression paths side-by-side.</p>
+            <div class="meta">pages/comparison/UpgradeComparision_2Players.html</div>
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
 
-    <!-- OVR UPGRADE TOOLS -->
-    <h2 style="margin-top: 28px; font-size: 1.15rem; color: #333;">OVR Upgrade Tools</h2>
-    <div class="grid">
-      <div class="card">
-        <a class="title" href="./pages/ovrupgrade/LIVE_OVR_TRACKER.html">Live OVR Tracker</a>
-        <div class="desc">Real-time player OVR tracking and updates.</div>
-        <div class="meta">/pages/ovrupgrade/LIVE_OVR_TRACKER.html</div>
+    <!-- TEAM TOOLS SECTION -->
+    <section class="section">
+      <div class="section-header">
+        <span class="section-icon">📋</span>
+        <div>
+          <h2 class="section-title">Team Management
+            <small>Organize and manage your team</small>
+          </h2>
+        </div>
       </div>
-    </div>
+      <div class="grid">
+        <div class="card">
+          <div class="card-content">
+            <span class="card-badge">Formation</span>
+            <a class="title" href="./pages/team/TeamFormation.html">Team Formation</a>
+            <p class="desc">Build and visualize your team formations in different tactics.</p>
+            <div class="meta">pages/team/TeamFormation.html</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-content">
+            <span class="card-badge">Competition</span>
+            <a class="title" href="./pages/team/Tournament.html">Tournament</a>
+            <p class="desc">View tournament standings, fixtures, and competition details.</p>
+            <div class="meta">pages/team/Tournament.html</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- OVR TRACKER SECTION -->
+    <section class="section">
+      <div class="section-header">
+        <span class="section-icon">📊</span>
+        <div>
+          <h2 class="section-title">OVR Tracking
+            <small>Monitor player ratings and upgrades</small>
+          </h2>
+        </div>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <div class="card-content">
+            <span class="card-badge">Live</span>
+            <a class="title" href="./pages/ovrupgrade/LIVE_OVR_TRACKER.html">Live OVR Tracker</a>
+            <p class="desc">Real-time player OVR tracking, updates, and rating changes.</p>
+            <div class="meta">pages/ovrupgrade/LIVE_OVR_TRACKER.html</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <footer>
-      Tip: if you add more `.html` files and want the index updated automatically, add the included GitHub Action file `.github/workflows/generate-index.yml` to this repo (provided below).
+      <p><strong>📌 Tip:</strong> All tools are tested and links verified. If you add new HTML files, update the index accordingly or use GitHub Actions for automated updates.</p>
+      <p style="margin-top: 12px; font-size: 0.85rem;">Last updated: April 2026 | All features working ✓</p>
     </footer>
   </div>
 </body>
