@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FC Mobile - Live OVR Tracker Premium</title>
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+  
+  <!-- Canvas Library -->
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0a0e27 0%, #1a1f4e 50%, #0f0f2e 100%);
+      color: white;
+      padding: 30px 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+    }
+
+    /* PREMIUM HEADER */
+    .premium-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .premium-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #00d4ff 0%, #7c3aed 50%, #ff006e 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 10px;
+      text-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+    }
+
+    .premium-header p {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.95rem;
+      font-weight: 300;
+      letter-spacing: 1px;
+    }
+
+    /* MAIN CONTAINER */
+    .main-container {
+      display: flex;
+      gap: 40px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    /* LEFT PANEL - CONTROLS */
+    .control-panel {
+      background: rgba(255, 255, 255, 0.05);
+
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      padding: 30px;
+      width: 100%;
+      max-width: 350px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .control-header {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 25px;
+      color: #00d4ff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .control-group {
+      margin-bottom: 20px;
+    }
+
+    .control-label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="file"] {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid rgba(0, 212, 255, 0.3);
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      color: white;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    input[type="file"]:focus {
+      outline: none;
+      background: rgba(255, 255, 255, 0.12);
+      border-color: #00d4ff;
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+    }
+
+    input::placeholder {
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    /* BUTTONS */
+    .button-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 25px;
+    }
+
+    button {
+      padding: 12px 16px;
+      border: none;
+      border-radius: 16px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-add {
+      background: linear-gradient(135deg, #00d4ff 0%, #0095ff 100%);
+      color: #000;
+      grid-column: 1 / -1;
+      padding: 14px;
+    }
+
+    .btn-add:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0, 212, 255, 0.4);
+    }
+
+    .btn-download {
+      background: linear-gradient(135deg, #ff006e 0%, #a2005e 100%);
+      color: white;
+      grid-column: 1 / -1;
+      padding: 14px;
+    }
+
+    .btn-download:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(255, 0, 110, 0.4);
+    }
+
+    /* CANVAS */
+    #canvas {
+      width: 360px;
+      height: 640px;
+      position: relative;
+      border-radius: 32px;
+      overflow: hidden;
+      box-shadow: 0 30px 80px rgba(0, 212, 255, 0.3);
+      background: linear-gradient(135deg, #0a0e27 0%, #1a1f4e 50%, #0f0f2e 100%);
+    }
+
+    .canvas-content {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #0a0e27 0%, #1a1f4e 50%, #0f0f2e 100%);
+      padding-bottom: 60px;
+    }
+
+    /* ANIMATED BACKGROUND */
+    .bg-animation {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      opacity: 0.05;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+      background-size: 4px 4px;
+      pointer-events: none;
+      display: none;
+    }
+
+    .glow-element {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(40px);
+      pointer-events: none;
+      display: none;
+    }
+
+    .glow-1 {
+      width: 300px;
+      height: 300px;
+      background: rgba(0, 212, 255, 0.15);
+      top: -100px;
+      right: -100px;
+    }
+
+    .glow-2 {
+      width: 250px;
+      height: 250px;
+      background: rgba(255, 0, 110, 0.12);
+      bottom: -80px;
+      left: -80px;
+    }
+
+    /* HEADER SECTION */
+    .canvas-header {
+      padding: 10px 12px 8px;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .header-title {
+      font-family: 'Poppins', sans-serif;
+      font-size: 22px;
+      font-weight: 900;
+      color: #ffffff;
+      background: #00d4ff;
+      padding: 6px 12px;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: inline-block;
+      border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(0, 212, 255, 0.3);
+    }
+
+    .header-badge {
+      display: inline-block;
+      background: rgba(0, 212, 255, 0.2);
+      border: 2px solid #00d4ff;
+      padding: 4px 8px;
+      border-radius: 25px;
+      font-size: 9px;
+      font-weight: 700;
+      color: #00d4ff;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: block;
+    }
+
+    .match-info {
+      background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(91, 140, 255, 0.15));
+      padding: 10px 18px;
+      border-radius: 25px;
+      border: 2px solid #00d4ff;
+      font-size: 14px;
+      font-weight: 800;
+      color: #ffffff;
+      display: inline-block;
+      box-shadow: 0 6px 20px rgba(0, 212, 255, 0.35);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* PLAYER IMAGE SECTION */
+    .player-section {
+      flex: 0 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 12px 15px 8px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .player-image-wrapper {
+      position: relative;
+      width: 150px;
+      height: 150px;
+    }
+
+    .player-image-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 18px;
+      border: 3px solid #00d4ff;
+      box-shadow: 0 15px 40px rgba(0, 212, 255, 0.4);
+    }
+
+    .player-image-placeholder {
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 212, 255, 0.1);
+      border-radius: 18px;
+      border: 3px dashed #00d4ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: rgba(0, 212, 255, 0.5);
+    }
+
+    .ovr-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #00ffcc 0%, #00bfff 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 14px;
+      color: #000;
+      box-shadow: 0 6px 18px rgba(0, 255, 204, 0.5);
+      border: 3px solid #0a0e27;
+      font-family: 'Poppins', sans-serif;
+      z-index: 15;
+      flex-direction: column;
+      text-align: center;
+      line-height: 1;
+      padding: 2px;
+    }
+
+    /* TEXT BOXES SECTION */
+    .text-boxes-section {
+      flex: 1;
+      padding: 10px 16px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .text-boxes-section::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .text-boxes-section::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+    }
+
+    .text-boxes-section::-webkit-scrollbar-thumb {
+      background: rgba(0, 212, 255, 0.3);
+      border-radius: 10px;
+    }
+
+    .text-box {
+      background: rgba(0, 0, 0, 0.3);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 18px;
+      padding: 10px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      display: grid;
+      grid-template-columns: 1fr 30px;
+      grid-template-rows: auto;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      min-height: auto;
+      gap: 8px;
+    }
+
+    .text-box:hover {
+      background: rgba(0, 0, 0, 0.4);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .text-box span {
+      text-align: left;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      line-height: 1.3;
+      max-width: 280px;
+    }
+
+    .text-box span[contenteditable] {
+      cursor: text;
+      outline: none;
+      grid-column: 1;
+    }
+
+    .text-box.fail {
+      color: #ff6b6b;
+      border-color: rgba(255, 107, 107, 0.3);
+      background: rgba(255, 107, 107, 0.08);
+    }
+
+    .text-box.pass {
+      color: #00ffcc;
+      border-color: rgba(0, 255, 204, 0.3);
+      background: rgba(0, 255, 204, 0.08);
+    }
+
+    .status-icon {
+      font-size: 18px;
+      font-weight: bold;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      grid-column: 2;
+      grid-row: 1 / -1;
+    }
+
+    /* FOOTER BAR */
+    .canvas-footer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 12px 20px;
+      background: linear-gradient(180deg, rgba(0, 212, 255, 0.25), rgba(0, 255, 204, 0.35));
+      border-top: 3px solid #00d4ff;
+      text-align: center;
+      cursor: grab;
+      z-index: 50;
+      user-select: none;
+      border-radius: 0 0 30px 30px;
+    }
+
+    .total-boost {
+      font-size: 16px;
+      font-weight: 900;
+      color: #000000;
+      background: #00d4ff;
+      padding: 12px 22px;
+      border-radius: 10px;
+      display: inline-block;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      box-shadow: 0 6px 20px rgba(0, 212, 255, 0.4);
+    }
+
+    @media (max-width: 900px) {
+      .main-container {
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .control-panel {
+        max-width: 100%;
+        width: 100%;
+      }
+
+      #canvas {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="premium-header">
+    <h1>⚽ FC MOBILE</h1>
+    <p>LIVE OVR TRACKER - PREMIUM EDITION</p>
+  </div>
+
+  <div class="main-container">
+    <!-- CONTROL PANEL -->
+    <div class="control-panel">
+      <div class="control-header">⚙️ CUSTOMIZATION</div>
+
+      <div class="control-group">
+        <label class="control-label">Header Title</label>
+        <input type="text" id="headerInput" placeholder="E.g., LIVE OVR UPDATE">
+      </div>
+
+      <div class="control-group">
+        <label class="control-label">Match / Player</label>
+        <input type="text" id="matchInput" placeholder="E.g., PSG VS LIVERPOOL">
+      </div>
+
+      <div class="control-group">
+        <label class="control-label">OVR Boost</label>
+        <input type="number" id="ovrInput" placeholder="e.g., 2">
+      </div>
+
+      <div class="control-group">
+        <label class="control-label">Player Photo</label>
+        <input type="file" id="imgInput" accept="image/*">
+      </div>
+
+      <div class="button-group">
+        <button class="btn-add" onclick="addTextBox()">➕ Add Condition</button>
+        <button class="btn-download" onclick="downloadImage()">📥 Download Post</button>
+      </div>
+    </div>
+
+    <!-- CANVAS PREVIEW -->
+    <div id="canvas">
+      <div class="bg-animation"></div>
+      <div class="glow-element glow-1"></div>
+      <div class="glow-element glow-2"></div>
+
+      <div class="canvas-content">
+        <div class="canvas-header">
+          <div class="header-badge">🔥 REAL-TIME UPDATE</div>
+          <div class="header-title" id="headerText">LIVE OVR</div>
+          <div class="match-info" id="matchText">UPDATE TRACKER</div>
+        </div>
+
+        <div class="player-section">
+          <div class="player-image-wrapper">
+            <img id="playerImage" style="display: none;">
+            <div id="playerPlaceholder" class="player-image-placeholder">No Image</div>
+            <div class="ovr-badge" id="ovrCircle">+0</div>
+          </div>
+        </div>
+
+        <div class="text-boxes-section" id="textContainer"></div>
+
+        <div class="canvas-footer">
+          <div class="total-boost" id="resultText">TOTAL BOOST: +0</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Initialize default text boxes
+    function createBox(text = "Condition", status = "fail") {
+      const div = document.createElement("div");
+      div.className = "text-box " + status;
+
+      const textSpan = document.createElement("span");
+      textSpan.contentEditable = true;
+      textSpan.innerText = text;
+
+      const iconSpan = document.createElement("span");
+      iconSpan.className = "status-icon";
+      iconSpan.innerText = status === "fail" ? "❌" : "✅";
+
+      div.appendChild(textSpan);
+      div.appendChild(iconSpan);
+
+      // Click handler for the entire box
+      div.onclick = (e) => {
+        // Toggle only on icon click or if not editing text
+        if (e.target === iconSpan) {
+          e.stopPropagation();
+          toggleStatus(div, iconSpan);
+        }
+      };
+
+      // Double-click to edit text
+      textSpan.ondblclick = (e) => {
+        e.stopPropagation();
+        textSpan.focus();
+      };
+
+      // Click on box (not text) to toggle
+      div.addEventListener("click", (e) => {
+        if (e.target === div && !textSpan.contains(document.activeElement)) {
+          toggleStatus(div, iconSpan);
+        }
+      });
+
+      return div;
+    }
+
+    function toggleStatus(box, icon) {
+      if (box.classList.contains("fail")) {
+        box.classList.replace("fail", "pass");
+        icon.innerText = "✅";
+      } else {
+        box.classList.replace("pass", "fail");
+        icon.innerText = "❌";
+      }
+    }
+
+    // Input events
+    const headerInput = document.getElementById("headerInput");
+    const matchInput = document.getElementById("matchInput");
+    const ovrInput = document.getElementById("ovrInput");
+    const imgInput = document.getElementById("imgInput");
+
+    const headerText = document.getElementById("headerText");
+    const matchText = document.getElementById("matchText");
+    const ovrCircle = document.getElementById("ovrCircle");
+    const resultText = document.getElementById("resultText");
+    const playerImage = document.getElementById("playerImage");
+    const textContainer = document.getElementById("textContainer");
+
+    headerInput.oninput = () => {
+      headerText.innerText = headerInput.value || "LIVE OVR";
+    };
+
+    matchInput.oninput = () => {
+      matchText.innerText = matchInput.value || "UPDATE TRACKER";
+    };
+
+    ovrInput.oninput = () => {
+      let value = ovrInput.value.trim();
+      if (!value) value = "0";
+      
+      // Remove any existing + and parse as number
+      let numValue = parseInt(value.replace(/\D/g, '')) || 0;
+      const displayValue = "+" + numValue + "OVR";
+      
+      // Format with single line for badge
+      ovrCircle.innerHTML = `+${numValue}<span style="font-size: 8px; margin-left: 1px;">OVR</span>`;
+      resultText.innerText = "TOTAL BOOST: " + displayValue;
+    };
+
+    imgInput.onchange = (e) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        playerImage.src = reader.result;
+        playerImage.style.display = "block";
+        const placeholder = document.getElementById("playerPlaceholder");
+        if (placeholder) placeholder.style.display = "none";
+      };
+      reader.readAsDataURL(e.target.files[0]);
+    };
+
+    // Add text box
+    function addTextBox() {
+      if (textContainer.children.length < 6) {
+        textContainer.appendChild(createBox());
+      }
+    }
+
+    // Initialize with default boxes
+    textContainer.appendChild(createBox("Win", "fail"));
+    textContainer.appendChild(createBox("Clean Sheet", "fail"));
+
+    // Drag functionality for footer
+    let isDragging = false, offsetY;
+    const footerBar = document.querySelector(".canvas-footer");
+
+    footerBar.addEventListener("mousedown", startDrag);
+    footerBar.addEventListener("touchstart", startDrag);
+
+    function startDrag(e) {
+      isDragging = true;
+      const canvas = document.getElementById("canvas");
+      offsetY = (e.touches ? e.touches[0].clientY : e.clientY) - footerBar.offsetTop + canvas.getBoundingClientRect().top;
+    }
+
+    document.addEventListener("mousemove", drag);
+    document.addEventListener("touchmove", drag);
+
+    function drag(e) {
+      if (!isDragging) return;
+      const canvas = document.getElementById("canvas");
+      let y = (e.touches ? e.touches[0].clientY : e.clientY) - offsetY;
+      y = Math.max(400, Math.min(620, y));
+      footerBar.style.top = y + "px";
+      footerBar.style.bottom = "auto";
+    }
+
+    document.addEventListener("mouseup", () => isDragging = false);
+    document.addEventListener("touchend", () => isDragging = false);
+
+    // Download image
+    function downloadImage() {
+      const canvas = document.getElementById("canvas");
+      html2canvas(canvas, {
+        backgroundColor: null,
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        logging: false
+      }).then(canvasElement => {
+        const link = document.createElement("a");
+        link.download = "FC_OVR_Tracker_" + new Date().getTime() + ".png";
+        link.href = canvasElement.toDataURL("image/png");
+        link.click();
+      }).catch(err => {
+        console.error("Download failed:", err);
+        alert("Download failed. Please try again.");
+      });
+    }
+
+    // Set initial values
+    headerInput.value = "LIVE OVR";
+    matchInput.value = "UPDATE TRACKER";
+    ovrInput.value = "0";
+    ovrInput.placeholder = "Enter OVR (e.g., 2)";
+    
+    headerText.innerText = "LIVE OVR";
+    matchText.innerText = "UPDATE TRACKER";
+    ovrCircle.innerHTML = `+0<span style="font-size: 8px; margin-left: 1px;">OVR</span>`;
+    resultText.innerText = "TOTAL BOOST: +0OVR";
+  </script>
+</body>
+</html>
