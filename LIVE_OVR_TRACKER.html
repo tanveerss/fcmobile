@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>FC Post Generator</title>
+
+<!-- FONT UPGRADE 🔥 -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+<style>
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #0a0f2c;
+  color: white;
+  text-align: center;
+}
+
+/* CANVAS */
+#canvas {
+  width: 360px;
+  height: 640px;
+  margin: 20px auto;
+  border-radius: 20px;
+  position: relative;
+  overflow: hidden;
+
+  background:
+    radial-gradient(circle at 20% 50%, rgba(0,150,255,0.25), transparent 50%),
+    radial-gradient(circle at 80% 50%, rgba(255,60,60,0.20), transparent 50%),
+    radial-gradient(circle at 50% 20%, rgba(0,212,255,0.18), transparent 40%),
+    linear-gradient(180deg, #0a0f2c, #1b2eff);
+}
+
+/* BACKGROUND EFFECTS */
+#canvas::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
+  background-size: 3px 3px;
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+#canvas::after {
+  content: "";
+  position: absolute;
+  top: 110px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 280px;
+  height: 280px;
+  background: radial-gradient(circle, rgba(0,212,255,0.25), transparent);
+  filter: blur(60px);
+  pointer-events: none;
+}
+
+.light-streak {
+  position: absolute;
+  width: 200%;
+  height: 120px;
+  top: 80px;
+  left: -50%;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.08), transparent);
+  transform: rotate(-12deg);
+  pointer-events: none;
+}
+
+/* HEADER */
+.header {
+  margin-top: 30px;
+  padding: 10px 20px;
+  font-size: 20px;
+  font-weight: 700;
+  border-radius: 30px;
+  background: linear-gradient(90deg, #00d4ff, #5b8cff);
+  box-shadow: 0 0 20px rgba(0,212,255,0.6);
+  display: inline-block;
+}
+
+/* BRAND */
+.brand {
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.7);
+  background: rgba(255,255,255,0.05);
+  padding: 3px 10px;
+  border-radius: 12px;
+  display: inline-block;
+}
+
+/* MATCH */
+.match {
+  margin-top: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 8px 18px;
+  border-radius: 25px;
+
+  background: linear-gradient(
+    120deg,
+    rgba(255,255,255,0.12),
+    rgba(255,255,255,0.05)
+  );
+
+  color: #eaf4ff;
+  backdrop-filter: blur(10px);
+
+  box-shadow:
+    0 4px 20px rgba(0,0,0,0.25),
+    inset 0 0 10px rgba(255,255,255,0.05);
+
+  text-transform: uppercase;
+  display: inline-block;
+}
+
+.match::after {
+  content: "";
+  display: block;
+  width: 40%;
+  height: 2px;
+  margin: 6px auto 0;
+  background: linear-gradient(90deg, transparent, #00d4ff, transparent);
+  opacity: 0.6;
+}
+
+/* IMAGE */
+.player-img {
+  width: 160px;
+  height: 160px;
+  border-radius: 15px;
+  object-fit: cover;
+  margin-top: 12px;
+  border: 2px solid #00d4ff;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0 15px 50px rgba(0,212,255,0.35);
+}
+
+/* OVR */
+.ovr-circle {
+  position: absolute;
+  top: 185px;
+  right: 55px;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #00ffcc, #00bfff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: black;
+  font-size: 14px;
+  box-shadow: 0 0 30px #00d4ff;
+}
+
+/* TEXT */
+#textContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.text-box {
+  background: rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 10px;
+  margin: 0 14px;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.fail { color: #ff6b6b; }
+.pass { color: #00ffcc; }
+
+/* RESULT */
+.bottom-bar {
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+  padding: 14px;
+  background: rgba(0,0,0,0.35);
+  cursor: grab;
+  z-index: 10;
+}
+
+.result {
+  font-size: 16px;
+  font-weight: 700;
+  color: #00ffcc;
+  letter-spacing: 0.5px;
+}
+
+/* CONTROLS */
+input, button {
+  margin: 5px;
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+}
+
+button {
+  background: #00d4ff;
+  cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<input id="headerInput" placeholder="Header">
+<input id="matchInput" placeholder="Match / Player">
+<input id="ovrInput" placeholder="+1">
+<br>
+<input type="file" id="imgInput">
+<br>
+<button onclick="addTextBox()">➕ Add</button>
+<button onclick="downloadImage()">⬇ Download</button>
+
+<div id="canvas">
+
+<div class="light-streak"></div>
+
+<div style="text-align:center;">
+  <div class="header" id="headerText">LIVE OVR TRACKER</div><br>
+  <div class="brand">@GameEnclave</div><br>
+  <div class="match" id="matchText">PSG VS LIVERPOOL</div>
+</div>
+
+<img id="playerImage" class="player-img">
+<div class="ovr-circle" id="ovrCircle">+0</div>
+
+<div id="textContainer"></div>
+
+<div class="bottom-bar">
+  <div class="result" id="resultText">TOTAL BOOST: +0</div>
+</div>
+
+</div>
+
+<script>
+
+// Inputs
+headerInput.oninput = () => headerText.innerText = headerInput.value;
+matchInput.oninput = () => matchText.innerText = matchInput.value;
+
+ovrInput.oninput = () => {
+  ovrCircle.innerText = ovrInput.value;
+  resultText.innerText = "TOTAL BOOST: " + ovrInput.value;
+};
+
+imgInput.onchange = e => {
+  const reader = new FileReader();
+  reader.onload = () => playerImage.src = reader.result;
+  reader.readAsDataURL(e.target.files[0]);
+};
+
+// TEXT BOX FIXED 🔥
+function createBox(text="Condition", status="fail") {
+  const div = document.createElement("div");
+  div.className = "text-box " + status;
+
+  const textSpan = document.createElement("span");
+  textSpan.contentEditable = true;
+  textSpan.innerText = text;
+
+  const iconSpan = document.createElement("span");
+  iconSpan.innerText = status === "fail" ? "❌" : "✅";
+
+  div.appendChild(textSpan);
+  div.appendChild(iconSpan);
+
+  div.onclick = () => {
+    if (div.classList.contains("fail")) {
+      div.classList.replace("fail","pass");
+      iconSpan.innerText = "✅";
+    } else {
+      div.classList.replace("pass","fail");
+      iconSpan.innerText = "❌";
+    }
+  };
+
+  return div;
+}
+
+function addTextBox() {
+  if (textContainer.children.length < 5) {
+    textContainer.appendChild(createBox());
+  }
+}
+
+// Default
+textContainer.appendChild(createBox("Win","fail"));
+textContainer.appendChild(createBox("Clean Sheet","fail"));
+
+// Drag
+let isDragging = false, offsetY;
+const bottomBar = document.querySelector(".bottom-bar");
+
+bottomBar.addEventListener("mousedown", startDrag);
+bottomBar.addEventListener("touchstart", startDrag);
+
+function startDrag(e) {
+  isDragging = true;
+  offsetY = (e.touches ? e.touches[0].clientY : e.clientY) - bottomBar.offsetTop;
+}
+
+document.addEventListener("mousemove", drag);
+document.addEventListener("touchmove", drag);
+
+function drag(e) {
+  if (!isDragging) return;
+  let y = (e.touches ? e.touches[0].clientY : e.clientY) - offsetY;
+  y = Math.max(300, Math.min(600, y));
+  bottomBar.style.top = y + "px";
+  bottomBar.style.bottom = "auto";
+}
+
+document.addEventListener("mouseup", () => isDragging = false);
+document.addEventListener("touchend", () => isDragging = false);
+
+// Download
+function downloadImage() {
+  html2canvas(document.getElementById("canvas")).then(canvas => {
+    const link = document.createElement("a");
+    link.download = "post.png";
+    link.href = canvas.toDataURL();
+    link.click();
+  });
+}
+
+</script>
+
+</body>
+</html>
