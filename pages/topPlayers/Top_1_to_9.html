@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FC Mobile Post Creator</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#f0b429;--gold-dark:#b8860b;--dark:#0a0c10;--dark2:#12151c;--dark3:#1a1e28;--dark4:#222736;--text:#e8eaf0;--muted:#7a8099;--border:rgba(240,180,41,0.22);}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Barlow',sans-serif;background:var(--dark);color:var(--text);min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(240,180,41,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(240,180,41,0.025) 1px,transparent 1px);background-size:44px 44px;pointer-events:none;z-index:0;}
+.app{position:relative;z-index:1;max-width:1440px;margin:0 auto;padding:16px;}
+.hdr{display:flex;align-items:center;gap:14px;padding:14px 20px;background:var(--dark2);border:1px solid var(--border);border-radius:14px;margin-bottom:16px;position:relative;overflow:hidden;}
+.hdr::before{content:'';position:absolute;inset:0;background:linear-gradient(120deg,rgba(240,180,41,0.08),transparent 55%);pointer-events:none;}
+.hlogo{width:42px;height:42px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed';font-weight:900;font-size:15px;color:#000;flex-shrink:0;box-shadow:0 4px 16px rgba(240,180,41,0.4);}
+.htitle{font-family:'Barlow Condensed';font-weight:900;font-size:22px;letter-spacing:1px;color:var(--gold);}
+.hsub{font-size:11px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;}
+.hbadge{margin-left:auto;background:linear-gradient(135deg,var(--gold-dark),var(--gold));color:#000;font-family:'Barlow Condensed';font-weight:800;font-size:10px;letter-spacing:1px;padding:4px 10px;border-radius:20px;text-transform:uppercase;white-space:nowrap;}
+.layout{display:grid;grid-template-columns:300px 1fr;gap:16px;align-items:start;}
+@media(max-width:840px){.layout{grid-template-columns:1fr;}}
+.sidebar{display:flex;flex-direction:column;gap:10px;}
+.panel{background:var(--dark2);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.ph{padding:9px 13px;background:linear-gradient(90deg,rgba(240,180,41,0.12),transparent);border-bottom:1px solid var(--border);font-family:'Barlow Condensed';font-weight:700;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:6px;}
+.pb{padding:11px;}
+.upzone{border:2px dashed var(--border);border-radius:8px;padding:14px;text-align:center;cursor:pointer;transition:all .2s;background:rgba(240,180,41,0.01);}
+.upzone:hover,.upzone.dv{border-color:var(--gold);background:rgba(240,180,41,0.05);}
+.upzone .ico{font-size:20px;margin-bottom:3px;}
+.upzone .tx{font-size:11px;color:var(--muted);font-family:'Barlow Condensed';font-weight:600;}
+.upzone .ht{font-size:10px;color:var(--gold);opacity:.7;margin-top:2px;}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px;}
+.pbtn{aspect-ratio:4/5;border-radius:7px;cursor:pointer;border:2px solid transparent;transition:all .2s;overflow:hidden;position:relative;background-size:cover;}
+.pbtn:hover{border-color:var(--gold);transform:scale(1.04);}
+.pbtn.active{border-color:var(--gold);box-shadow:0 0 10px rgba(240,180,41,0.4);}
+.pbtn span{position:absolute;bottom:2px;left:0;right:0;text-align:center;font-size:8px;font-family:'Barlow Condensed';font-weight:700;color:#fff;text-shadow:0 1px 3px #000;}
+.crow{display:flex;align-items:center;gap:8px;margin-bottom:7px;}
+.clbl{font-size:10px;font-family:'Barlow Condensed';font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted);flex-shrink:0;min-width:55px;}
+input[type=range]{flex:1;accent-color:var(--gold);height:3px;}
+.ov-opts{display:flex;gap:5px;flex-wrap:wrap;}
+.ovb{padding:4px 9px;border-radius:20px;border:1px solid var(--border);background:var(--dark3);color:var(--muted);font-family:'Barlow Condensed';font-weight:600;font-size:10px;cursor:pointer;transition:all .2s;}
+.ovb:hover,.ovb.active{border-color:var(--gold);color:var(--gold);background:rgba(240,180,41,0.1);}
+.cctrl{display:flex;align-items:center;background:var(--dark3);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:4px;}
+.cbtn{width:36px;height:36px;background:none;border:none;color:var(--gold);font-size:18px;cursor:pointer;transition:background .15s;font-family:'Barlow Condensed';font-weight:700;display:flex;align-items:center;justify-content:center;}
+.cbtn:hover{background:rgba(240,180,41,0.12);}
+.cbtn:disabled{color:var(--muted);cursor:not-allowed;}
+.cdisp{flex:1;text-align:center;font-family:'Barlow Condensed';font-weight:800;font-size:20px;color:var(--gold);border-left:1px solid var(--border);border-right:1px solid var(--border);}
+.hint{font-size:10px;color:var(--muted);font-style:italic;margin-bottom:8px;}
+.slots{display:flex;flex-direction:column;gap:5px;max-height:400px;overflow-y:auto;padding-right:2px;}
+.slots::-webkit-scrollbar{width:3px;}
+.slots::-webkit-scrollbar-thumb{background:var(--gold-dark);border-radius:2px;}
+.slot{display:flex;align-items:center;gap:7px;background:var(--dark3);border:1px solid rgba(255,255,255,0.05);border-radius:8px;padding:5px 8px;}
+.snum{width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,var(--gold-dark),var(--gold));color:#000;font-family:'Barlow Condensed';font-weight:800;font-size:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sthumb{width:32px;height:32px;border-radius:5px;background:var(--dark4);border:1px solid var(--border);overflow:hidden;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:border-color .2s;}
+.sthumb:hover{border-color:var(--gold);}
+.sthumb img{width:100%;height:100%;object-fit:contain;}
+.sthumb .ai{font-size:13px;color:var(--muted);}
+.sbadge{background:var(--dark4);border:1px solid var(--border);border-radius:5px;color:var(--gold);font-family:'Barlow Condensed';font-weight:700;font-size:12px;text-align:center;padding:3px 4px;width:72px;text-transform:uppercase;outline:none;transition:border-color .2s;}
+.sbadge:focus{border-color:var(--gold);}
+.sbadge::placeholder{color:var(--muted);font-size:9px;}
+.srem{width:22px;height:22px;border-radius:4px;background:rgba(230,57,70,0.1);border:1px solid rgba(230,57,70,0.2);color:#e63946;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;margin-left:auto;}
+.srem:hover{background:rgba(230,57,70,0.25);}
+.fl{font-size:10px;font-family:'Barlow Condensed';font-weight:600;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;display:block;}
+.tf{background:var(--dark3);border:1px solid var(--border);border-radius:7px;color:var(--text);font-family:'Barlow Condensed';font-weight:600;font-size:13px;padding:7px 9px;outline:none;transition:border-color .2s;width:100%;margin-bottom:7px;}
+.tf:focus{border-color:var(--gold);}
+.tf::placeholder{color:var(--muted);}
+.trow{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;}
+.tlbl{font-size:11px;font-family:'Barlow Condensed';font-weight:600;color:var(--muted);}
+.tog{width:36px;height:20px;background:var(--dark4);border:1px solid var(--border);border-radius:10px;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0;}
+.tog.on{background:rgba(240,180,41,0.22);border-color:var(--gold);}
+.tog::after{content:'';position:absolute;top:2px;left:2px;width:14px;height:14px;background:var(--muted);border-radius:50%;transition:all .2s;}
+.tog.on::after{left:18px;background:var(--gold);}
+.dlbtn{width:100%;padding:12px;background:linear-gradient(135deg,var(--gold-dark),var(--gold));color:#000;border:none;border-radius:10px;font-family:'Barlow Condensed';font-weight:900;font-size:16px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 4px 16px rgba(240,180,41,0.3);}
+.dlbtn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(240,180,41,0.45);}
+.carea{display:flex;flex-direction:column;align-items:center;gap:10px;}
+.cwrap{width:100%;max-width:480px;border-radius:14px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.8),0 0 0 1px var(--border);}
+#cvs{width:100%;height:auto;display:block;}
+.status{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);font-family:'Barlow Condensed';font-weight:600;}
+.sdot{width:5px;height:5px;border-radius:50%;background:var(--gold);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.hidden{display:none;}
+.loader{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:9999;flex-direction:column;align-items:center;justify-content:center;gap:12px;}
+.loader.show{display:flex;}
+.spin{width:42px;height:42px;border:3px solid rgba(240,180,41,0.2);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ltx{font-family:'Barlow Condensed';font-weight:700;font-size:15px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;}
+.sec{font-size:10px;font-family:'Barlow Condensed';font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:5px;margin-top:8px;display:block;}
+</style>
+</head>
+<body>
+
+<div class="loader" id="loader"><div class="spin"></div><div class="ltx">Rendering PNG…</div></div>
+<input type="file" class="hidden" id="bgFile" accept="image/*">
+<input type="file" class="hidden" id="pFile" accept="image/*">
+
+<div class="app">
+  <div class="hdr">
+    <div class="hlogo">FC</div>
+    <div><div class="htitle">Post Creator</div><div class="hsub">FC Mobile · Social Media Graphics</div></div>
+    <div class="hbadge">4:5 · 1080×1350</div>
+  </div>
+  <div class="layout">
+    <div class="sidebar">
+
+      <div class="panel">
+        <div class="ph">🖼️ Background</div>
+        <div class="pb">
+          <div class="upzone" id="bgDrop" onclick="document.getElementById('bgFile').click()">
+            <div class="ico">📁</div><div class="tx">Upload Background</div><div class="ht">Click or drag & drop</div>
+          </div>
+          <span class="sec">Preset Themes</span>
+          <div class="pgrid" id="pgrid"></div>
+          <div style="margin-top:10px;">
+            <div class="crow"><div class="clbl">Dim</div><input type="range" id="opSlider" min="0" max="90" value="38" oninput="redraw()"></div>
+            <span class="sec" style="margin-top:0">Overlay</span>
+            <div class="ov-opts">
+              <div class="ovb active" onclick="setOV('dark',this)">Dark</div>
+              <div class="ovb" onclick="setOV('vignette',this)">Vignette</div>
+              <div class="ovb" onclick="setOV('blue',this)">Blue</div>
+              <div class="ovb" onclick="setOV('gold',this)">Gold</div>
+              <div class="ovb" onclick="setOV('none',this)">None</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="ph">👤 Players</div>
+        <div class="pb">
+          <span class="fl">Player Count (5–9)</span>
+          <div class="cctrl">
+            <button class="cbtn" id="decBtn" onclick="chgCount(-1)" disabled>−</button>
+            <div class="cdisp" id="cntDisp">5</div>
+            <button class="cbtn" id="incBtn" onclick="chgCount(1)">+</button>
+          </div>
+          <div class="hint" id="layHint">Layout: 3+2 · 2 rows</div>
+          <div class="slots" id="slots"></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="ph">✏️ Text</div>
+        <div class="pb">
+          <label class="fl">Main Title</label>
+          <input class="tf" id="iTitle" type="text" maxlength="30" value="BEST XI" oninput="redraw()">
+          <label class="fl">Subtitle</label>
+          <input class="tf" id="iSub" type="text" maxlength="40" value="FC MOBILE · SEASON 2025" oninput="redraw()">
+          <label class="fl">Tag / Credit</label>
+          <input class="tf" id="iTag" type="text" maxlength="30" value="@fcmobile" oninput="redraw()">
+          <div style="margin-top:4px;">
+            <div class="trow"><div class="tlbl">Corner Frames</div><div class="tog on" id="togC" onclick="this.classList.toggle('on');redraw()"></div></div>
+            <div class="trow"><div class="tlbl">Divider Line</div><div class="tog on" id="togD" onclick="this.classList.toggle('on');redraw()"></div></div>
+            <div class="trow"><div class="tlbl">FC Badge</div><div class="tog on" id="togB" onclick="this.classList.toggle('on');redraw()"></div></div>
+            <div class="trow"><div class="tlbl">Player Badges</div><div class="tog on" id="togPB" onclick="this.classList.toggle('on');redraw()"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <button class="dlbtn" onclick="dlImage()">⬇ Download PNG (1080×1350)</button>
+    </div>
+
+    <div class="carea">
+      <div class="cwrap"><canvas id="cvs"></canvas></div>
+      <div class="status"><div class="sdot"></div><span id="stxt">Live · 5 slots · 0 filled</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════
+// CANVAS
+// ════════════════════════════════════════════════════════════
+const W = 1080, H = 1350;
+const cvs = document.getElementById('cvs');
+const ctx = cvs.getContext('2d');
+cvs.width = W; cvs.height = H;
+
+// ════════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════════
+const S = {
+  n: 5,
+  slots: Array.from({length:9}, ()=>({img:null, badge:''})),
+  bgImg: null, bgPreset: 0, ov: 'dark', pending: -1
+};
+
+// ════════════════════════════════════════════════════════════
+// LAYOUT  –  always 3 columns max
+// ════════════════════════════════════════════════════════════
+function getLayout(n) {
+  return {5:[3,2], 6:[3,3], 7:[3,3,1], 8:[3,3,2], 9:[3,3,3]}[n] || [3,2];
+}
+
+// ════════════════════════════════════════════════════════════
+// PRESETS
+// ════════════════════════════════════════════════════════════
+const PRESETS = [
+  {n:'Stadium',c:['#050e1f','#0b1d3e','#040b18']},
+  {n:'Night',  c:['#060820','#0c1238','#180830']},
+  {n:'Pitch',  c:['#071507','#0e2a0e','#051005']},
+  {n:'DkGold', c:['#0c0900','#1c1500','#2a1e00']},
+  {n:'Fire',   c:['#180800','#2e1000','#400800']},
+  {n:'Ocean',  c:['#001622','#002038','#001222']},
+];
+
+function buildPresets() {
+  const g = document.getElementById('pgrid');
+  PRESETS.forEach((p,i) => {
+    const mc=document.createElement('canvas'); mc.width=80; mc.height=100;
+    const mx=mc.getContext('2d');
+    const gr=mx.createLinearGradient(0,0,80,100);
+    gr.addColorStop(0,p.c[0]); gr.addColorStop(0.5,p.c[1]); gr.addColorStop(1,p.c[2]);
+    mx.fillStyle=gr; mx.fillRect(0,0,80,100);
+    const btn=document.createElement('div');
+    btn.className='pbtn'+(i===0?' active':'');
+    btn.style.backgroundImage=`url(${mc.toDataURL()})`;
+    btn.innerHTML=`<span>${p.n}</span>`;
+    btn.onclick=()=>{
+      document.querySelectorAll('.pbtn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active'); S.bgImg=null; S.bgPreset=i; redraw();
+    };
+    g.appendChild(btn);
+  });
+}
+
+// ════════════════════════════════════════════════════════════
+// SIDEBAR SLOTS
+// ════════════════════════════════════════════════════════════
+function buildSlots() {
+  const c=document.getElementById('slots'); c.innerHTML='';
+  for (let i=0;i<S.n;i++) {
+    const d=S.slots[i];
+    const row=document.createElement('div'); row.className='slot';
+    const num=document.createElement('div'); num.className='snum'; num.textContent=i+1;
+    const th=document.createElement('div'); th.className='sthumb';
+    setThumb(th, d.img);
+    th.onclick=()=>{S.pending=i; document.getElementById('pFile').click();};
+    const bi=document.createElement('input');
+    bi.className='sbadge'; bi.type='text'; bi.maxLength=8; bi.placeholder='BADGE';
+    bi.value=d.badge;
+    bi.oninput=e=>{S.slots[i].badge=e.target.value.toUpperCase(); e.target.value=S.slots[i].badge; redraw();};
+    const rm=document.createElement('div'); rm.className='srem'; rm.textContent='✕';
+    rm.onclick=()=>{S.slots[i].img=null; setThumb(th,null); redraw();};
+    row.appendChild(num); row.appendChild(th); row.appendChild(bi); row.appendChild(rm);
+    c.appendChild(row);
+  }
+  const lay=getLayout(S.n);
+  document.getElementById('layHint').textContent=`Layout: ${lay.join('+')} · ${lay.length} rows`;
+}
+
+function setThumb(th, img) {
+  th.innerHTML='';
+  if (img) { const im=document.createElement('img'); im.src=img.src; th.appendChild(im); }
+  else th.innerHTML='<span class="ai">+</span>';
+}
+
+// ════════════════════════════════════════════════════════════
+// COUNT
+// ════════════════════════════════════════════════════════════
+function chgCount(d) {
+  const n=S.n+d; if(n<5||n>9) return;
+  S.n=n;
+  document.getElementById('cntDisp').textContent=n;
+  document.getElementById('decBtn').disabled=n<=5;
+  document.getElementById('incBtn').disabled=n>=9;
+  buildSlots(); redraw();
+}
+function setOV(s,btn) {
+  document.querySelectorAll('.ovb').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active'); S.ov=s; redraw();
+}
+
+// ════════════════════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════════════════════
+function rrect(x,y,w,h,r) {
+  ctx.beginPath();
+  ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y);
+  ctx.closePath();
+}
+const isOn=id=>document.getElementById(id).classList.contains('on');
+
+// ════════════════════════════════════════════════════════════
+// MAIN DRAW
+// ════════════════════════════════════════════════════════════
+function redraw() {
+  ctx.clearRect(0,0,W,H);
+  ctx.shadowBlur=0;
+  ctx.shadowColor='transparent';
+
+  // ── 1. BACKGROUND ──────────────────────────────────────────
+  if (S.bgImg) {
+    const sc=Math.max(W/S.bgImg.width, H/S.bgImg.height);
+    const dw=S.bgImg.width*sc, dh=S.bgImg.height*sc;
+    ctx.drawImage(S.bgImg,(W-dw)/2,(H-dh)/2,dw,dh);
+  } else {
+    const p=PRESETS[S.bgPreset];
+    const gr=ctx.createLinearGradient(0,0,W*0.4,H);
+    gr.addColorStop(0,p.c[0]); gr.addColorStop(0.5,p.c[1]); gr.addColorStop(1,p.c[2]);
+    ctx.fillStyle=gr; ctx.fillRect(0,0,W,H);
+  }
+
+  // ── 2. OVERLAY ─────────────────────────────────────────────
+  const op=parseInt(document.getElementById('opSlider').value)/100;
+  if (S.ov!=='none') {
+    if (S.ov==='vignette') {
+      const vg=ctx.createRadialGradient(W/2,H*0.5,H*0.1,W/2,H*0.5,H*0.75);
+      vg.addColorStop(0,'transparent'); vg.addColorStop(1,`rgba(0,0,0,${Math.min(op*1.8,0.95)})`);
+      ctx.fillStyle=vg;
+    } else {
+      ctx.fillStyle={dark:`rgba(0,0,0,${op})`,blue:`rgba(0,6,28,${op})`,gold:`rgba(10,6,0,${op})`}[S.ov]||`rgba(0,0,0,${op})`;
+    }
+    ctx.fillRect(0,0,W,H);
+  }
+
+  // ── FIXED LAYOUT CONSTANTS ─────────────────────────────────
+  const TITLE_H = H * 0.165;                     // height reserved for title area
+  const BOT_H   = H * 0.085;                     // bottom bar height
+  const H_PAD   = W * 0.028;                     // left/right padding
+  const COL_GAP = W * 0.016;                     // gap between columns
+  const COLS    = 3;
+
+  const GRID_TOP = TITLE_H + H * 0.008;
+  const GRID_BOT = H - BOT_H - H * 0.01;
+  const GRID_H   = GRID_BOT - GRID_TOP;
+
+  const layout  = getLayout(S.n);
+  const nRows   = layout.length;
+  const ROW_GAP = nRows <= 2 ? GRID_H * 0.018 : GRID_H * 0.022;
+
+  // Card dimensions — same for ALL cards regardless of row
+  const CARD_W = (W - H_PAD*2 - COL_GAP*(COLS-1)) / COLS;
+  const CARD_H = (GRID_H - ROW_GAP*(nRows-1)) / nRows;
+
+  // Badge radius — proportional to card width
+  const BR = Math.round(Math.max(CARD_W * 0.15, 30));
+
+  // ── 3. TOP GRADIENT ────────────────────────────────────────
+  const tg=ctx.createLinearGradient(0,0,0,TITLE_H*1.7);
+  tg.addColorStop(0,'rgba(0,0,0,0.85)'); tg.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=tg; ctx.fillRect(0,0,W,TITLE_H*1.7);
+
+  // ── 4. BOTTOM GRADIENT ─────────────────────────────────────
+  const bg=ctx.createLinearGradient(0,H-BOT_H*2.8,0,H);
+  bg.addColorStop(0,'rgba(0,0,0,0)'); bg.addColorStop(1,'rgba(0,0,0,0.93)');
+  ctx.fillStyle=bg; ctx.fillRect(0,H-BOT_H*2.8,W,BOT_H*2.8);
+
+  // ── 5. CORNERS ─────────────────────────────────────────────
+  if (isOn('togC')) {
+    const sz=W*0.056, m=W*0.028;
+    ctx.strokeStyle='rgba(240,180,41,0.72)'; ctx.lineWidth=3; ctx.lineCap='square';
+    ctx.beginPath(); ctx.moveTo(m,m+sz); ctx.lineTo(m,m); ctx.lineTo(m+sz,m); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(W-m-sz,m); ctx.lineTo(W-m,m); ctx.lineTo(W-m,m+sz); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(m,H-m-sz); ctx.lineTo(m,H-m); ctx.lineTo(m+sz,H-m); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(W-m-sz,H-m); ctx.lineTo(W-m,H-m); ctx.lineTo(W-m,H-m-sz); ctx.stroke();
+  }
+
+  // ── 6. TITLE ───────────────────────────────────────────────
+  const title=(document.getElementById('iTitle').value||'BEST XI').toUpperCase();
+  const sub  =(document.getElementById('iSub').value||'FC MOBILE · SEASON 2025').toUpperCase();
+  const TITLE_Y = H*0.035;
+  ctx.textAlign='center'; ctx.textBaseline='top';
+  ctx.shadowColor='rgba(240,180,41,0.55)'; ctx.shadowBlur=28;
+  ctx.fillStyle='#f0b429';
+  ctx.font=`900 ${Math.round(H*0.072)}px 'Barlow Condensed',Impact,sans-serif`;
+  ctx.fillText(title,W/2,TITLE_Y);
+  ctx.shadowBlur=0; ctx.shadowColor='transparent';
+  ctx.fillStyle='rgba(255,255,255,0.78)';
+  ctx.font=`600 ${Math.round(H*0.027)}px 'Barlow Condensed',sans-serif`;
+  ctx.fillText(sub,W/2,TITLE_Y+Math.round(H*0.072)+7);
+
+  // ── 7. DIVIDER ─────────────────────────────────────────────
+  if (isOn('togD')) {
+    const dy=TITLE_H*0.96;
+    const lg=ctx.createLinearGradient(0,0,W,0);
+    lg.addColorStop(0,'rgba(240,180,41,0)'); lg.addColorStop(0.5,'rgba(240,180,41,0.7)'); lg.addColorStop(1,'rgba(240,180,41,0)');
+    ctx.strokeStyle=lg; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.moveTo(W*0.05,dy); ctx.lineTo(W*0.95,dy); ctx.stroke();
+  }
+
+  // ════════════════════════════════════════════════════════════
+  // 8. CARDS — two-pass:  Pass 1 = draw images, Pass 2 = draw badges
+  // This guarantees badges are never covered by adjacent images.
+  // Badge position = TOP-RIGHT of the card CELL, always.
+  // (cell top = GRID_TOP + rowIndex * (CARD_H + ROW_GAP))
+  // ════════════════════════════════════════════════════════════
+
+  // ── STEP 1: Compute cell positions AND actual image render bounds ──
+  // We do this in ONE place so badge coordinates are 100% consistent
+  // with where the image is actually drawn.
+  //
+  // Key insight: FC Mobile cards are portrait PNGs.
+  // With contain+bottom-anchor: dy = cy + (CARD_H - dh)
+  // If the image is shorter than CARD_H, dy > cy — image starts BELOW cell top.
+  // Badge must attach to the ACTUAL image top-right, not the cell top-right.
+  //
+  // We store both cell coords AND rendered image coords in one pass,
+  // then draw images (Pass 1) and badges (Pass 2) separately.
+
+  const cells = []; // {cx, cy, imgX (right edge of img), imgTopY, si}
+  let si = 0;
+  layout.forEach((colsInRow, ri) => {
+    const rowTop = GRID_TOP + ri * (CARD_H + ROW_GAP);
+    const rowW   = colsInRow * CARD_W + (colsInRow-1) * COL_GAP;
+    const startX = (W - rowW) / 2;
+    for (let ci=0; ci<colsInRow; ci++) {
+      if (si >= S.n) break;
+      const cx = startX + ci * (CARD_W + COL_GAP);
+      const cy = rowTop;
+      const slot = S.slots[si];
+
+      // Calculate where the image will actually be drawn
+      let imgRightX = cx + CARD_W;  // default: full cell right edge
+      let imgTopY   = cy;            // default: cell top
+
+      if (slot.img) {
+        const im = slot.img;
+        const sc = Math.min(CARD_W/im.width, CARD_H/im.height);
+        const dw = im.width * sc;
+        const dh = im.height * sc;
+        // Horizontal center
+        imgRightX = cx + (CARD_W - dw)/2 + dw;   // right edge of drawn image
+        // Bottom-anchor → top of image
+        imgTopY   = cy + (CARD_H - dh);            // this is where image top actually is
+      }
+
+      cells.push({ cx, cy, imgRightX, imgTopY, si });
+      si++;
+    }
+  });
+
+  // ── PASS 1: Draw all card images ───────────────────────────
+  cells.forEach(({cx, cy, si}) => {
+    const slot = S.slots[si];
+    if (!slot.img) {
+      ctx.save();
+      ctx.strokeStyle='rgba(240,180,41,0.2)'; ctx.lineWidth=1.5; ctx.setLineDash([6,5]);
+      rrect(cx,cy,CARD_W,CARD_H,10); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle='rgba(255,255,255,0.04)'; rrect(cx,cy,CARD_W,CARD_H,10); ctx.fill();
+      ctx.fillStyle='rgba(240,180,41,0.18)';
+      ctx.font=`700 ${Math.round(CARD_W*0.22)}px 'Barlow Condensed',sans-serif`;
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText(si+1, cx+CARD_W/2, cy+CARD_H/2);
+      ctx.restore();
+      return;
+    }
+    const im = slot.img;
+    const sc = Math.min(CARD_W/im.width, CARD_H/im.height);
+    const dw = im.width*sc, dh = im.height*sc;
+    const dx = cx + (CARD_W-dw)/2;
+    const dy = cy + (CARD_H-dh);   // bottom-anchor
+    ctx.save();
+    ctx.beginPath(); ctx.rect(cx, cy, CARD_W, CARD_H); ctx.clip();
+    ctx.drawImage(im, dx, dy, dw, dh);
+    ctx.restore();
+  });
+
+  // ── PASS 2: Draw badges — anchored to actual image top-right ──
+  // bx = right edge of drawn image
+  // by = top of drawn image
+  // Badge center is offset inward/downward by BR so it overlaps the corner
+  if (isOn('togPB')) {
+    cells.forEach(({imgRightX, imgTopY, si}) => {
+      const bx = imgRightX - BR * 0.5;   // half badge inside image right edge
+      const by = imgTopY   + BR * 0.5;   // half badge inside image top edge
+      const txt = S.slots[si].badge || String(si+1);
+      drawCircleBadge(bx, by, BR, txt);
+    });
+  }
+
+  // ── 9. BOTTOM BAR ──────────────────────────────────────────
+  ctx.shadowBlur=0; ctx.shadowColor='transparent';
+  const tag=document.getElementById('iTag').value||'@fcmobile';
+  ctx.textAlign='left'; ctx.textBaseline='middle';
+  ctx.fillStyle='rgba(255,255,255,0.68)';
+  ctx.font=`600 ${Math.round(H*0.022)}px 'Barlow Condensed',sans-serif`;
+  ctx.fillText(tag, W*0.048, H-BOT_H*0.5);
+  if (isOn('togB')) drawFCBadge(BOT_H);
+
+  updateStatus();
+}
+
+// ════════════════════════════════════════════════════════════
+// BADGE CIRCLE  —  always drawn at exact (bx, by) center
+// ════════════════════════════════════════════════════════════
+function drawCircleBadge(bx, by, R, txt) {
+  // Shadow / glow
+  ctx.save();
+  ctx.shadowColor='rgba(240,180,41,0.9)';
+  ctx.shadowBlur=14;
+
+  // Dark background circle
+  ctx.beginPath(); ctx.arc(bx, by, R, 0, Math.PI*2);
+  const bg=ctx.createRadialGradient(bx,by-R*0.2,0, bx,by,R);
+  bg.addColorStop(0,'#252e45'); bg.addColorStop(1,'#060810');
+  ctx.fillStyle=bg; ctx.fill();
+  ctx.shadowBlur=0; ctx.shadowColor='transparent';
+
+  // Gold border
+  ctx.strokeStyle='#f0b429';
+  ctx.lineWidth=Math.max(R*0.14, 3);
+  ctx.stroke();
+  ctx.restore();
+
+  // Inner ring (subtle)
+  ctx.save();
+  ctx.beginPath(); ctx.arc(bx,by,R*0.75,0,Math.PI*2);
+  ctx.strokeStyle='rgba(240,180,41,0.2)'; ctx.lineWidth=1; ctx.stroke();
+  ctx.restore();
+
+  // Text — scale down for long strings
+  const len=txt.length;
+  let fs = R * 0.62;
+  if (len===5) fs*=0.86;
+  if (len===6) fs*=0.76;
+  if (len===7) fs*=0.68;
+  if (len===8) fs*=0.60;
+  fs=Math.max(Math.round(fs),10);
+
+  ctx.save();
+  ctx.fillStyle='#f0b429';
+  ctx.font=`900 ${fs}px 'Barlow Condensed',sans-serif`;
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.shadowColor='rgba(0,0,0,0.8)'; ctx.shadowBlur=4;
+  ctx.fillText(txt, bx, by);
+  ctx.restore();
+}
+
+// ════════════════════════════════════════════════════════════
+// FC BADGE PILL
+// ════════════════════════════════════════════════════════════
+function drawFCBadge(botH) {
+  const txt='FC MOBILE', fsz=Math.round(H*0.021);
+  ctx.font=`800 ${fsz}px 'Barlow Condensed',sans-serif`;
+  const tw=ctx.measureText(txt).width;
+  const px=18,py=7, bw=tw+px*2, bh=fsz+py*2;
+  const bx=W-W*0.048-bw, by=H-botH*0.5-bh/2;
+  ctx.save();
+  rrect(bx,by,bw,bh,bh/2);
+  const pg=ctx.createLinearGradient(bx,by,bx+bw,by+bh);
+  pg.addColorStop(0,'#b8860b'); pg.addColorStop(1,'#f0b429');
+  ctx.fillStyle=pg; ctx.fill(); ctx.restore();
+  ctx.fillStyle='#000'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(txt, bx+bw/2, by+bh/2);
+}
+
+// ════════════════════════════════════════════════════════════
+// STATUS
+// ════════════════════════════════════════════════════════════
+function updateStatus() {
+  const f=S.slots.slice(0,S.n).filter(s=>s.img).length;
+  document.getElementById('stxt').textContent=
+    `Live · Slots:${S.n} · Filled:${f} · Layout:${getLayout(S.n).join('+')} · 1080×1350`;
+}
+
+// ════════════════════════════════════════════════════════════
+// FILE I/O
+// ════════════════════════════════════════════════════════════
+function loadImg(src,cb){const im=new Image();im.onload=()=>cb(im);im.src=src;}
+
+document.getElementById('bgFile').onchange=function(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=ev=>loadImg(ev.target.result,im=>{
+    S.bgImg=im; document.querySelectorAll('.pbtn').forEach(b=>b.classList.remove('active')); redraw();
+  });
+  r.readAsDataURL(f); this.value='';
+};
+
+document.getElementById('pFile').onchange=function(e){
+  const f=e.target.files[0];if(!f||S.pending<0)return;
+  const idx=S.pending;
+  const r=new FileReader();
+  r.onload=ev=>loadImg(ev.target.result,im=>{
+    S.slots[idx].img=im;
+    const el=document.getElementById('slots').children[idx];
+    if(el) setThumb(el.querySelector('.sthumb'),im);
+    redraw();
+  });
+  r.readAsDataURL(f); this.value='';
+};
+
+const bgDrop=document.getElementById('bgDrop');
+bgDrop.ondragover=e=>{e.preventDefault();bgDrop.classList.add('dv');};
+bgDrop.ondragleave=()=>bgDrop.classList.remove('dv');
+bgDrop.ondrop=e=>{
+  e.preventDefault();bgDrop.classList.remove('dv');
+  const f=e.dataTransfer.files[0];if(!f||!f.type.startsWith('image/'))return;
+  const r=new FileReader();
+  r.onload=ev=>loadImg(ev.target.result,im=>{
+    S.bgImg=im; document.querySelectorAll('.pbtn').forEach(b=>b.classList.remove('active')); redraw();
+  });
+  r.readAsDataURL(f);
+};
+
+// ════════════════════════════════════════════════════════════
+// DOWNLOAD
+// ════════════════════════════════════════════════════════════
+function dlImage(){
+  document.getElementById('loader').classList.add('show');
+  setTimeout(()=>{
+    try{
+      const a=document.createElement('a');
+      a.download=`fc-mobile-${Date.now()}.png`;
+      a.href=cvs.toDataURL('image/png',1.0); a.click();
+    }catch(err){alert('Export failed: '+err.message);}
+    document.getElementById('loader').classList.remove('show');
+  },80);
+}
+
+// ════════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════════
+buildPresets();
+buildSlots();
+document.fonts.ready.then(()=>redraw());
+</script>
+</body>
+</html>
