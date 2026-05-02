@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Club Players — Game Enclave</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@500;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#07090f; color:#fff; font-family:'Rajdhani',sans-serif; min-height:100vh; }
+
+.hdr { background:linear-gradient(135deg,#0a0e1a,#111827); border-bottom:2px solid #f0c040; padding:12px 20px; display:flex; align-items:center; justify-content:space-between; }
+.hdr-left { display:flex; flex-direction:column; }
+.hdr-logo { font-family:'Orbitron',sans-serif; font-size:16px; font-weight:900; color:#f0c040; letter-spacing:2px; }
+.hdr-logo span { color:#06b6d4; }
+.hdr-sub { font-size:10px; color:#94a3b8; letter-spacing:1px; margin-top:2px; }
+
+.expbtn { background:linear-gradient(135deg,#b8860b,#ffd700); color:#0a0e1a; border:none; border-radius:7px; padding:10px 22px; font-family:'Orbitron',sans-serif; font-size:11px; font-weight:900; letter-spacing:2px; cursor:pointer; }
+.expbtn:hover { opacity:.88; }
+
+.workspace { display:grid; grid-template-columns:290px 1fr; min-height:calc(100vh - 52px); }
+
+/* SIDEBAR */
+.sb { background:#0d1120; border-right:1px solid #1e2d4a; padding:14px 13px; overflow-y:auto; max-height:calc(100vh - 52px); }
+.sec { font-family:'Orbitron',sans-serif; font-size:8.5px; letter-spacing:3px; color:#f0c040; text-transform:uppercase; margin:16px 0 8px; padding-bottom:5px; border-bottom:1px solid #1e2d4a; }
+.sec:first-child { margin-top:0; }
+.cl { font-size:9.5px; font-weight:700; color:#06b6d4; letter-spacing:1px; text-transform:uppercase; margin-bottom:4px; display:block; margin-top:8px; }
+.cl:first-child { margin-top:0; }
+input[type=text], select {
+  width:100%; background:#0a0e1a; border:1px solid #1e2d4a; border-radius:5px;
+  color:#fff; font-family:'Rajdhani',sans-serif; font-size:13px; padding:6px 8px; outline:none; transition:border-color .2s;
+}
+input:focus, select:focus { border-color:#f0c040; }
+.r2 { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
+
+.pb { background:#111827; border:1px solid #1e2d4a; border-radius:7px; padding:10px; margin-bottom:8px; }
+.pbt { font-family:'Orbitron',sans-serif; font-size:8px; color:#f0c040; letter-spacing:2px; margin-bottom:8px; }
+
+.upl { border:2px dashed #1e2d4a; border-radius:6px; padding:8px; text-align:center; cursor:pointer; position:relative; overflow:hidden; transition:border-color .2s; margin-top:6px; }
+.upl:hover { border-color:#f0c040; }
+.upl input[type=file] { position:absolute; inset:0; opacity:0; cursor:pointer; }
+.upl span { font-size:18px; display:block; }
+.upl small { font-size:9px; color:#94a3b8; display:block; }
+.upl-prev { width:100%; height:60px; object-fit:contain; border-radius:4px; margin-top:5px; display:none; background:#0a0e1a; }
+
+.bgs { display:flex; gap:6px; flex-wrap:wrap; margin-top:4px; }
+.bsw { width:28px; height:28px; border-radius:50%; cursor:pointer; border:2px solid transparent; }
+.bsw.on, .bsw:hover { border-color:#f0c040; }
+
+/* CANVAS AREA */
+.ca { display:flex; flex-direction:column; align-items:center; padding:20px 14px; background:#07090f; overflow-y:auto; gap:12px; }
+.zbar { display:flex; align-items:center; gap:10px; background:#0d1120; border:1px solid #1e2d4a; border-radius:7px; padding:7px 14px; align-self:stretch; }
+.zbar label { font-size:11px; color:#94a3b8; }
+.zbar input[type=range] { flex:1; accent-color:#f0c040; }
+.zbar span { font-size:11px; color:#f0c040; min-width:34px; text-align:right; }
+
+canvas { display:block; }
+
+#lov { display:none; position:fixed; inset:0; background:rgba(7,9,15,.9); z-index:999; align-items:center; justify-content:center; flex-direction:column; gap:12px; }
+#lov.show { display:flex; }
+.ring { width:48px; height:48px; border:4px solid #1e2d4a; border-top-color:#f0c040; border-radius:50%; animation:sp .8s linear infinite; }
+@keyframes sp { to{transform:rotate(360deg)} }
+.ltx { font-family:'Orbitron',sans-serif; font-size:12px; color:#f0c040; letter-spacing:2px; }
+</style>
+</head>
+<body>
+
+<div id="lov"><div class="ring"></div><div class="ltx">EXPORTING...</div></div>
+
+<header class="hdr">
+  <div class="hdr-left">
+    <div class="hdr-logo">GAME<span>ENCLAVE</span></div>
+    <div class="hdr-sub">CLUB PLAYERS POST CREATOR</div>
+  </div>
+  <button class="expbtn" onclick="exportPng()">⬇ EXPORT 1080×1080</button>
+</header>
+
+<div class="workspace">
+<aside class="sb">
+
+  <div class="sec">Post Text</div>
+  <label class="cl">Title (big)</label>
+  <input type="text" id="g-title" value="TEAM OF THE SEASON" oninput="draw()">
+  <label class="cl">Subtitle</label>
+  <input type="text" id="g-sub" value="EA SPORTS FC™ //// TOTS" oninput="draw()">
+  <label class="cl">Club Name</label>
+  <input type="text" id="club-name" value="FC BAYERN MÜNCHEN" oninput="draw()">
+  <label class="cl">Bottom CTA</label>
+  <input type="text" id="g-cta" value="ATTACKERS" oninput="draw()">
+  <label class="cl">Watermark</label>
+  <input type="text" id="g-wm" value="@game_enclaveofficial" oninput="draw()">
+
+  <div class="sec">Background</div>
+  <div class="bgs">
+    <div class="bsw on" style="background:radial-gradient(circle,#1e1460,#0a0e1a)" onclick="setBg(0,this)" title="Purple"></div>
+    <div class="bsw" style="background:radial-gradient(circle,#0c2461,#050d1a)" onclick="setBg(1,this)" title="Blue"></div>
+    <div class="bsw" style="background:radial-gradient(circle,#1a0a3a,#050710)" onclick="setBg(2,this)" title="Dark Purple"></div>
+    <div class="bsw" style="background:radial-gradient(circle,#0a1f0a,#050d05)" onclick="setBg(3,this)" title="Green"></div>
+    <div class="bsw" style="background:radial-gradient(circle,#1a0505,#100205)" onclick="setBg(4,this)" title="Red"></div>
+    <div class="bsw" style="background:radial-gradient(circle,#1a1200,#100a00)" onclick="setBg(5,this)" title="Gold"></div>
+  </div>
+
+  <div class="sec">Club Logo</div>
+  <div class="upl"><input type="file" accept="image/*" onchange="loadClub(event)"><span>🏟️</span><small>Upload logo</small></div>
+  <img class="upl-prev" id="club-prev">
+
+  <div class="sec">Players</div>
+
+  <!-- Player 1 -->
+  <div class="pb">
+    <div class="pbt">PLAYER 1 (LEFT)</div>
+    <div class="r2">
+      <div><label class="cl">Card Type</label>
+        <select id="p0type" onchange="draw()">
+          <option>TOTS</option><option>ICON</option><option>HERO</option><option>TOTY</option><option>OTW</option><option>POTM</option>
+        </select>
+      </div>
+      <div><label class="cl">Position</label><input type="text" id="p0pos" value="LW" oninput="draw()"></div>
+    </div>
+    <div class="upl"><input type="file" accept="image/*" onchange="loadPlayer(event,0)"><span>📸</span><small>Player photo</small></div>
+    <img class="upl-prev" id="pp0">
+  </div>
+
+  <!-- Player 2 -->
+  <div class="pb">
+    <div class="pbt">PLAYER 2 (CENTER)</div>
+    <div class="r2">
+      <div><label class="cl">Card Type</label>
+        <select id="p1type" onchange="draw()">
+          <option>TOTS</option><option>ICON</option><option>HERO</option><option>TOTY</option><option>OTW</option><option>POTM</option>
+        </select>
+      </div>
+      <div><label class="cl">Position</label><input type="text" id="p1pos" value="ST" oninput="draw()"></div>
+    </div>
+    <div class="upl"><input type="file" accept="image/*" onchange="loadPlayer(event,1)"><span>📸</span><small>Player photo</small></div>
+    <img class="upl-prev" id="pp1">
+  </div>
+
+  <!-- Player 3 -->
+  <div class="pb">
+    <div class="pbt">PLAYER 3 (RIGHT)</div>
+    <div class="r2">
+      <div><label class="cl">Card Type</label>
+        <select id="p2type" onchange="draw()">
+          <option>TOTS</option><option>ICON</option><option>HERO</option><option>TOTY</option><option>OTW</option><option>POTM</option>
+        </select>
+      </div>
+      <div><label class="cl">Position</label><input type="text" id="p2pos" value="RW" oninput="draw()"></div>
+    </div>
+    <div class="upl"><input type="file" accept="image/*" onchange="loadPlayer(event,2)"><span>📸</span><small>Player photo</small></div>
+    <img class="upl-prev" id="pp2">
+  </div>
+
+</aside>
+
+<main class="ca">
+  <div class="zbar">
+    <label>ZOOM</label>
+    <input type="range" min="15" max="85" value="48" oninput="setZoom(+this.value)">
+    <span id="zv">48%</span>
+  </div>
+  <canvas id="cvs" width="1080" height="1080"></canvas>
+</main>
+</div>
+
+<script>
+const C = document.getElementById('cvs');
+const X = C.getContext('2d');
+
+// ── State ──
+let bgIdx = 0;
+const clubImg = { img: null };
+const players = [
+  { img: null, type: 'TOTS', pos: 'LW' },
+  { img: null, type: 'TOTS', pos: 'ST' },
+  { img: null, type: 'TOTS', pos: 'RW' },
+];
+
+const BG = [
+  ['#1e1460','#0a0e1a'],
+  ['#0c2461','#050d1a'],
+  ['#1a0a3a','#050710'],
+  ['#0a1f0a','#050d05'],
+  ['#1a0505','#100205'],
+  ['#1a1200','#0a0800'],
+];
+
+const CARD_C = {
+  TOTS: { b1:'#f0c040', b2:'#8b6914', bg1:'#1a1060', bg2:'#0a0e1a' },
+  ICON: { b1:'#d0d8e8', b2:'#6a7490', bg1:'#1a1f30', bg2:'#0a0e1a' },
+  HERO: { b1:'#f0c040', b2:'#b06000', bg1:'#1f0e00', bg2:'#0a0e1a' },
+  TOTY: { b1:'#c084fc', b2:'#7c3aed', bg1:'#2d0a6e', bg2:'#0a0e1a' },
+  OTW:  { b1:'#60a5fa', b2:'#1d4ed8', bg1:'#0a1a3a', bg2:'#0a0e1a' },
+  POTM: { b1:'#4ade80', b2:'#15803d', bg1:'#0a2010', bg2:'#0a0e1a' },
+};
+
+// ── Helpers ──
+function gv(id) { return document.getElementById(id)?.value || ''; }
+
+function setBg(i, el) {
+  bgIdx = i;
+  document.querySelectorAll('.bsw').forEach(s => s.classList.remove('on'));
+  el.classList.add('on');
+  draw();
+}
+
+function setZoom(v) {
+  const s = v / 100;
+  C.style.width  = (1080 * s) + 'px';
+  C.style.height = (1080 * s) + 'px';
+  document.getElementById('zv').textContent = v + '%';
+}
+
+function loadClub(e) {
+  const f = e.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = ev => {
+    const im = new Image();
+    im.onload = () => { clubImg.img = im; const p = document.getElementById('club-prev'); p.src = ev.target.result; p.style.display = 'block'; draw(); };
+    im.src = ev.target.result;
+  };
+  r.readAsDataURL(f);
+}
+
+function loadPlayer(e, i) {
+  const f = e.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = ev => {
+    const im = new Image();
+    im.onload = () => { players[i].img = im; const p = document.getElementById('pp' + i); p.src = ev.target.result; p.style.display = 'block'; draw(); };
+    im.src = ev.target.result;
+  };
+  r.readAsDataURL(f);
+}
+
+// ── Canvas primitives ──
+function rrClip(x, y, w, h, r) {
+  X.beginPath();
+  X.moveTo(x+r,y); X.lineTo(x+w-r,y); X.arcTo(x+w,y,x+w,y+r,r);
+  X.lineTo(x+w,y+h-r); X.arcTo(x+w,y+h,x+w-r,y+h,r);
+  X.lineTo(x+r,y+h); X.arcTo(x,y+h,x,y+h-r,r);
+  X.lineTo(x,y+r); X.arcTo(x,y,x+r,y,r);
+  X.closePath();
+}
+
+function strokeRR(x, y, w, h, r, color, lw) {
+  rrClip(x, y, w, h, r);
+  X.strokeStyle = color; X.lineWidth = lw || 3; X.stroke();
+}
+
+// ── Draw background ──
+function drawBg() {
+  const [c1, c2] = BG[bgIdx];
+  const g = X.createRadialGradient(300, 200, 0, 540, 540, 950);
+  g.addColorStop(0, c1); g.addColorStop(1, c2);
+  X.fillStyle = g; X.fillRect(0, 0, 1080, 1080);
+  // subtle ambient blobs
+  const b1 = X.createRadialGradient(0, 0, 0, 0, 0, 600);
+  b1.addColorStop(0, 'rgba(80,20,160,0.15)'); b1.addColorStop(1, 'transparent');
+  X.fillStyle = b1; X.fillRect(0, 0, 1080, 1080);
+  const b2 = X.createRadialGradient(1080, 1080, 0, 1080, 1080, 500);
+  b2.addColorStop(0, 'rgba(20,60,180,0.13)'); b2.addColorStop(1, 'transparent');
+  X.fillStyle = b2; X.fillRect(0, 0, 1080, 1080);
+}
+
+// ── Draw single card ──
+// Card is pure image fill + glowing border. No text overlay.
+function drawCard(x, y, w, h, p) {
+  const cc = CARD_C[p.type] || CARD_C.TOTS;
+  const r = 16;
+
+  X.save();
+  rrClip(x, y, w, h, r);
+  X.clip();
+
+  // BG fill
+  const bg = X.createLinearGradient(x, y, x, y + h);
+  bg.addColorStop(0, cc.bg1); bg.addColorStop(1, cc.bg2);
+  X.fillStyle = bg; X.fillRect(x, y, w, h);
+
+  if (p.img) {
+    // cover fill — scale so image fills entire card, centered
+    const iw = p.img.width, ih = p.img.height;
+    const scale = Math.max(w / iw, h / ih);
+    const dw = iw * scale, dh = ih * scale;
+    X.drawImage(p.img, x + (w - dw) / 2, y + (h - dh) / 2, dw, dh);
+  } else {
+    X.globalAlpha = 0.12;
+    X.font = '100px serif'; X.textAlign = 'center'; X.textBaseline = 'middle';
+    X.fillStyle = '#fff'; X.fillText('⚽', x + w / 2, y + h / 2);
+    X.globalAlpha = 1;
+  }
+
+  X.restore();
+
+  // Glowing border
+  X.save();
+  X.shadowColor = cc.b1; X.shadowBlur = 32;
+  const bdr = X.createLinearGradient(x, y, x + w, y + h);
+  bdr.addColorStop(0, cc.b1); bdr.addColorStop(0.5, cc.b2); bdr.addColorStop(1, cc.b1);
+  strokeRR(x + 2, y + 2, w - 4, h - 4, r, bdr, 4.5);
+  X.restore();
+}
+
+// ── Draw EA header ──
+function drawHeader(title, subtitle) {
+  // EA badge
+  X.save();
+  X.beginPath(); X.arc(452, 54, 30, 0, Math.PI * 2);
+  const bc = X.createRadialGradient(452, 54, 0, 452, 54, 30);
+  bc.addColorStop(0, '#1a2040'); bc.addColorStop(1, '#0a0e1a');
+  X.fillStyle = bc; X.fill(); X.strokeStyle = '#f0c040'; X.lineWidth = 2.5; X.stroke();
+  X.font = "900 10px 'Orbitron',sans-serif";
+  X.fillStyle = '#f0c040'; X.textAlign = 'center'; X.textBaseline = 'middle';
+  X.fillText('EA', 452, 47); X.fillText('SPORTS', 452, 61); X.restore();
+
+  // FC MOBILE
+  X.font = "900 58px 'Orbitron',sans-serif";
+  X.fillStyle = '#ffffff'; X.textAlign = 'center'; X.textBaseline = 'top';
+  X.shadowColor = 'rgba(0,0,0,0.7)'; X.shadowBlur = 12;
+  X.fillText('FC MOBILE', 540, 26);
+  X.shadowBlur = 0;
+
+  if (!title) return;
+
+  // Title — split last word to make it big
+  const words = title.trim().split(' ');
+  const lastWord = words.pop();
+  const firstPart = words.join(' ');
+
+  let y = 96;
+  if (firstPart) {
+    X.font = "400 40px 'Bebas Neue',sans-serif";
+    X.fillStyle = '#ffffff'; X.textAlign = 'center'; X.textBaseline = 'top';
+    X.shadowColor = 'rgba(0,0,0,0.7)'; X.shadowBlur = 8;
+    X.fillText(firstPart.toUpperCase(), 540, y);
+    y += 44;
+  }
+  X.font = "400 96px 'Bebas Neue',sans-serif";
+  X.fillStyle = '#ffffff'; X.textAlign = 'center'; X.textBaseline = 'top';
+  X.shadowColor = 'rgba(0,0,0,0.9)'; X.shadowBlur = 14;
+  X.fillText(lastWord.toUpperCase(), 540, y);
+  X.shadowBlur = 0;
+  y += 100;
+
+  // Subtitle
+  if (subtitle) {
+    X.font = "700 15px 'Rajdhani',sans-serif";
+    X.fillStyle = '#94a3b8'; X.textAlign = 'center'; X.textBaseline = 'top';
+    X.fillText(subtitle.toUpperCase(), 540, y + 4);
+  }
+}
+
+// ── MAIN DRAW ──
+function draw() {
+  X.clearRect(0, 0, 1080, 1080);
+  drawBg();
+
+  const title    = gv('g-title');
+  const sub      = gv('g-sub');
+  const cta      = gv('g-cta');
+  const clubName = gv('club-name');
+  const wm       = gv('g-wm');
+
+  // Sync player types from selects
+  players.forEach((p, i) => {
+    p.type = document.getElementById('p' + i + 'type').value;
+    p.pos  = document.getElementById('p' + i + 'pos').value;
+  });
+
+  drawHeader(title, sub);
+
+  // ── Layout math ──
+  // Canvas: 1080 × 1080
+  // Header zone: top 0 → ~270px
+  // Bottom zone: clubRow(~70px) + CTA(~64px) + wm(~22px) + padding(~20px) = ~176px
+  // Available for cards: 270 → (1080 - 176) = 904px  →  card height = 634px
+  // 3 cards with equal gap:
+  //   total card width = 1080 - 2×padding(30) - 2×gap(24) = 972px → each card = 972/3 = 324px
+  //   But cards with 324×634 ratio = 0.51 which is realistic card ratio ✓
+
+  const PAD    = 40;
+  const GAP    = 28;
+  const CARD_W = Math.floor((1080 - PAD * 2 - GAP * 2) / 3); // 314px
+  const CARD_H = Math.round(CARD_W * 1.38);                   // ~433px — proper FC card ratio
+  const CARD_Y = 290;
+
+  players.forEach((p, i) => {
+    const cx = PAD + i * (CARD_W + GAP);
+    drawCard(cx, CARD_Y, CARD_W, CARD_H, p);
+  });
+
+  // ── Club row ──
+  // Sits 36px below card bottom
+  const CLUB_MID_Y = CARD_Y + CARD_H + 60;
+
+  if (clubImg.img) {
+    const logoH = 68, logoW = 68;
+    X.font = "400 52px 'Bebas Neue',sans-serif";
+    const tw = X.measureText(clubName).width;
+    const rowW = logoW + 14 + tw;
+    const rowX = (1080 - rowW) / 2;
+    X.drawImage(clubImg.img, rowX, CLUB_MID_Y - logoH / 2, logoW, logoH);
+    X.fillStyle = '#ffffff'; X.textAlign = 'left'; X.textBaseline = 'middle';
+    X.shadowColor = 'rgba(0,0,0,0.8)'; X.shadowBlur = 10;
+    X.fillText(clubName, rowX + logoW + 14, CLUB_MID_Y + 2);
+    X.shadowBlur = 0;
+  } else {
+    X.font = "400 52px 'Bebas Neue',sans-serif";
+    X.fillStyle = '#ffffff'; X.textAlign = 'center'; X.textBaseline = 'middle';
+    X.shadowColor = 'rgba(0,0,0,0.8)'; X.shadowBlur = 10;
+    X.fillText(clubName, 540, CLUB_MID_Y);
+    X.shadowBlur = 0;
+  }
+
+  // ── CTA ──
+  if (cta) {
+    const ctaG = X.createLinearGradient(200, 0, 880, 0);
+    ctaG.addColorStop(0, '#f0c040'); ctaG.addColorStop(1, '#ffd700');
+    X.font = "400 62px 'Bebas Neue',sans-serif";
+    X.fillStyle = ctaG; X.textAlign = 'center'; X.textBaseline = 'bottom';
+    X.shadowColor = 'rgba(0,0,0,0.8)'; X.shadowBlur = 12;
+    X.fillText(cta.toUpperCase(), 540, 1046);
+    X.shadowBlur = 0;
+  }
+
+  // ── Watermark ──
+  if (wm) {
+    X.font = "700 16px 'Orbitron',sans-serif";
+    X.fillStyle = 'rgba(255,255,255,0.25)'; X.textAlign = 'center'; X.textBaseline = 'bottom';
+    X.fillText(wm, 540, 1070);
+  }
+}
+
+// ── Export ──
+async function exportPng() {
+  document.getElementById('lov').classList.add('show');
+  // Reset to true 1080 size
+  C.style.width = '1080px'; C.style.height = '1080px';
+  await new Promise(r => setTimeout(r, 100));
+  draw();
+  await new Promise(r => setTimeout(r, 150));
+
+  C.toBlob(blob => {
+    const url = URL.createObjectURL(blob);
+    // Desktop download
+    const a = document.createElement('a');
+    a.href = url; a.download = `club_players_${Date.now()}.png`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    // Mobile fallback
+    setTimeout(() => {
+      const w = window.open();
+      if (w) {
+        w.document.write(`<html><body style="margin:0;background:#000;text-align:center">
+          <p style="color:#fff;font-family:sans-serif;padding:12px;font-size:14px">📱 Long press → Save to Gallery</p>
+          <img src="${url}" style="max-width:100%;display:block;margin:0 auto">
+        </body></html>`);
+        w.document.close();
+      }
+    }, 400);
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+    const zoom = document.querySelector('.zbar input').value;
+    setZoom(+zoom);
+    document.getElementById('lov').classList.remove('show');
+  }, 'image/png');
+}
+
+// ── Init ──
+window.addEventListener('load', () => {
+  setZoom(48);
+  setTimeout(draw, 200);
+  setTimeout(draw, 900);
+});
+</script>
+</body>
+</html>
