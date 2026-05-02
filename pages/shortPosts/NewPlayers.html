@@ -4,377 +4,357 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Club Players — Game Enclave</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@500;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#07090f;color:#fff;font-family:'Rajdhani',sans-serif;min-height:100vh}
-.hdr{background:linear-gradient(135deg,#0a0e1a,#111827);border-bottom:2px solid #f0c040;padding:11px 18px;display:flex;align-items:center;justify-content:space-between}
-.hdr-l{display:flex;flex-direction:column}
-.logo{font-family:'Orbitron',sans-serif;font-size:15px;font-weight:900;color:#f0c040;letter-spacing:2px}
+.hdr{background:#0a0e1a;border-bottom:2px solid #f0c040;padding:10px 16px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;color:#f0c040;letter-spacing:2px}
 .logo span{color:#06b6d4}
-.sub{font-size:9px;color:#94a3b8;letter-spacing:1px;margin-top:1px}
-.expbtn{background:linear-gradient(135deg,#b8860b,#ffd700);color:#0a0e1a;border:none;border-radius:7px;padding:9px 20px;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;letter-spacing:1.5px;cursor:pointer}
-.expbtn:active{opacity:.8}
-.workspace{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 50px)}
-.sb{background:#0d1120;border-right:1px solid #1e2d4a;padding:12px 12px;overflow-y:auto;max-height:calc(100vh - 50px)}
-.sec{font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:3px;color:#f0c040;text-transform:uppercase;margin:14px 0 7px;padding-bottom:4px;border-bottom:1px solid #1e2d4a}
+.expbtn{background:linear-gradient(135deg,#b8860b,#ffd700);color:#0a0e1a;border:none;border-radius:6px;padding:8px 18px;font-family:'Orbitron',sans-serif;font-size:10px;font-weight:900;letter-spacing:1px;cursor:pointer}
+.workspace{display:grid;grid-template-columns:260px 1fr;min-height:calc(100vh - 48px)}
+.sb{background:#0d1120;border-right:1px solid #1e2d4a;padding:12px;overflow-y:auto;max-height:calc(100vh - 48px)}
+.sec{font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:2px;color:#f0c040;margin:12px 0 6px;padding-bottom:4px;border-bottom:1px solid #1e2d4a}
 .sec:first-child{margin-top:0}
-.cl{font-size:9px;font-weight:700;color:#06b6d4;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;margin-top:7px;display:block}
-.cl:first-child{margin-top:0}
-input[type=text],select{width:100%;background:#0a0e1a;border:1px solid #1e2d4a;border-radius:5px;color:#fff;font-family:'Rajdhani',sans-serif;font-size:13px;padding:6px 8px;outline:none;transition:border-color .2s}
+.cl{font-size:9px;font-weight:700;color:#06b6d4;letter-spacing:1px;text-transform:uppercase;margin:6px 0 3px;display:block}
+input[type=text],select{width:100%;background:#0a0e1a;border:1px solid #1e2d4a;border-radius:4px;color:#fff;font-family:'Rajdhani',sans-serif;font-size:12px;padding:5px 7px;outline:none}
 input:focus,select:focus{border-color:#f0c040}
-.r2{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.pb{background:#111827;border:1px solid #1e2d4a;border-radius:7px;padding:9px;margin-bottom:7px}
-.pbt{font-family:'Orbitron',sans-serif;font-size:8px;color:#f0c040;letter-spacing:2px;margin-bottom:7px}
-.upl{border:2px dashed #1e2d4a;border-radius:6px;padding:8px;text-align:center;cursor:pointer;position:relative;overflow:hidden;transition:border-color .2s;margin-top:5px}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.pb{background:#111827;border:1px solid #1e2d4a;border-radius:6px;padding:8px;margin-bottom:6px}
+.pbt{font-family:'Orbitron',sans-serif;font-size:7px;color:#f0c040;letter-spacing:2px;margin-bottom:6px}
+.upl{border:2px dashed #1e2d4a;border-radius:5px;padding:7px;text-align:center;cursor:pointer;position:relative;overflow:hidden;margin-top:4px}
 .upl:hover{border-color:#f0c040}
 .upl input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
-.upl-ic{font-size:18px;display:block}
-.upl-tx{font-size:9px;color:#94a3b8}
-.upl-prev{width:100%;height:55px;object-fit:contain;border-radius:4px;margin-top:5px;display:none;background:#0a0e1a}
-.bgs{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
-.bsw{width:26px;height:26px;border-radius:50%;cursor:pointer;border:2px solid transparent;flex-shrink:0}
+.upl-ic{font-size:16px;display:block}
+.upl-tx{font-size:8px;color:#94a3b8}
+.upl-prev{width:100%;height:50px;object-fit:contain;border-radius:3px;margin-top:4px;display:none;background:#0a0e1a}
+.bgs{display:flex;gap:5px;flex-wrap:wrap;margin-top:3px}
+.bsw{width:24px;height:24px;border-radius:50%;cursor:pointer;border:2px solid transparent}
 .bsw.on,.bsw:hover{border-color:#f0c040}
-.ca{display:flex;flex-direction:column;align-items:center;padding:18px 12px;background:#07090f;overflow-y:auto;gap:10px}
-.zbar{display:flex;align-items:center;gap:10px;background:#0d1120;border:1px solid #1e2d4a;border-radius:7px;padding:7px 14px;align-self:stretch}
-.zbar label{font-size:10px;color:#94a3b8}
+.ca{display:flex;flex-direction:column;align-items:center;padding:16px 10px;background:#07090f;overflow-y:auto;gap:8px}
+.zbar{display:flex;align-items:center;gap:8px;background:#0d1120;border:1px solid #1e2d4a;border-radius:6px;padding:6px 12px;align-self:stretch}
+.zbar label{font-size:9px;color:#94a3b8}
 .zbar input[type=range]{flex:1;accent-color:#f0c040}
-.zbar span{font-size:10px;color:#f0c040;min-width:32px;text-align:right}
+.zbar span{font-size:9px;color:#f0c040;min-width:30px;text-align:right}
 canvas{display:block}
-#lov{display:none;position:fixed;inset:0;background:rgba(7,9,15,.9);z-index:999;align-items:center;justify-content:center;flex-direction:column;gap:12px}
+#lov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:999;align-items:center;justify-content:center;flex-direction:column;gap:10px}
 #lov.show{display:flex}
-.ring{width:46px;height:46px;border:4px solid #1e2d4a;border-top-color:#f0c040;border-radius:50%;animation:sp .8s linear infinite}
+.ring{width:44px;height:44px;border:3px solid #1e2d4a;border-top-color:#f0c040;border-radius:50%;animation:sp .8s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
-.ltx{font-family:'Orbitron',sans-serif;font-size:12px;color:#f0c040;letter-spacing:2px}
+.ltx{font-family:'Orbitron',sans-serif;font-size:11px;color:#f0c040;letter-spacing:2px}
 ::-webkit-scrollbar{width:4px}
-::-webkit-scrollbar-track{background:#07090f}
 ::-webkit-scrollbar-thumb{background:#1e2d4a;border-radius:2px}
 </style>
 </head>
 <body>
 <div id="lov"><div class="ring"></div><div class="ltx">EXPORTING...</div></div>
 <header class="hdr">
-  <div class="hdr-l"><div class="logo">GAME<span>ENCLAVE</span></div><div class="sub">CLUB PLAYERS CREATOR</div></div>
+  <div class="logo">GAME<span>ENCLAVE</span> <span style="color:#94a3b8;font-size:9px;font-weight:400">CLUB PLAYERS</span></div>
   <button class="expbtn" onclick="doExport()">⬇ EXPORT PNG</button>
 </header>
 <div class="workspace">
 <aside class="sb">
-  <div class="sec">Post Text</div>
-  <label class="cl">Event Title</label><input type="text" id="g-title" value="TEAM OF THE SEASON" oninput="draw()">
-  <label class="cl">Subtitle</label><input type="text" id="g-sub" value="EA SPORTS FC™ //// TOTS" oninput="draw()">
-  <label class="cl">Club Name</label><input type="text" id="club-name" value="FC BAYERN MÜNCHEN" oninput="draw()">
-  <label class="cl">Bottom CTA</label><input type="text" id="g-cta" value="ATTACKERS" oninput="draw()">
-  <label class="cl">Watermark</label><input type="text" id="g-wm" value="@game_enclaveofficial" oninput="draw()">
+
+  <div class="sec">Text</div>
+  <label class="cl">Game Name</label>
+  <input type="text" id="g-game" value="FC MOBILE" oninput="draw()">
+  <label class="cl">Event Name</label>
+  <input type="text" id="g-event" value="TEAM OF THE SEASON" oninput="draw()">
+  <label class="cl">Club / League Name</label>
+  <input type="text" id="g-club" value="FC BAYERN MÜNCHEN" oninput="draw()">
+  <label class="cl">Bottom CTA</label>
+  <input type="text" id="g-cta" value="ATTACKERS" oninput="draw()">
+  <label class="cl">Watermark</label>
+  <input type="text" id="g-wm" value="@game_enclaveofficial" oninput="draw()">
+
   <div class="sec">Background</div>
   <div class="bgs">
-    <div class="bsw on" style="background:radial-gradient(circle,#1e1460,#0a0e1a)" onclick="setBg(0,this)"></div>
-    <div class="bsw" style="background:radial-gradient(circle,#0c2461,#050d1a)" onclick="setBg(1,this)"></div>
+    <div class="bsw on" style="background:radial-gradient(circle,#1e1460,#08091a)" onclick="setBg(0,this)"></div>
+    <div class="bsw" style="background:radial-gradient(circle,#0c2461,#04091a)" onclick="setBg(1,this)"></div>
     <div class="bsw" style="background:radial-gradient(circle,#1a0a3a,#050710)" onclick="setBg(2,this)"></div>
-    <div class="bsw" style="background:radial-gradient(circle,#0a1f0a,#050d05)" onclick="setBg(3,this)"></div>
-    <div class="bsw" style="background:radial-gradient(circle,#1a0505,#100205)" onclick="setBg(4,this)"></div>
-    <div class="bsw" style="background:radial-gradient(circle,#1a1200,#0a0800)" onclick="setBg(5,this)"></div>
+    <div class="bsw" style="background:radial-gradient(circle,#0a1f0a,#040d04)" onclick="setBg(3,this)"></div>
+    <div class="bsw" style="background:radial-gradient(circle,#1a0505,#0a0202)" onclick="setBg(4,this)"></div>
+    <div class="bsw" style="background:radial-gradient(circle,#1a1200,#080600)" onclick="setBg(5,this)"></div>
   </div>
-  <div class="sec">Club Logo</div>
-  <div class="upl"><input type="file" accept="image/*" onchange="loadClub(event)"><span class="upl-ic">🏟️</span><span class="upl-tx">Upload logo</span></div>
-  <img class="upl-prev" id="club-prev">
-  <div class="sec">Players</div>
-  <div class="pb">
-    <div class="pbt">PLAYER 1 — LEFT</div>
-    <div class="r2">
-      <div><label class="cl">Card Type</label><select id="p0t" onchange="draw()"><option>TOTS</option><option>ICON</option><option>HERO</option><option>TOTY</option><option>OTW</option><option>POTM</option></select></div>
-      <div><label class="cl">Position</label><input type="text" id="p0p" value="LW" oninput="draw()"></div>
-    </div>
-    <div class="upl"><input type="file" accept="image/*" onchange="loadP(event,0)"><span class="upl-ic">📸</span><span class="upl-tx">Player photo</span></div>
-    <img class="upl-prev" id="pp0">
-  </div>
-  <div class="pb">
-    <div class="pbt">PLAYER 2 — CENTER</div>
-    <div class="r2">
-      <div><label class="cl">Card Type</label><select id="p1t" onchange="draw()"><option>TOTS</option><option>ICON</option><option>HERO</option><option>TOTY</option><option>OTW</option><option>POTM</option></select></div>
-      <div><label class="cl">Position</label><input type="text" id="p1p" value="ST" oninput="draw()"></div>
-    </div>
-    <div class="upl"><input type="file" accept="image/*" onchange="loadP(event,1)"><span class="upl-ic">📸</span><span class="upl-tx">Player photo</span></div>
-    <img class="upl-prev" id="pp1">
-  </div>
-  <div class="pb">
-    <div class="pbt">PLAYER 3 — RIGHT</div>
-    <div class="r2">
-      <div><label class="cl">Card Type</label><select id="p2t" onchange="draw()"><option>TOTS</option><option>ICON</option><option>HERO</option><option>TOTY</option><option>OTW</option><option>POTM</option></select></div>
-      <div><label class="cl">Position</label><input type="text" id="p2p" value="RW" oninput="draw()"></div>
-    </div>
-    <div class="upl"><input type="file" accept="image/*" onchange="loadP(event,2)"><span class="upl-ic">📸</span><span class="upl-tx">Player photo</span></div>
-    <img class="upl-prev" id="pp2">
-  </div>
+
+  <div class="sec">Club Logo (optional)</div>
+  <div class="upl"><input type="file" accept="image/*" onchange="loadImg(event,'club')"><span class="upl-ic">🏟️</span><span class="upl-tx">Upload</span></div>
+  <img class="upl-prev" id="prev-club">
+
+  <div class="sec">Player 1 — Left</div>
+  <div class="upl"><input type="file" accept="image/*" onchange="loadImg(event,0)"><span class="upl-ic">📸</span><span class="upl-tx">Upload card image</span></div>
+  <img class="upl-prev" id="prev0">
+
+  <div class="sec">Player 2 — Center</div>
+  <div class="upl"><input type="file" accept="image/*" onchange="loadImg(event,1)"><span class="upl-ic">📸</span><span class="upl-tx">Upload card image</span></div>
+  <img class="upl-prev" id="prev1">
+
+  <div class="sec">Player 3 — Right</div>
+  <div class="upl"><input type="file" accept="image/*" onchange="loadImg(event,2)"><span class="upl-ic">📸</span><span class="upl-tx">Upload card image</span></div>
+  <img class="upl-prev" id="prev2">
+
 </aside>
 <main class="ca">
   <div class="zbar">
     <label>ZOOM</label>
-    <input type="range" min="15" max="80" value="46" oninput="setZoom(+this.value)">
-    <span id="zv">46%</span>
+    <input type="range" min="15" max="80" value="42" oninput="setZoom(+this.value)">
+    <span id="zv">42%</span>
   </div>
-  <canvas id="cvs" width="1080" height="1080"></canvas>
+  <canvas id="cvs"></canvas>
 </main>
 </div>
+
 <script>
 const C = document.getElementById('cvs');
 const X = C.getContext('2d');
+
+// Canvas size — 1:1 square like reference
+const CW = 1080, CH = 1080;
+
 let bgIdx = 0;
-const clubImg = {img:null};
-const PL = [{img:null,type:'TOTS',pos:'LW'},{img:null,type:'TOTS',pos:'ST'},{img:null,type:'TOTS',pos:'RW'}];
-const BG = [['#1e1460','#08091a'],['#0c2461','#04091a'],['#1a0a3a','#050710'],['#0a1f0a','#040d04'],['#1a0505','#0a0202'],['#1a1200','#080600']];
-const CC = {
-  TOTS:{b1:'#f0c040',b2:'#8b6914',bg1:'#1a1060',bg2:'#060818'},
-  ICON:{b1:'#d0d8e8',b2:'#6a7490',bg1:'#1a1f30',bg2:'#080c18'},
-  HERO:{b1:'#f0a030',b2:'#a06000',bg1:'#1f0e00',bg2:'#080500'},
-  TOTY:{b1:'#c084fc',b2:'#7c3aed',bg1:'#2d0a6e',bg2:'#0a0420'},
-  OTW:{b1:'#60a5fa',b2:'#1d4ed8',bg1:'#0a1a3a',bg2:'#040a18'},
-  POTM:{b1:'#4ade80',b2:'#15803d',bg1:'#0a2010',bg2:'#040a06'}
-};
+const imgs = { club: null, 0: null, 1: null, 2: null };
 
-// Canvas dimensions — 4:5 Instagram
-const CW_CANVAS = 1080;
-const CH_CANVAS = 1350;
+const BG = [
+  ['#1e1460','#08091a'], ['#0c2461','#04091a'], ['#1a0a3a','#050710'],
+  ['#0a1f0a','#040d04'], ['#1a0505','#0a0202'], ['#1a1200','#080600']
+];
 
-const gv = id => document.getElementById(id)?.value||'';
-function setBg(i,el){bgIdx=i;document.querySelectorAll('.bsw').forEach(s=>s.classList.remove('on'));el.classList.add('on');draw();}
-function setZoom(v){
-  C.style.width=(CW_CANVAS*v/100)+'px';
-  C.style.height=(CH_CANVAS*v/100)+'px';
-  document.getElementById('zv').textContent=v+'%';
-}
-function loadClub(e){readImg(e,im=>{clubImg.img=im;showPrev('club-prev',e);draw();});}
-function loadP(e,i){readImg(e,im=>{PL[i].img=im;showPrev('pp'+i,e);draw();});}
-function showPrev(id,e){const el=document.getElementById(id);el.src=URL.createObjectURL(e.target.files[0]);el.style.display='block';}
-function readImg(e,cb){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{const im=new Image();im.onload=()=>cb(im);im.src=ev.target.result;};r.readAsDataURL(f);}
+const gv = id => document.getElementById(id)?.value || '';
 
-// ─── rounded rect path ───
-function rr(ctx,x,y,w,h,r){
-  ctx.beginPath();
-  ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.arcTo(x+w,y,x+w,y+r,r);
-  ctx.lineTo(x+w,y+h-r);ctx.arcTo(x+w,y+h,x+w-r,y+h,r);
-  ctx.lineTo(x+r,y+h);ctx.arcTo(x,y+h,x,y+h-r,r);
-  ctx.lineTo(x,y+r);ctx.arcTo(x,y,x+r,y,r);
-  ctx.closePath();
+function setBg(i, el) {
+  bgIdx = i;
+  document.querySelectorAll('.bsw').forEach(s => s.classList.remove('on'));
+  el.classList.add('on'); draw();
 }
 
-// ─── render(ctx, W, H) — 4:5 aware ───
+function setZoom(v) {
+  C.style.width  = (CW * v / 100) + 'px';
+  C.style.height = (CH * v / 100) + 'px';
+  document.getElementById('zv').textContent = v + '%';
+}
+
+function loadImg(e, key) {
+  const f = e.target.files[0]; if (!f) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const im = new Image();
+    im.onload = () => {
+      imgs[key] = im;
+      const prev = document.getElementById('prev-' + key);
+      if (prev) { prev.src = ev.target.result; prev.style.display = 'block'; }
+      draw();
+    };
+    im.src = ev.target.result;
+  };
+  reader.readAsDataURL(f);
+}
+
+// ── render on any ctx + size ──
 function render(ctx, W, H) {
-  const s = W/1080;
-  ctx.clearRect(0,0,W,H);
+  ctx.clearRect(0, 0, W, H);
+  const s = W / 1080;
 
-  // BG — fill full W×H
-  const [c1,c2]=BG[bgIdx];
-  const g=ctx.createRadialGradient(300*s,200*s,0,W/2,H/2,Math.max(W,H)*0.85);
-  g.addColorStop(0,c1);g.addColorStop(1,c2);
-  ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
-  const b1=ctx.createRadialGradient(0,0,0,0,0,600*s);
-  b1.addColorStop(0,'rgba(80,20,160,0.14)');b1.addColorStop(1,'transparent');
-  ctx.fillStyle=b1;ctx.fillRect(0,0,W,H);
-  const b2=ctx.createRadialGradient(W,H,0,W,H,500*s);
-  b2.addColorStop(0,'rgba(20,60,180,0.12)');b2.addColorStop(1,'transparent');
-  ctx.fillStyle=b2;ctx.fillRect(0,0,W,H);
+  // ── BACKGROUND ──
+  const [c1, c2] = BG[bgIdx];
+  const g = ctx.createRadialGradient(W * 0.3, H * 0.2, 0, W / 2, H / 2, Math.max(W, H) * 0.8);
+  g.addColorStop(0, c1); g.addColorStop(1, c2);
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  // ambient blobs
+  const b1 = ctx.createRadialGradient(0, 0, 0, 0, 0, W * 0.6);
+  b1.addColorStop(0, 'rgba(70,20,150,0.15)'); b1.addColorStop(1, 'transparent');
+  ctx.fillStyle = b1; ctx.fillRect(0, 0, W, H);
+  const b2 = ctx.createRadialGradient(W, H, 0, W, H, W * 0.5);
+  b2.addColorStop(0, 'rgba(20,50,180,0.13)'); b2.addColorStop(1, 'transparent');
+  ctx.fillStyle = b2; ctx.fillRect(0, 0, W, H);
 
-  const title=gv('g-title'),sub=gv('g-sub'),cta=gv('g-cta'),clubName=gv('club-name'),wm=gv('g-wm');
-  PL.forEach((_,i)=>{PL[i].type=document.getElementById('p'+i+'t').value;PL[i].pos=document.getElementById('p'+i+'p').value;});
+  const gameName = gv('g-game');
+  const eventName = gv('g-event');
+  const clubName = gv('g-club');
+  const cta = gv('g-cta');
+  const wm = gv('g-wm');
 
-  // ── HEADER ──
-  // FC MOBILE centered
-  ctx.font=`900 ${58*s}px 'Orbitron',sans-serif`;
-  ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='top';
-  ctx.shadowColor='rgba(0,0,0,0.8)';ctx.shadowBlur=14*s;
-  ctx.fillText('FC MOBILE',W/2,24*s);
-  ctx.shadowBlur=0;
+  // ── SECTION 1: HEADER ──
+  // EA badge + Game name on same line, centered together
 
-  // EA badge — left of text, vertically centered
-  const fcW=ctx.measureText('FC MOBILE').width;
-  const fcCY=24*s+29*s; // text vertical center
-  const bR=26*s;
-  const bX=W/2-fcW/2-bR-14*s;
+  // Measure game name first
+  ctx.font = `900 ${62*s}px 'Orbitron',sans-serif`;
+  const gnW = ctx.measureText(gameName).width;
+  const badgeR = 28*s;
+  const gap = 14*s;
+  const totalW = badgeR*2 + gap + gnW;
+  const startX = (W - totalW) / 2;
+  const headerCY = 60*s;
+
+  // EA badge
   ctx.save();
-  ctx.beginPath();ctx.arc(bX,fcCY,bR,0,Math.PI*2);
-  const bc=ctx.createRadialGradient(bX,fcCY,0,bX,fcCY,bR);
-  bc.addColorStop(0,'#1a2040');bc.addColorStop(1,'#0a0e1a');
-  ctx.fillStyle=bc;ctx.fill();
-  ctx.strokeStyle='#f0c040';ctx.lineWidth=2.5*s;ctx.stroke();
-  ctx.font=`900 ${9*s}px 'Orbitron',sans-serif`;
-  ctx.fillStyle='#f0c040';ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillText('EA',bX,fcCY-6*s);ctx.fillText('SPORTS',bX,fcCY+5*s);
+  ctx.beginPath(); ctx.arc(startX + badgeR, headerCY, badgeR, 0, Math.PI*2);
+  const bc = ctx.createRadialGradient(startX+badgeR, headerCY, 0, startX+badgeR, headerCY, badgeR);
+  bc.addColorStop(0, '#1a2040'); bc.addColorStop(1, '#0a0e1a');
+  ctx.fillStyle = bc; ctx.fill();
+  ctx.strokeStyle = '#f0c040'; ctx.lineWidth = 2.5*s; ctx.stroke();
+  ctx.font = `900 ${10*s}px 'Orbitron',sans-serif`;
+  ctx.fillStyle = '#f0c040'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText('EA', startX+badgeR, headerCY - 7*s);
+  ctx.fillText('SPORTS', startX+badgeR, headerCY + 6*s);
   ctx.restore();
 
-  // Title
-  if(title){
-    const words=title.trim().split(' ');
-    const lw=words.pop();const fp=words.join(' ');
-    let ty=96*s;
-    if(fp){
-      ctx.font=`400 ${40*s}px 'Bebas Neue',sans-serif`;
-      ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='top';
-      ctx.shadowColor='rgba(0,0,0,0.7)';ctx.shadowBlur=8*s;
-      ctx.fillText(fp.toUpperCase(),W/2,ty);ty+=44*s;
+  // Game name
+  ctx.font = `900 ${62*s}px 'Orbitron',sans-serif`;
+  ctx.fillStyle = '#ffffff';
+  ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+  ctx.shadowColor = 'rgba(0,0,0,0.8)'; ctx.shadowBlur = 12*s;
+  ctx.fillText(gameName, startX + badgeR*2 + gap, headerCY);
+  ctx.shadowBlur = 0;
+
+  // ── SECTION 2: EVENT NAME ──
+  // Split last word big (like TEAM OF THE | SEASON)
+  let headerBottom = headerCY + badgeR + 18*s;
+
+  if (eventName) {
+    const words = eventName.trim().split(' ');
+    const lastWord = words.pop();
+    const firstPart = words.join(' ');
+    if (firstPart) {
+      ctx.font = `400 ${36*s}px 'Bebas Neue',sans-serif`;
+      ctx.fillStyle = '#ffffff'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+      ctx.shadowColor = 'rgba(0,0,0,0.6)'; ctx.shadowBlur = 6*s;
+      ctx.fillText(firstPart.toUpperCase(), W/2, headerBottom);
+      headerBottom += 38*s;
     }
-    ctx.font=`400 ${96*s}px 'Bebas Neue',sans-serif`;
-    ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='top';
-    ctx.shadowColor='rgba(0,0,0,0.9)';ctx.shadowBlur=16*s;
-    ctx.fillText(lw.toUpperCase(),W/2,ty);ctx.shadowBlur=0;ty+=100*s;
-    if(sub){
-      ctx.font=`700 ${14*s}px 'Rajdhani',sans-serif`;
-      ctx.fillStyle='#94a3b8';ctx.textAlign='center';ctx.textBaseline='top';
-      ctx.fillText(sub.toUpperCase(),W/2,ty+4*s);
-    }
+    ctx.font = `400 ${88*s}px 'Bebas Neue',sans-serif`;
+    ctx.fillStyle = '#ffffff'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.shadowColor = 'rgba(0,0,0,0.8)'; ctx.shadowBlur = 10*s;
+    ctx.fillText(lastWord.toUpperCase(), W/2, headerBottom);
+    headerBottom += 92*s;
+    ctx.shadowBlur = 0;
   }
 
-  // CARDS - full bleed image approach
-  const PAD=16*s, GAP=14*s;
-  const CARD_W=(W-PAD*2-GAP*2)/3;
-  const CARD_H=CARD_W*1.42;
-  const CY=295*s;
+  // ── SECTION 3: PLAYER IMAGES ──
+  // 3 images side by side, slight vertical padding from header
+  // Images just placed as-is — no card frame, no border
+  // User uploads the actual FC Mobile card PNG — that IS the card
 
-  PL.forEach((p,i)=>{
-    const cx=PAD+i*(CARD_W+GAP), cy=CY;
-    const cc=CC[p.type]||CC.TOTS;
-    const R=16*(CARD_W/(343*s));
-    const sc_r=CARD_W/(343*s);
+  const imgY = headerBottom + 20*s;
+  const imgPad = 14*s;   // outer padding
+  const imgGap = 10*s;   // gap between cards
+  const imgW = (W - imgPad*2 - imgGap*2) / 3;
+  const imgH = imgW * 1.42; // natural FC card ratio
 
-    // Step 1: dark fallback bg
-    ctx.save();
-    rr(ctx,cx,cy,CARD_W,CARD_H,R); ctx.clip();
-    const cbg=ctx.createLinearGradient(cx,cy,cx,cy+CARD_H);
-    cbg.addColorStop(0,cc.bg1); cbg.addColorStop(1,cc.bg2);
-    ctx.fillStyle=cbg; ctx.fillRect(cx,cy,CARD_W,CARD_H);
-    ctx.restore();
+  for (let i = 0; i < 3; i++) {
+    const ix = imgPad + i * (imgW + imgGap);
+    const iy = imgY;
 
-    // Step 2: image full bleed cover
-    if(p.img){
-      ctx.save();
-      rr(ctx,cx,cy,CARD_W,CARD_H,R); ctx.clip();
-      const iw=p.img.naturalWidth||p.img.width;
-      const ih=p.img.naturalHeight||p.img.height;
-      const sc=Math.max(CARD_W/iw, CARD_H/ih);
-      const dw=iw*sc, dh=ih*sc;
-      ctx.drawImage(p.img, cx+(CARD_W-dw)/2, cy, dw, dh);
-      ctx.restore();
+    if (imgs[i]) {
+      // Draw image as-is, contain fit so full card is visible
+      const iw = imgs[i].naturalWidth  || imgs[i].width;
+      const ih = imgs[i].naturalHeight || imgs[i].height;
+      // Contain: fit entire image inside the slot
+      const scale = Math.min(imgW / iw, imgH / ih);
+      const dw = iw * scale, dh = ih * scale;
+      const dx = ix + (imgW - dw) / 2;
+      const dy = iy + (imgH - dh) / 2;
+      ctx.drawImage(imgs[i], dx, dy, dw, dh);
     } else {
+      // Placeholder box
       ctx.save();
-      rr(ctx,cx,cy,CARD_W,CARD_H,R); ctx.clip();
-      ctx.globalAlpha=0.12; ctx.font=`${110*sc_r}px serif`;
-      ctx.textAlign='center'; ctx.textBaseline='middle';
-      ctx.fillStyle='#fff'; ctx.fillText('\u26BD',cx+CARD_W/2,cy+CARD_H/2);
-      ctx.globalAlpha=1; ctx.restore();
+      ctx.fillStyle = 'rgba(255,255,255,0.04)';
+      ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+      ctx.lineWidth = 1.5*s;
+      ctx.beginPath();
+      ctx.roundRect(ix, iy, imgW, imgH, 10*s);
+      ctx.fill(); ctx.stroke();
+      ctx.font = `${60*s}px serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillStyle = 'rgba(255,255,255,0.15)';
+      ctx.fillText('📸', ix + imgW/2, iy + imgH/2);
+      ctx.restore();
     }
-
-    // Step 3: vignette edges
-    ctx.save();
-    rr(ctx,cx,cy,CARD_W,CARD_H,R); ctx.clip();
-    const tF=ctx.createLinearGradient(0,cy,0,cy+CARD_H*0.14);
-    tF.addColorStop(0,'rgba(0,0,0,0.38)'); tF.addColorStop(1,'transparent');
-    ctx.fillStyle=tF; ctx.fillRect(cx,cy,CARD_W,CARD_H*0.14);
-    const bF=ctx.createLinearGradient(0,cy+CARD_H*0.72,0,cy+CARD_H);
-    bF.addColorStop(0,'transparent'); bF.addColorStop(1,'rgba(0,0,0,0.48)');
-    ctx.fillStyle=bF; ctx.fillRect(cx,cy+CARD_H*0.72,CARD_W,CARD_H*0.28);
-    const lF=ctx.createLinearGradient(cx,0,cx+CARD_W*0.07,0);
-    lF.addColorStop(0,'rgba(0,0,0,0.22)'); lF.addColorStop(1,'transparent');
-    ctx.fillStyle=lF; ctx.fillRect(cx,cy,CARD_W*0.07,CARD_H);
-    const rF=ctx.createLinearGradient(cx+CARD_W*0.93,0,cx+CARD_W,0);
-    rF.addColorStop(0,'transparent'); rF.addColorStop(1,'rgba(0,0,0,0.22)');
-    ctx.fillStyle=rF; ctx.fillRect(cx+CARD_W*0.93,cy,CARD_W*0.07,CARD_H);
-    ctx.restore();
-
-    // Step 4: 3D top-left shine
-    ctx.save();
-    rr(ctx,cx,cy,CARD_W,CARD_H,R); ctx.clip();
-    const sh=ctx.createLinearGradient(cx,cy,cx+CARD_W*0.5,cy+CARD_H*0.35);
-    sh.addColorStop(0,'rgba(255,255,255,0.16)');
-    sh.addColorStop(0.6,'rgba(255,255,255,0.02)');
-    sh.addColorStop(1,'transparent');
-    ctx.fillStyle=sh; ctx.fillRect(cx,cy,CARD_W,CARD_H);
-    ctx.restore();
-
-    // Step 5: thin border + light glow (like reference)
-    ctx.save();
-    // soft glow — not too heavy
-    ctx.shadowColor=cc.b1;
-    ctx.shadowBlur=12*sc_r;
-    rr(ctx,cx+1.5,cy+1.5,CARD_W-3,CARD_H-3,R);
-    ctx.strokeStyle=cc.b1;
-    ctx.lineWidth=2.2*sc_r;
-    ctx.globalAlpha=0.88;
-    ctx.stroke();
-    ctx.restore();
-  });
-
-    // ── CLUB ROW ──
-  const clubMidY=CY+CARD_H+46*s;
-  ctx.font=`400 ${50*s}px 'Bebas Neue',sans-serif`;
-  const cg=ctx.createLinearGradient(200*s,0,880*s,0);
-  cg.addColorStop(0,'#f0c040');cg.addColorStop(0.5,'#fff8dc');cg.addColorStop(1,'#f0c040');
-
-  if(clubImg.img){
-    const lsz=58*s;
-    const tw=ctx.measureText(clubName).width;
-    const rowW=lsz+12*s+tw;
-    const rowX=(W-rowW)/2;
-    ctx.drawImage(clubImg.img,rowX,clubMidY-lsz/2,lsz,lsz);
-    ctx.fillStyle=cg;ctx.textAlign='left';ctx.textBaseline='middle';
-    ctx.shadowColor='rgba(0,0,0,0.7)';ctx.shadowBlur=10*s;
-    ctx.fillText(clubName,rowX+lsz+12*s,clubMidY);ctx.shadowBlur=0;
-  } else {
-    ctx.fillStyle=cg;ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.shadowColor='rgba(0,0,0,0.7)';ctx.shadowBlur=10*s;
-    ctx.fillText(clubName,W/2,clubMidY);ctx.shadowBlur=0;
   }
 
-  // ── CTA — 44px below club name ──
-  const ctaY=clubMidY+44*s;
-  if(cta){
-    const ctaG=ctx.createLinearGradient(200*s,0,880*s,0);
-    ctaG.addColorStop(0,'#f0c040');ctaG.addColorStop(1,'#ffd700');
-    ctx.font=`400 ${60*s}px 'Bebas Neue',sans-serif`;
-    ctx.fillStyle=ctaG;ctx.textAlign='center';ctx.textBaseline='top';
-    ctx.shadowColor='rgba(0,0,0,0.8)';ctx.shadowBlur=14*s;
-    ctx.fillText(cta.toUpperCase(),W/2,ctaY);ctx.shadowBlur=0;
+  // ── SECTION 4: CLUB NAME + CTA + WATERMARK ──
+  const textY = imgY + imgH + 28*s;
+
+  // Club name — white, medium
+  if (clubName) {
+    // Optional club logo
+    ctx.font = `400 ${44*s}px 'Bebas Neue',sans-serif`;
+    if (imgs.club) {
+      const lsz = 52*s;
+      const tw = ctx.measureText(clubName).width;
+      const rowW = lsz + 10*s + tw;
+      const rowX = (W - rowW) / 2;
+      ctx.drawImage(imgs.club, rowX, textY - lsz/2 + 22*s, lsz, lsz);
+      ctx.fillStyle = '#ffffff'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+      ctx.shadowColor = 'rgba(0,0,0,0.7)'; ctx.shadowBlur = 8*s;
+      ctx.fillText(clubName, rowX + lsz + 10*s, textY + 22*s);
+      ctx.shadowBlur = 0;
+    } else {
+      ctx.fillStyle = '#ffffff'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+      ctx.shadowColor = 'rgba(0,0,0,0.7)'; ctx.shadowBlur = 8*s;
+      ctx.fillText(clubName, W/2, textY);
+      ctx.shadowBlur = 0;
+    }
   }
 
-  // ── WATERMARK — 28px below CTA ──
-  if(wm){
-    const wmY=ctaY+(cta?64*s:0)+16*s;
-    ctx.font=`700 ${15*s}px 'Orbitron',sans-serif`;
-    ctx.fillStyle='rgba(255,255,255,0.22)';ctx.textAlign='center';ctx.textBaseline='top';
-    ctx.fillText(wm,W/2,wmY);
+  // CTA — gold, big
+  if (cta) {
+    const ctaY = textY + 50*s;
+    const ctaG = ctx.createLinearGradient(W*0.2, 0, W*0.8, 0);
+    ctaG.addColorStop(0, '#f0c040'); ctaG.addColorStop(1, '#ffd700');
+    ctx.font = `400 ${58*s}px 'Bebas Neue',sans-serif`;
+    ctx.fillStyle = ctaG; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.shadowColor = 'rgba(0,0,0,0.8)'; ctx.shadowBlur = 10*s;
+    ctx.fillText(cta.toUpperCase(), W/2, ctaY);
+    ctx.shadowBlur = 0;
+  }
+
+  // Watermark
+  if (wm) {
+    const wmY = textY + 50*s + 66*s;
+    ctx.font = `700 ${14*s}px 'Orbitron',sans-serif`;
+    ctx.fillStyle = 'rgba(255,255,255,0.22)'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.fillText(wm, W/2, wmY);
   }
 }
 
-function draw(){ render(X, CW_CANVAS, CH_CANVAS); }
+function draw() { render(X, CW, CH); }
 
-async function doExport(){
+async function doExport() {
   document.getElementById('lov').classList.add('show');
-  await new Promise(r=>setTimeout(r,60));
-  const EW=2160, EH=2700;
-  const oc=document.createElement('canvas');
-  oc.width=EW; oc.height=EH;
-  const ox=oc.getContext('2d');
-  render(ox, EW, EH);
-  await new Promise(r=>setTimeout(r,120));
-  oc.toBlob(blob=>{
-    if(!blob){alert('Export failed');document.getElementById('lov').classList.remove('show');return;}
-    const url=URL.createObjectURL(blob);
-    const a=document.createElement('a');
-    a.href=url;a.download=`club_players_${Date.now()}.png`;
-    document.body.appendChild(a);a.click();document.body.removeChild(a);
-    setTimeout(()=>{
-      const w=window.open('','_blank');
-      if(w){w.document.write(`<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><style>*{margin:0;padding:0}body{background:#000;display:flex;flex-direction:column;align-items:center;padding:14px;gap:10px}p{color:#fff;font-family:sans-serif;font-size:14px;text-align:center}img{max-width:100%;border-radius:8px}</style></head><body><p>📱 Long press → Save to Photos</p><img src="${url}"></body></html>`);w.document.close();}
-    },300);
-    setTimeout(()=>URL.revokeObjectURL(url),6000);
+  await new Promise(r => setTimeout(r, 60));
+
+  // 2x export
+  const oc = document.createElement('canvas');
+  oc.width = CW * 2; oc.height = CH * 2;
+  render(oc.getContext('2d'), CW * 2, CH * 2);
+
+  await new Promise(r => setTimeout(r, 100));
+
+  oc.toBlob(blob => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `club_players_${Date.now()}.png`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(() => {
+      const w = window.open('', '_blank');
+      if (w) {
+        w.document.write(`<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1">
+        <style>*{margin:0;padding:0}body{background:#000;display:flex;flex-direction:column;align-items:center;padding:12px;gap:8px}
+        p{color:#fff;font-family:sans-serif;font-size:13px;text-align:center}img{max-width:100%;border-radius:6px}</style></head>
+        <body><p>📱 Long press → Save to Photos</p><img src="${url}"></body></html>`);
+        w.document.close();
+      }
+    }, 300);
+    setTimeout(() => URL.revokeObjectURL(url), 6000);
     setZoom(+document.querySelector('.zbar input').value);
     document.getElementById('lov').classList.remove('show');
-  },'image/png');
+  }, 'image/png');
 }
 
-window.addEventListener('load',()=>{
-  C.width=CW_CANVAS; C.height=CH_CANVAS;
-  setZoom(36);
-  setTimeout(draw,200);
-  setTimeout(draw,1000);
+window.addEventListener('load', () => {
+  C.width = CW; C.height = CH;
+  setZoom(42);
+  setTimeout(draw, 200);
+  setTimeout(draw, 900);
 });
 </script>
 </body>
