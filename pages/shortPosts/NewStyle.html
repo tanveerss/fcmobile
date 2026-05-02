@@ -246,20 +246,12 @@ function buildPanel() {
     <div class="pb">
       <div class="pbt">PLAYER ${i+1}</div>
       <div class="r2 cg">
-        <div><label class="cl">Name</label><input type="text" id="p${i}name" value="${p.name}" oninput="sync(${i})"></div>
-        <div><label class="cl">Type</label>
+        <div><label class="cl">Card Type</label>
           <select id="p${i}type" onchange="sync(${i})">
             ${['TOTS','ICON','HERO','TOTY','OTW','POTM'].map(v=>`<option value="${v}"${p.type===v?' selected':''}>${v}</option>`).join('')}
           </select>
         </div>
-      </div>
-      <div class="r2 cg">
-        <div><label class="cl">Rating</label><input type="number" id="p${i}rat" value="${p.rat}" min="1" max="200" oninput="sync(${i})"></div>
         <div><label class="cl">Position</label><input type="text" id="p${i}pos" value="${p.pos}" oninput="sync(${i})"></div>
-      </div>
-      <div class="r2 cg">
-        <div><label class="cl">Flag 🏳️</label><input type="text" id="p${i}flag" value="${p.flag}" oninput="sync(${i})"></div>
-        <div><label class="cl">League 🏆</label><input type="text" id="p${i}lg" value="${p.lg}" oninput="sync(${i})"></div>
       </div>
       ${rankHtml}
       <label class="cl">Player Photo</label>
@@ -271,12 +263,8 @@ function buildPanel() {
 
 function sync(i) {
   const p = PD[tmpl][i];
-  p.name = document.getElementById(`p${i}name`).value;
-  p.rat  = document.getElementById(`p${i}rat`).value;
-  p.pos  = document.getElementById(`p${i}pos`).value;
   p.type = document.getElementById(`p${i}type`).value;
-  p.flag = document.getElementById(`p${i}flag`).value;
-  p.lg   = document.getElementById(`p${i}lg`).value;
+  p.pos  = document.getElementById(`p${i}pos`).value;
   if (tmpl==='top3') p.rank = document.getElementById(`p${i}rank`).value;
   draw();
 }
@@ -383,6 +371,7 @@ function drawCard(x, y, w, h, p) {
   const r = 14;
 
   X.save();
+  // Clip to rounded rect
   X.beginPath();
   X.moveTo(x+r,y); X.lineTo(x+w-r,y); X.arcTo(x+w,y,x+w,y+r,r);
   X.lineTo(x+w,y+h-r); X.arcTo(x+w,y+h,x+w-r,y+h,r);
@@ -391,83 +380,39 @@ function drawCard(x, y, w, h, p) {
   X.closePath();
   X.clip();
 
-  // Card background gradient
+  // Dark bg fallback
   const bg = X.createLinearGradient(x,y,x,y+h);
   bg.addColorStop(0,cc.bg1); bg.addColorStop(1,cc.bg2);
   X.fillStyle=bg; X.fillRect(x,y,w,h);
 
-  // Player image — full card, object-fit: contain top-center
-  const imgH = h - 90; // leave room for header + footer
-  const imgY = y + 72;
   if (p.img) {
+    // COVER fill — image fills entire card, crop from center
     const iw = p.img.width, ih = p.img.height;
-    const scale = Math.min(w/iw, imgH/ih);
-    const dw = iw*scale, dh = ih*scale;
-    const dx = x + (w-dw)/2;
-    const dy = imgY;
+    const scaleX = w / iw, scaleY = h / ih;
+    const scale = Math.max(scaleX, scaleY); // cover = max
+    const dw = iw * scale, dh = ih * scale;
+    const dx = x + (w - dw) / 2;
+    const dy = y + (h - dh) / 2;
     X.drawImage(p.img, dx, dy, dw, dh);
   } else {
-    // placeholder soccer ball
-    X.font='72px serif'; X.textAlign='center'; X.textBaseline='middle';
-    X.globalAlpha=0.18; X.fillStyle='#fff';
-    X.fillText('⚽', x+w/2, imgY+imgH/2);
+    // Placeholder
+    X.font='80px serif'; X.textAlign='center'; X.textBaseline='middle';
+    X.globalAlpha=0.15; X.fillStyle='#fff';
+    X.fillText('⚽', x+w/2, y+h/2);
     X.globalAlpha=1;
   }
 
-  // Bottom gradient fade
-  const fade = X.createLinearGradient(0,y+h-90,0,y+h);
-  fade.addColorStop(0,'transparent'); fade.addColorStop(1,'rgba(0,0,0,0.92)');
-  X.fillStyle=fade; X.fillRect(x,y+h-90,w,90);
-
-  // Top gradient (for rating readability)
-  const topFade = X.createLinearGradient(0,y,0,y+85);
-  topFade.addColorStop(0,'rgba(0,0,0,0.75)'); topFade.addColorStop(1,'transparent');
-  X.fillStyle=topFade; X.fillRect(x,y,w,85);
-
-  // Rating
-  X.font=`900 ${Math.round(w*0.22)}px 'Bebas Neue',sans-serif`;
-  X.fillStyle='#fff'; X.textAlign='left'; X.textBaseline='top';
-  X.shadowColor='rgba(0,0,0,0.8)'; X.shadowBlur=8;
-  X.fillText(p.rat, x+12, y+10);
-
-  // Position
-  X.font=`700 ${Math.round(w*0.09)}px 'Bebas Neue',sans-serif`;
-  X.fillStyle='#aab4c8'; X.textAlign='left'; X.textBaseline='top';
-  X.fillText(p.pos, x+13, y+10+Math.round(w*0.22)+2);
-
-  // Card type badge top-right
-  X.font=`700 ${Math.round(w*0.065)}px 'Orbitron',sans-serif`;
-  X.fillStyle=cc.border1; X.textAlign='right'; X.textBaseline='top';
-  X.fillText(p.type, x+w-10, y+12);
-
-  X.shadowBlur=0;
-
-  // Player name
-  const nameSize = Math.round(w*0.095);
-  X.font=`400 ${nameSize}px 'Bebas Neue',sans-serif`;
-  X.fillStyle='#ffffff'; X.textAlign='center'; X.textBaseline='bottom';
-  X.shadowColor='rgba(0,0,0,0.9)'; X.shadowBlur=6;
-  X.fillText(p.name.toUpperCase(), x+w/2, y+h-28, w-16);
-
-  // Flag + league
-  const emojiSize = Math.round(w*0.09);
-  X.font=`${emojiSize}px serif`;
-  X.textAlign='center'; X.textBaseline='bottom';
-  X.shadowBlur=0;
-  const flagStr = [p.flag, p.lg].filter(Boolean).join('  ');
-  if (flagStr) X.fillText(flagStr, x+w/2, y+h-6);
-
   X.restore();
 
-  // Border (outside clip)
-  const bdr = X.createLinearGradient(x,y,x+w,y+h);
-  bdr.addColorStop(0,cc.border1); bdr.addColorStop(0.5,cc.border2); bdr.addColorStop(1,cc.border1);
-  strokeRoundRect(x+1.5,y+1.5,w-3,h-3,r,bdr,3.5);
-
-  // Outer glow
+  // Glowing border — drawn OUTSIDE clip so it overlays on top
   X.save();
-  X.shadowColor=cc.border1; X.shadowBlur=22;
-  strokeRoundRect(x+1.5,y+1.5,w-3,h-3,r,'transparent',0);
+  X.shadowColor = cc.border1;
+  X.shadowBlur = 28;
+  const bdr = X.createLinearGradient(x,y,x+w,y+h);
+  bdr.addColorStop(0, cc.border1);
+  bdr.addColorStop(0.5, cc.border2);
+  bdr.addColorStop(1, cc.border1);
+  strokeRoundRect(x+2, y+2, w-4, h-4, r, bdr, 4);
   X.restore();
 }
 
@@ -587,14 +532,10 @@ function drawTop3() {
   const grd = X.createLinearGradient(200,0,880,0);
   grd.addColorStop(0,'#06b6d4'); grd.addColorStop(0.5,'#c084fc'); grd.addColorStop(1,'#06b6d4');
   X.font="900 66px 'Orbitron',sans-serif";
+  if (X.measureText(cta).width > 900) X.font="900 46px 'Orbitron',sans-serif";
   X.fillStyle=grd; X.textAlign='center'; X.textBaseline='top';
   X.shadowColor='rgba(0,0,0,0.5)'; X.shadowBlur=10;
-  // Scale down if too wide
-  const ctaMeasure = X.measureText(cta);
-  if (ctaMeasure.width > 900) {
-    X.font="900 48px 'Orbitron',sans-serif";
-  }
-  X.fillText(cta, 540, 110);
+  X.fillText(cta, 540, 108);
   X.shadowBlur=0;
 
   // Sort players by rank
@@ -603,31 +544,58 @@ function drawTop3() {
   const p2 = sorted.find(p=>p.rank=='2')||sorted[1];
   const p3 = sorted.find(p=>p.rank=='3')||sorted[2];
 
-  // Layout: [2nd, 1st, 3rd]
-  const layout = [
-    {p:p2, x:30,  podH:80,  cardW:300, cardH:340, podColor:'#374151', numColor:'#9ca3af', num:'2'},
-    {p:p1, x:380, podH:120, cardW:320, cardH:380, podColor:'#92400e', numColor:'#f0c040', num:'1'},
-    {p:p3, x:730, podH:60,  cardW:300, cardH:320, podColor:'#78350f', numColor:'#cd7c2a', num:'3'},
-  ];
+  // Podium dimensions
+  const podH1=100, podH2=65, podH3=50;
+  const gap = 12;
+  const cw1=310, ch1=580; // 1st place — tallest card
+  const cw2=280, ch2=490; // 2nd
+  const cw3=280, ch3=440; // 3rd
 
-  layout.forEach(({p,x,podH,cardW,cardH,podColor,numColor,num}) => {
-    const cardY = 1080 - podH - cardH - 20;
-    drawCard(x, cardY, cardW, cardH, p);
+  const totalW = cw2+gap+cw1+gap+cw3;
+  const sx = (1080-totalW)/2;
 
-    // Podium platform
-    const podY = 1080 - podH - 20;
-    const pg = X.createLinearGradient(0,podY,0,podY+podH);
-    pg.addColorStop(0,podColor); pg.addColorStop(1,'rgba(0,0,0,0.4)');
-    fillRoundRect(x, podY, cardW, podH, 6, pg);
-    strokeRoundRect(x, podY, cardW, podH, 6, numColor, 2);
+  // x positions: [2nd, 1st, 3rd]
+  const x2 = sx, x1 = sx+cw2+gap, x3 = sx+cw2+gap+cw1+gap;
 
-    // Rank number
-    X.font=`900 ${Math.round(podH*0.55)}px 'Bebas Neue',sans-serif`;
-    X.fillStyle=numColor; X.textAlign='center'; X.textBaseline='middle';
-    X.shadowColor='rgba(0,0,0,0.8)'; X.shadowBlur=8;
-    X.fillText(num, x+cardW/2, podY+podH/2);
-    X.shadowBlur=0;
-  });
+  // Bottom of canvas with padding
+  const baseY = 1080 - 28;
+
+  // Draw order: 2nd, 3rd, 1st (1st on top visually)
+  // 2nd
+  const cardY2 = baseY - podH2 - ch2;
+  drawCard(x2, cardY2, cw2, ch2, p2);
+  const podColors2 = '#374151';
+  const pg2 = X.createLinearGradient(0,baseY-podH2,0,baseY);
+  pg2.addColorStop(0,podColors2); pg2.addColorStop(1,'rgba(0,0,0,0.5)');
+  fillRoundRect(x2, baseY-podH2, cw2, podH2, 6, pg2);
+  strokeRoundRect(x2, baseY-podH2, cw2, podH2, 6, '#9ca3af', 2);
+  X.font="900 42px 'Bebas Neue',sans-serif";
+  X.fillStyle='#9ca3af'; X.textAlign='center'; X.textBaseline='middle';
+  X.fillText('2', x2+cw2/2, baseY-podH2/2);
+
+  // 3rd
+  const cardY3 = baseY - podH3 - ch3;
+  drawCard(x3, cardY3, cw3, ch3, p3);
+  const pg3 = X.createLinearGradient(0,baseY-podH3,0,baseY);
+  pg3.addColorStop(0,'#78350f'); pg3.addColorStop(1,'rgba(0,0,0,0.5)');
+  fillRoundRect(x3, baseY-podH3, cw3, podH3, 6, pg3);
+  strokeRoundRect(x3, baseY-podH3, cw3, podH3, 6, '#cd7c2a', 2);
+  X.font="900 38px 'Bebas Neue',sans-serif";
+  X.fillStyle='#cd7c2a'; X.textAlign='center'; X.textBaseline='middle';
+  X.fillText('3', x3+cw3/2, baseY-podH3/2);
+
+  // 1st — biggest, on top visually
+  const cardY1 = baseY - podH1 - ch1;
+  drawCard(x1, cardY1, cw1, ch1, p1);
+  const pg1 = X.createLinearGradient(0,baseY-podH1,0,baseY);
+  pg1.addColorStop(0,'#92400e'); pg1.addColorStop(1,'rgba(0,0,0,0.5)');
+  fillRoundRect(x1, baseY-podH1, cw1, podH1, 6, pg1);
+  strokeRoundRect(x1, baseY-podH1, cw1, podH1, 6, '#f0c040', 2.5);
+  X.font="900 52px 'Bebas Neue',sans-serif";
+  X.fillStyle='#f0c040'; X.textAlign='center'; X.textBaseline='middle';
+  X.shadowColor='rgba(0,0,0,0.8)'; X.shadowBlur=8;
+  X.fillText('1', x1+cw1/2, baseY-podH1/2);
+  X.shadowBlur=0;
 
   drawWatermark(wm);
 }
