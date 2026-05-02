@@ -218,28 +218,32 @@ function render(ctx, W) {
   // ── CARDS ──
   const PAD=36*s, GAP=22*s;
   const CW=(W-PAD*2-GAP*2)/3;
-  const CH=CW*1.38;
+  const CH=CW*1.42;
   const CY=278*s;
-  const cardR=13*(CW/(314*s));
+  const cardR=18*(CW/(314*s));
 
   PL.forEach((p,i)=>{
     const cx=PAD+i*(CW+GAP), cy=CY;
     const cc=CC[p.type]||CC.TOTS;
 
-    // bg
+    // ── bg ──
     ctx.save();
     rr(ctx,cx,cy,CW,CH,cardR);ctx.clip();
     const cbg=ctx.createLinearGradient(cx,cy,cx,cy+CH);
     cbg.addColorStop(0,cc.bg1);cbg.addColorStop(1,cc.bg2);
     ctx.fillStyle=cbg;ctx.fillRect(cx,cy,CW,CH);
 
-    // image — contain, width-fit, top anchor
+    // ── image — COVER fill, center crop ──
     if(p.img){
       const iw=p.img.naturalWidth||p.img.width;
       const ih=p.img.naturalHeight||p.img.height;
-      const sc=CW/iw;
-      const dw=iw*sc,dh=ih*sc;
-      ctx.drawImage(p.img,cx+(CW-dw)/2,cy,dw,dh);
+      // cover: scale so image fills full card in both dimensions
+      const sc=Math.max(CW/iw, CH/ih);
+      const dw=iw*sc, dh=ih*sc;
+      // center horizontally, anchor top vertically
+      const dx=cx+(CW-dw)/2;
+      const dy=cy; // top anchor — shows player face/body
+      ctx.drawImage(p.img,dx,dy,dw,dh);
     } else {
       ctx.globalAlpha=0.1;
       ctx.font=`${80*(CW/(314*s))}px serif`;
@@ -249,55 +253,72 @@ function render(ctx, W) {
     }
     ctx.restore();
 
-    // border on top
+    // ── 3D edge effect — inner highlight top-left, shadow bottom-right ──
     ctx.save();
-    ctx.shadowColor=cc.b1;ctx.shadowBlur=28*(CW/(314*s));
+    // top-left shine
+    const shine=ctx.createLinearGradient(cx,cy,cx+CW*0.6,cy+CH*0.4);
+    shine.addColorStop(0,'rgba(255,255,255,0.18)');
+    shine.addColorStop(0.5,'rgba(255,255,255,0.04)');
+    shine.addColorStop(1,'transparent');
+    rr(ctx,cx,cy,CW,CH,cardR);ctx.clip();
+    ctx.fillStyle=shine;ctx.fillRect(cx,cy,CW,CH);
+    ctx.restore();
+
+    // ── border with glow — drawn OUTSIDE clip ──
+    ctx.save();
+    ctx.shadowColor=cc.b1;ctx.shadowBlur=32*(CW/(314*s));
     const bd=ctx.createLinearGradient(cx,cy,cx+CW,cy+CH);
-    bd.addColorStop(0,cc.b1);bd.addColorStop(0.5,cc.b2);bd.addColorStop(1,cc.b1);
-    rr(ctx,cx+2,cy+2,CW-4,CH-4,cardR);
-    ctx.strokeStyle=bd;ctx.lineWidth=4.5*(CW/(314*s));ctx.stroke();
+    bd.addColorStop(0,cc.b1);bd.addColorStop(0.4,cc.b2);bd.addColorStop(1,cc.b1);
+    rr(ctx,cx+2.5,cy+2.5,CW-5,CH-5,cardR);
+    ctx.strokeStyle=bd;ctx.lineWidth=5*(CW/(314*s));ctx.stroke();
+    ctx.restore();
+
+    // ── second inner border for 3D depth ──
+    ctx.save();
+    ctx.globalAlpha=0.4;
+    rr(ctx,cx+7*(CW/(314*s)),cy+7*(CW/(314*s)),CW-14*(CW/(314*s)),CH-14*(CW/(314*s)),cardR*0.7);
+    ctx.strokeStyle=cc.b1;ctx.lineWidth=1.5*(CW/(314*s));ctx.stroke();
     ctx.restore();
   });
 
   // ── CLUB ROW ──
-  const clubMidY=CY+CH+50*s;
-  ctx.font=`400 ${52*s}px 'Bebas Neue',sans-serif`;
+  const clubMidY=CY+CH+46*s;
+  ctx.font=`400 ${50*s}px 'Bebas Neue',sans-serif`;
   const cg=ctx.createLinearGradient(200*s,0,880*s,0);
   cg.addColorStop(0,'#f0c040');cg.addColorStop(0.5,'#fff8dc');cg.addColorStop(1,'#f0c040');
 
   if(clubImg.img){
-    const lsz=60*s;
+    const lsz=58*s;
     const tw=ctx.measureText(clubName).width;
     const rowW=lsz+12*s+tw;
     const rowX=(W-rowW)/2;
     ctx.drawImage(clubImg.img,rowX,clubMidY-lsz/2,lsz,lsz);
     ctx.fillStyle=cg;ctx.textAlign='left';ctx.textBaseline='middle';
     ctx.shadowColor='rgba(0,0,0,0.7)';ctx.shadowBlur=10*s;
-    ctx.fillText(clubName,rowX+lsz+12*s,clubMidY);
-    ctx.shadowBlur=0;
+    ctx.fillText(clubName,rowX+lsz+12*s,clubMidY);ctx.shadowBlur=0;
   } else {
     ctx.fillStyle=cg;ctx.textAlign='center';ctx.textBaseline='middle';
     ctx.shadowColor='rgba(0,0,0,0.7)';ctx.shadowBlur=10*s;
-    ctx.fillText(clubName,W/2,clubMidY);
-    ctx.shadowBlur=0;
+    ctx.fillText(clubName,W/2,clubMidY);ctx.shadowBlur=0;
   }
 
-  // ── CTA ──
+  // ── CTA — 44px below club name ──
+  const ctaY=clubMidY+44*s;
   if(cta){
     const ctaG=ctx.createLinearGradient(200*s,0,880*s,0);
     ctaG.addColorStop(0,'#f0c040');ctaG.addColorStop(1,'#ffd700');
-    ctx.font=`400 ${62*s}px 'Bebas Neue',sans-serif`;
+    ctx.font=`400 ${60*s}px 'Bebas Neue',sans-serif`;
     ctx.fillStyle=ctaG;ctx.textAlign='center';ctx.textBaseline='top';
     ctx.shadowColor='rgba(0,0,0,0.8)';ctx.shadowBlur=14*s;
-    ctx.fillText(cta.toUpperCase(),W/2,clubMidY+56*s);
-    ctx.shadowBlur=0;
+    ctx.fillText(cta.toUpperCase(),W/2,ctaY);ctx.shadowBlur=0;
   }
 
-  // ── WATERMARK ──
+  // ── WATERMARK — 28px below CTA ──
   if(wm){
-    ctx.font=`700 ${16*s}px 'Orbitron',sans-serif`;
-    ctx.fillStyle='rgba(255,255,255,0.22)';ctx.textAlign='center';ctx.textBaseline='bottom';
-    ctx.fillText(wm,W/2,W-14*s);
+    const wmY=ctaY+(cta?64*s:0)+16*s;
+    ctx.font=`700 ${15*s}px 'Orbitron',sans-serif`;
+    ctx.fillStyle='rgba(255,255,255,0.22)';ctx.textAlign='center';ctx.textBaseline='top';
+    ctx.fillText(wm,W/2,wmY);
   }
 }
 
