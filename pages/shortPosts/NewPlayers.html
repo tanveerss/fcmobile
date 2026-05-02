@@ -131,9 +131,17 @@ const CC = {
   POTM:{b1:'#4ade80',b2:'#15803d',bg1:'#0a2010',bg2:'#040a06'}
 };
 
+// Canvas dimensions — 4:5 Instagram
+const CW_CANVAS = 1080;
+const CH_CANVAS = 1350;
+
 const gv = id => document.getElementById(id)?.value||'';
 function setBg(i,el){bgIdx=i;document.querySelectorAll('.bsw').forEach(s=>s.classList.remove('on'));el.classList.add('on');draw();}
-function setZoom(v){C.style.width=(1080*v/100)+'px';C.style.height=(1080*v/100)+'px';document.getElementById('zv').textContent=v+'%';}
+function setZoom(v){
+  C.style.width=(CW_CANVAS*v/100)+'px';
+  C.style.height=(CH_CANVAS*v/100)+'px';
+  document.getElementById('zv').textContent=v+'%';
+}
 function loadClub(e){readImg(e,im=>{clubImg.img=im;showPrev('club-prev',e);draw();});}
 function loadP(e,i){readImg(e,im=>{PL[i].img=im;showPrev('pp'+i,e);draw();});}
 function showPrev(id,e){const el=document.getElementById(id);el.src=URL.createObjectURL(e.target.files[0]);el.style.display='block';}
@@ -149,22 +157,22 @@ function rr(ctx,x,y,w,h,r){
   ctx.closePath();
 }
 
-// ─── render(ctx, size) — works at any resolution ───
-function render(ctx, W) {
+// ─── render(ctx, W, H) — 4:5 aware ───
+function render(ctx, W, H) {
   const s = W/1080;
-  ctx.clearRect(0,0,W,W);
+  ctx.clearRect(0,0,W,H);
 
-  // BG
+  // BG — fill full W×H
   const [c1,c2]=BG[bgIdx];
-  const g=ctx.createRadialGradient(300*s,200*s,0,540*s,540*s,950*s);
+  const g=ctx.createRadialGradient(300*s,200*s,0,W/2,H/2,Math.max(W,H)*0.85);
   g.addColorStop(0,c1);g.addColorStop(1,c2);
-  ctx.fillStyle=g;ctx.fillRect(0,0,W,W);
+  ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
   const b1=ctx.createRadialGradient(0,0,0,0,0,600*s);
   b1.addColorStop(0,'rgba(80,20,160,0.14)');b1.addColorStop(1,'transparent');
-  ctx.fillStyle=b1;ctx.fillRect(0,0,W,W);
-  const b2=ctx.createRadialGradient(W,W,0,W,W,500*s);
+  ctx.fillStyle=b1;ctx.fillRect(0,0,W,H);
+  const b2=ctx.createRadialGradient(W,H,0,W,H,500*s);
   b2.addColorStop(0,'rgba(20,60,180,0.12)');b2.addColorStop(1,'transparent');
-  ctx.fillStyle=b2;ctx.fillRect(0,0,W,W);
+  ctx.fillStyle=b2;ctx.fillRect(0,0,W,H);
 
   const title=gv('g-title'),sub=gv('g-sub'),cta=gv('g-cta'),clubName=gv('club-name'),wm=gv('g-wm');
   PL.forEach((_,i)=>{PL[i].type=document.getElementById('p'+i+'t').value;PL[i].pos=document.getElementById('p'+i+'p').value;});
@@ -215,74 +223,87 @@ function render(ctx, W) {
     }
   }
 
-  // ── CARDS ──
-  const PAD=20*s, GAP=16*s;
-  const CW=(W-PAD*2-GAP*2)/3;
-  const CH=CW*1.42;
-  const CY=278*s;
-  const cardR=18*(CW/(314*s));
+  // CARDS - full bleed image approach
+  const PAD=16*s, GAP=14*s;
+  const CARD_W=(W-PAD*2-GAP*2)/3;
+  const CARD_H=CARD_W*1.42;
+  const CY=295*s;
 
   PL.forEach((p,i)=>{
-    const cx=PAD+i*(CW+GAP), cy=CY;
+    const cx=PAD+i*(CARD_W+GAP), cy=CY;
     const cc=CC[p.type]||CC.TOTS;
+    const R=16*(CARD_W/(343*s));
+    const sc_r=CARD_W/(343*s);
 
-    // ── bg ──
+    // Step 1: dark fallback bg
     ctx.save();
-    rr(ctx,cx,cy,CW,CH,cardR);ctx.clip();
-    const cbg=ctx.createLinearGradient(cx,cy,cx,cy+CH);
-    cbg.addColorStop(0,cc.bg1);cbg.addColorStop(1,cc.bg2);
-    ctx.fillStyle=cbg;ctx.fillRect(cx,cy,CW,CH);
+    rr(ctx,cx,cy,CARD_W,CARD_H,R); ctx.clip();
+    const cbg=ctx.createLinearGradient(cx,cy,cx,cy+CARD_H);
+    cbg.addColorStop(0,cc.bg1); cbg.addColorStop(1,cc.bg2);
+    ctx.fillStyle=cbg; ctx.fillRect(cx,cy,CARD_W,CARD_H);
+    ctx.restore();
 
-    // ── image — COVER fill, center crop ──
+    // Step 2: image full bleed cover
     if(p.img){
+      ctx.save();
+      rr(ctx,cx,cy,CARD_W,CARD_H,R); ctx.clip();
       const iw=p.img.naturalWidth||p.img.width;
       const ih=p.img.naturalHeight||p.img.height;
-      // cover: scale so image fills full card in both dimensions
-      const sc=Math.max(CW/iw, CH/ih);
+      const sc=Math.max(CARD_W/iw, CARD_H/ih);
       const dw=iw*sc, dh=ih*sc;
-      // center horizontally, anchor top vertically
-      const dx=cx+(CW-dw)/2;
-      const dy=cy; // top anchor — shows player face/body
-      ctx.drawImage(p.img,dx,dy,dw,dh);
+      ctx.drawImage(p.img, cx+(CARD_W-dw)/2, cy, dw, dh);
+      ctx.restore();
     } else {
-      ctx.globalAlpha=0.1;
-      ctx.font=`${80*(CW/(314*s))}px serif`;
-      ctx.textAlign='center';ctx.textBaseline='middle';
-      ctx.fillStyle='#fff';ctx.fillText('⚽',cx+CW/2,cy+CH/2);
-      ctx.globalAlpha=1;
+      ctx.save();
+      rr(ctx,cx,cy,CARD_W,CARD_H,R); ctx.clip();
+      ctx.globalAlpha=0.12; ctx.font=`${110*sc_r}px serif`;
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillStyle='#fff'; ctx.fillText('\u26BD',cx+CARD_W/2,cy+CARD_H/2);
+      ctx.globalAlpha=1; ctx.restore();
     }
+
+    // Step 3: vignette edges
+    ctx.save();
+    rr(ctx,cx,cy,CARD_W,CARD_H,R); ctx.clip();
+    const tF=ctx.createLinearGradient(0,cy,0,cy+CARD_H*0.14);
+    tF.addColorStop(0,'rgba(0,0,0,0.38)'); tF.addColorStop(1,'transparent');
+    ctx.fillStyle=tF; ctx.fillRect(cx,cy,CARD_W,CARD_H*0.14);
+    const bF=ctx.createLinearGradient(0,cy+CARD_H*0.72,0,cy+CARD_H);
+    bF.addColorStop(0,'transparent'); bF.addColorStop(1,'rgba(0,0,0,0.48)');
+    ctx.fillStyle=bF; ctx.fillRect(cx,cy+CARD_H*0.72,CARD_W,CARD_H*0.28);
+    const lF=ctx.createLinearGradient(cx,0,cx+CARD_W*0.07,0);
+    lF.addColorStop(0,'rgba(0,0,0,0.22)'); lF.addColorStop(1,'transparent');
+    ctx.fillStyle=lF; ctx.fillRect(cx,cy,CARD_W*0.07,CARD_H);
+    const rF=ctx.createLinearGradient(cx+CARD_W*0.93,0,cx+CARD_W,0);
+    rF.addColorStop(0,'transparent'); rF.addColorStop(1,'rgba(0,0,0,0.22)');
+    ctx.fillStyle=rF; ctx.fillRect(cx+CARD_W*0.93,cy,CARD_W*0.07,CARD_H);
     ctx.restore();
 
-    // ── 3D edge effect — inner highlight top-left, shadow bottom-right ──
+    // Step 4: 3D top-left shine
     ctx.save();
-    // top-left shine
-    const shine=ctx.createLinearGradient(cx,cy,cx+CW*0.6,cy+CH*0.4);
-    shine.addColorStop(0,'rgba(255,255,255,0.18)');
-    shine.addColorStop(0.5,'rgba(255,255,255,0.04)');
-    shine.addColorStop(1,'transparent');
-    rr(ctx,cx,cy,CW,CH,cardR);ctx.clip();
-    ctx.fillStyle=shine;ctx.fillRect(cx,cy,CW,CH);
+    rr(ctx,cx,cy,CARD_W,CARD_H,R); ctx.clip();
+    const sh=ctx.createLinearGradient(cx,cy,cx+CARD_W*0.5,cy+CARD_H*0.35);
+    sh.addColorStop(0,'rgba(255,255,255,0.16)');
+    sh.addColorStop(0.6,'rgba(255,255,255,0.02)');
+    sh.addColorStop(1,'transparent');
+    ctx.fillStyle=sh; ctx.fillRect(cx,cy,CARD_W,CARD_H);
     ctx.restore();
 
-    // ── border with glow — drawn OUTSIDE clip ──
+    // Step 5: thin border + light glow (like reference)
     ctx.save();
-    ctx.shadowColor=cc.b1;ctx.shadowBlur=32*(CW/(314*s));
-    const bd=ctx.createLinearGradient(cx,cy,cx+CW,cy+CH);
-    bd.addColorStop(0,cc.b1);bd.addColorStop(0.4,cc.b2);bd.addColorStop(1,cc.b1);
-    rr(ctx,cx+2.5,cy+2.5,CW-5,CH-5,cardR);
-    ctx.strokeStyle=bd;ctx.lineWidth=5*(CW/(314*s));ctx.stroke();
-    ctx.restore();
-
-    // ── second inner border for 3D depth ──
-    ctx.save();
-    ctx.globalAlpha=0.4;
-    rr(ctx,cx+7*(CW/(314*s)),cy+7*(CW/(314*s)),CW-14*(CW/(314*s)),CH-14*(CW/(314*s)),cardR*0.7);
-    ctx.strokeStyle=cc.b1;ctx.lineWidth=1.5*(CW/(314*s));ctx.stroke();
+    // soft glow — not too heavy
+    ctx.shadowColor=cc.b1;
+    ctx.shadowBlur=12*sc_r;
+    rr(ctx,cx+1.5,cy+1.5,CARD_W-3,CARD_H-3,R);
+    ctx.strokeStyle=cc.b1;
+    ctx.lineWidth=2.2*sc_r;
+    ctx.globalAlpha=0.88;
+    ctx.stroke();
     ctx.restore();
   });
 
-  // ── CLUB ROW ──
-  const clubMidY=CY+CH+46*s;
+    // ── CLUB ROW ──
+  const clubMidY=CY+CARD_H+46*s;
   ctx.font=`400 ${50*s}px 'Bebas Neue',sans-serif`;
   const cg=ctx.createLinearGradient(200*s,0,880*s,0);
   cg.addColorStop(0,'#f0c040');cg.addColorStop(0.5,'#fff8dc');cg.addColorStop(1,'#f0c040');
@@ -322,32 +343,26 @@ function render(ctx, W) {
   }
 }
 
-function draw(){render(X,1080);}
+function draw(){ render(X, CW_CANVAS, CH_CANVAS); }
 
 async function doExport(){
   document.getElementById('lov').classList.add('show');
   await new Promise(r=>setTimeout(r,60));
-
-  // Render at 2160 (2x) on offscreen canvas
-  const SIZE=2160;
+  const EW=2160, EH=2700;
   const oc=document.createElement('canvas');
-  oc.width=SIZE;oc.height=SIZE;
+  oc.width=EW; oc.height=EH;
   const ox=oc.getContext('2d');
-  render(ox,SIZE);
-
+  render(ox, EW, EH);
   await new Promise(r=>setTimeout(r,120));
-
   oc.toBlob(blob=>{
-    if(!blob){alert('Export failed — try screenshot');document.getElementById('lov').classList.remove('show');return;}
+    if(!blob){alert('Export failed');document.getElementById('lov').classList.remove('show');return;}
     const url=URL.createObjectURL(blob);
-    // Desktop
     const a=document.createElement('a');
     a.href=url;a.download=`club_players_${Date.now()}.png`;
     document.body.appendChild(a);a.click();document.body.removeChild(a);
-    // Mobile new tab
     setTimeout(()=>{
       const w=window.open('','_blank');
-      if(w){w.document.write(`<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><style>*{margin:0;padding:0}body{background:#000;display:flex;flex-direction:column;align-items:center;padding:14px;gap:10px}p{color:#fff;font-family:sans-serif;font-size:14px;text-align:center}img{max-width:100%;border-radius:8px}</style></head><body><p>📱 Long press image → Save to Photos</p><img src="${url}"></body></html>`);w.document.close();}
+      if(w){w.document.write(`<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><style>*{margin:0;padding:0}body{background:#000;display:flex;flex-direction:column;align-items:center;padding:14px;gap:10px}p{color:#fff;font-family:sans-serif;font-size:14px;text-align:center}img{max-width:100%;border-radius:8px}</style></head><body><p>📱 Long press → Save to Photos</p><img src="${url}"></body></html>`);w.document.close();}
     },300);
     setTimeout(()=>URL.revokeObjectURL(url),6000);
     setZoom(+document.querySelector('.zbar input').value);
@@ -356,7 +371,8 @@ async function doExport(){
 }
 
 window.addEventListener('load',()=>{
-  setZoom(46);
+  C.width=CW_CANVAS; C.height=CH_CANVAS;
+  setZoom(36);
   setTimeout(draw,200);
   setTimeout(draw,1000);
 });
