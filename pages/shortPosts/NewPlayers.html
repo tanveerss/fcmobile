@@ -234,7 +234,7 @@ function render(ctx, W, H) {
   // Images just placed as-is — no card frame, no border
   // User uploads the actual FC Mobile card PNG — that IS the card
 
-  const imgY = headerBottom + 20*s;
+  const imgY = headerBottom + 8*s;
   const imgPad = 14*s;   // outer padding
   const imgGap = 10*s;   // gap between cards
   const imgW = (W - imgPad*2 - imgGap*2) / 3;
@@ -276,9 +276,9 @@ function render(ctx, W, H) {
   // Club name — white, medium
   if (clubName) {
     // Optional club logo
-    ctx.font = `400 ${44*s}px 'Bebas Neue',sans-serif`;
+    ctx.font = `400 ${54*s}px 'Bebas Neue',sans-serif`;
     if (imgs.club) {
-      const lsz = 52*s;
+      const lsz = 56*s;
       const tw = ctx.measureText(clubName).width;
       const rowW = lsz + 10*s + tw;
       const rowX = (W - rowW) / 2;
@@ -297,20 +297,19 @@ function render(ctx, W, H) {
 
   // CTA — gold, big
   if (cta) {
-    const ctaY = textY + 50*s;
+    const ctaY = textY + 60*s;
     const ctaG = ctx.createLinearGradient(W*0.2, 0, W*0.8, 0);
     ctaG.addColorStop(0, '#f0c040'); ctaG.addColorStop(1, '#ffd700');
-    ctx.font = `400 ${58*s}px 'Bebas Neue',sans-serif`;
+    ctx.font = `400 ${68*s}px 'Bebas Neue',sans-serif`;
     ctx.fillStyle = ctaG; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
     ctx.shadowColor = 'rgba(0,0,0,0.8)'; ctx.shadowBlur = 10*s;
     ctx.fillText(cta.toUpperCase(), W/2, ctaY);
     ctx.shadowBlur = 0;
   }
 
-  // Watermark
   if (wm) {
-    const wmY = textY + 50*s + 66*s;
-    ctx.font = `700 ${14*s}px 'Orbitron',sans-serif`;
+    const wmY = textY + 60*s + 76*s;
+    ctx.font = `700 ${15*s}px 'Orbitron',sans-serif`;
     ctx.fillStyle = 'rgba(255,255,255,0.22)'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
     ctx.fillText(wm, W/2, wmY);
   }
