@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stats Comparison — Game Enclave</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#07090f;color:#fff;font-family:'Rajdhani',sans-serif;min-height:100vh}
+.hdr{background:#0a0e1a;border-bottom:2px solid #f0c040;padding:10px 16px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;color:#f0c040;letter-spacing:2px}
+.logo span{color:#06b6d4}
+.expbtn{background:linear-gradient(135deg,#b8860b,#ffd700);color:#0a0e1a;border:none;border-radius:6px;padding:8px 18px;font-family:'Orbitron',sans-serif;font-size:10px;font-weight:900;letter-spacing:1px;cursor:pointer}
+.workspace{display:grid;grid-template-columns:270px 1fr;min-height:calc(100vh - 46px)}
+.sb{background:#0d1120;border-right:1px solid #1e2d4a;padding:11px;overflow-y:auto;max-height:calc(100vh - 46px)}
+.sec{font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:2px;color:#f0c040;margin:12px 0 6px;padding-bottom:4px;border-bottom:1px solid #1e2d4a}
+.sec:first-child{margin-top:0}
+.cl{font-size:9px;font-weight:700;color:#06b6d4;letter-spacing:1px;text-transform:uppercase;margin:5px 0 3px;display:block}
+input[type=text],input[type=number],select{width:100%;background:#0a0e1a;border:1px solid #1e2d4a;border-radius:4px;color:#fff;font-family:'Rajdhani',sans-serif;font-size:12px;padding:5px 7px;outline:none}
+input:focus,select:focus{border-color:#f0c040}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.pb{background:#111827;border:1px solid #1e2d4a;border-radius:6px;padding:8px;margin-bottom:6px}
+.pbt{font-family:'Orbitron',sans-serif;font-size:7px;color:#f0c040;letter-spacing:2px;margin-bottom:6px}
+.upl{border:2px dashed #1e2d4a;border-radius:5px;padding:7px;text-align:center;cursor:pointer;position:relative;overflow:hidden;margin-top:4px}
+.upl:hover{border-color:#f0c040}
+.upl input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upl-ic{font-size:16px;display:block}
+.upl-tx{font-size:8px;color:#94a3b8}
+.upl-prev{width:100%;height:50px;object-fit:contain;border-radius:3px;margin-top:4px;display:none;background:#0a0e1a}
+.stat-row{display:grid;grid-template-columns:80px 1fr 1fr;gap:4px;align-items:center;margin-bottom:4px}
+.stat-lbl{font-size:10px;color:#94a3b8;font-weight:700}
+.bgs{display:flex;gap:5px;flex-wrap:wrap;margin-top:3px}
+.bsw{width:24px;height:24px;border-radius:50%;cursor:pointer;border:2px solid transparent}
+.bsw.on,.bsw:hover{border-color:#f0c040}
+.ca{display:flex;flex-direction:column;align-items:center;padding:14px 10px;background:#07090f;overflow-y:auto;gap:8px}
+.zbar{display:flex;align-items:center;gap:8px;background:#0d1120;border:1px solid #1e2d4a;border-radius:6px;padding:6px 12px;align-self:stretch}
+.zbar label{font-size:9px;color:#94a3b8}
+.zbar input[type=range]{flex:1;accent-color:#f0c040}
+.zbar span{font-size:9px;color:#f0c040;min-width:30px;text-align:right}
+canvas{display:block}
+#lov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:999;align-items:center;justify-content:center;flex-direction:column;gap:10px}
+#lov.show{display:flex}
+.ring{width:44px;height:44px;border:3px solid #1e2d4a;border-top-color:#f0c040;border-radius:50%;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.ltx{font-family:'Orbitron',sans-serif;font-size:11px;color:#f0c040;letter-spacing:2px}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:#1e2d4a;border-radius:2px}
+</style>
+</head>
+<body>
+<div id="lov"><div class="ring"></div><div class="ltx">EXPORTING...</div></div>
+<header class="hdr">
+  <div class="logo">GAME<span>ENCLAVE</span> <span style="color:#94a3b8;font-size:9px;font-weight:400">STATS COMPARISON</span></div>
+  <button class="expbtn" onclick="doExport()">⬇ EXPORT HQ</button>
+</header>
+<div class="workspace">
+<aside class="sb">
+
+  <div class="sec">Post Text</div>
+  <label class="cl">Game Name</label>
+  <input type="text" id="g-game" value="FC MOBILE" oninput="draw()">
+  <label class="cl">Subtitle</label>
+  <input type="text" id="g-sub" value="WHO IS BETTER?" oninput="draw()">
+  <label class="cl">Watermark</label>
+  <input type="text" id="g-wm" value="@game_enclaveofficial" oninput="draw()">
+
+  <div class="sec">Background</div>
+  <div class="bgs">
+    <div class="bsw on" style="background:radial-gradient(circle,#1e1460,#08091a)" onclick="setBg(0,this)"></div>
+    <div class="bsw" style="background:radial-gradient(circle,#0c2461,#04091a)" onclick="setBg(1,this)"></div>
+    <div class="bsw" style="background:radial-gradient(circle,#1a0a3a,#050710)" onclick="setBg(2,this)"></div>
+    <div class="bsw" style="background:radial-gradient(circle,#0a1f0a,#040d04)" onclick="setBg(3,this)"></div>
+    <div class="bsw" style="background:radial-gradient(circle,#1a0505,#0a0202)" onclick="setBg(4,this)"></div>
+    <div class="bsw" style="background:radial-gradient(circle,#1a1200,#080600)" onclick="setBg(5,this)"></div>
+  </div>
+
+  <div class="sec">Player 1</div>
+  <label class="cl">Name</label>
+  <input type="text" id="p1-name" value="HERNÁNDEZ" oninput="draw()">
+  <label class="cl">Rating · Position</label>
+  <div class="r2">
+    <input type="text" id="p1-rat" value="117" oninput="draw()">
+    <input type="text" id="p1-pos" value="LB" oninput="draw()">
+  </div>
+  <label class="cl">Card Image</label>
+  <div class="upl"><input type="file" accept="image/*" onchange="loadImg(event,'p1')"><span class="upl-ic">📸</span><span class="upl-tx">Upload card</span></div>
+  <img class="upl-prev" id="prev-p1">
+
+  <div class="sec">Player 2</div>
+  <label class="cl">Name</label>
+  <input type="text" id="p2-name" value="HERNÁNDEZ" oninput="draw()">
+  <label class="cl">Rating · Position</label>
+  <div class="r2">
+    <input type="text" id="p2-rat" value="119" oninput="draw()">
+    <input type="text" id="p2-pos" value="LB" oninput="draw()">
+  </div>
+  <label class="cl">Card Image</label>
+  <div class="upl"><input type="file" accept="image/*" onchange="loadImg(event,'p2')"><span class="upl-ic">📸</span><span class="upl-tx">Upload card</span></div>
+  <img class="upl-prev" id="prev-p2">
+
+  <div class="sec">Stats</div>
+  <div style="display:grid;grid-template-columns:80px 1fr 1fr;gap:4px;margin-bottom:4px">
+    <span style="font-size:9px;color:#f0c040;font-weight:700;font-family:'Orbitron',sans-serif">STAT</span>
+    <span style="font-size:9px;color:#06b6d4;font-weight:700;text-align:center">P1</span>
+    <span style="font-size:9px;color:#06b6d4;font-weight:700;text-align:center">P2</span>
+  </div>
+  <div class="stat-row"><span class="stat-lbl">Pace</span><input type="number" id="s0p1" value="149" oninput="draw()"><input type="number" id="s0p2" value="153" oninput="draw()"></div>
+  <div class="stat-row"><span class="stat-lbl">Shooting</span><input type="number" id="s1p1" value="107" oninput="draw()"><input type="number" id="s1p2" value="112" oninput="draw()"></div>
+  <div class="stat-row"><span class="stat-lbl">Passing</span><input type="number" id="s2p1" value="119" oninput="draw()"><input type="number" id="s2p2" value="123" oninput="draw()"></div>
+  <div class="stat-row"><span class="stat-lbl">Dribbling</span><input type="number" id="s3p1" value="130" oninput="draw()"><input type="number" id="s3p2" value="140" oninput="draw()"></div>
+  <div class="stat-row"><span class="stat-lbl">Defending</span><input type="number" id="s4p1" value="135" oninput="draw()"><input type="number" id="s4p2" value="140" oninput="draw()"></div>
+  <div class="stat-row"><span class="stat-lbl">Physical</span><input type="number" id="s5p1" value="131" oninput="draw()"><input type="number" id="s5p2" value="136" oninput="draw()"></div>
+
+</aside>
+<main class="ca">
+  <div class="zbar">
+    <label>ZOOM</label>
+    <input type="range" min="15" max="80" value="44" oninput="setZoom(+this.value)">
+    <span id="zv">44%</span>
+  </div>
+  <canvas id="cvs" width="1080" height="1080"></canvas>
+</main>
+</div>
+
+<script>
+const C = document.getElementById('cvs');
+let bgIdx=0;
+const imgs = {p1:null, p2:null};
+
+const BG=[['#1e1460','#08091a'],['#0c2461','#04091a'],['#1a0a3a','#050710'],['#0a1f0a','#040d04'],['#1a0505','#0a0202'],['#1a1200','#080600']];
+const STAT_LABELS=[{label:'Pace',short:'PAC'},{label:'Shooting',short:'SHO'},{label:'Passing',short:'PAS'},{label:'Dribbling',short:'DRI'},{label:'Defending',short:'DEF'},{label:'Physical',short:'PHY'}];
+
+const gv=id=>document.getElementById(id)?.value||'';
+const gn=id=>parseInt(document.getElementById(id)?.value)||0;
+
+function setBg(i,el){bgIdx=i;document.querySelectorAll('.bsw').forEach(s=>s.classList.remove('on'));el.classList.add('on');draw();}
+function setZoom(v){C.style.width=(1080*v/100)+'px';C.style.height=(1080*v/100)+'px';document.getElementById('zv').textContent=v+'%';}
+
+function loadImg(e,key){
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=ev=>{const im=new Image(); im.onload=()=>{imgs[key]=im; const p=document.getElementById('prev-'+key); p.src=ev.target.result; p.style.display='block'; draw();}; im.src=ev.target.result;};
+  r.readAsDataURL(f);
+}
+
+function renderAt(ctx, W, H){
+  const s=W/1080;
+  ctx.clearRect(0,0,W,H);
+
+  // BG
+  const [c1,c2]=BG[bgIdx];
+  const g=ctx.createRadialGradient(W*0.3,H*0.2,0,W/2,H/2,W*0.85);
+  g.addColorStop(0,c1); g.addColorStop(1,c2);
+  ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+  const b1=ctx.createRadialGradient(0,0,0,0,0,W*0.6);
+  b1.addColorStop(0,'rgba(70,20,150,0.15)'); b1.addColorStop(1,'transparent');
+  ctx.fillStyle=b1; ctx.fillRect(0,0,W,H);
+
+  // Stars
+  [[0.08,0.06,1.8],[0.32,0.04,2.1],[0.61,0.07,1.9],[0.88,0.09,2.2],[0.52,0.23,2.3],[0.84,0.41,1.8],[0.15,0.55,1.4],[0.75,0.6,1.6],[0.25,0.8,1.5],[0.9,0.75,1.3]].forEach(([rx,ry,r])=>{
+    ctx.beginPath(); ctx.arc(rx*W,ry*H,r*s,0,Math.PI*2);
+    ctx.fillStyle=`rgba(255,255,255,${0.3+(r-1)*0.2})`; ctx.fill();
+  });
+
+  // Light rays
+  const rayOriginX=W/2, rayOriginY=-H*0.05;
+  for(let i=0;i<20;i++){
+    const angle=(-0.75+(i/19)*1.5)*Math.PI;
+    const rayLen=H*1.8, spread=W*0.04;
+    const ex=rayOriginX+Math.cos(angle)*rayLen, ey=rayOriginY+Math.sin(angle)*rayLen;
+    const rg=ctx.createLinearGradient(rayOriginX,rayOriginY,ex,ey);
+    rg.addColorStop(0,'rgba(180,140,255,0.02)'); rg.addColorStop(0.4,'rgba(120,80,220,0.01)'); rg.addColorStop(1,'transparent');
+    ctx.beginPath();
+    ctx.moveTo(rayOriginX-spread*Math.sin(angle),rayOriginY+spread*Math.cos(angle));
+    ctx.lineTo(ex-spread*8*Math.sin(angle),ey+spread*8*Math.cos(angle));
+    ctx.lineTo(ex+spread*8*Math.sin(angle),ey-spread*8*Math.cos(angle));
+    ctx.lineTo(rayOriginX+spread*Math.sin(angle),rayOriginY-spread*Math.cos(angle));
+    ctx.closePath(); ctx.fillStyle=rg; ctx.fill();
+  }
+
+  // HEADER
+  const gameName=gv('g-game'), subTitle=gv('g-sub'), wm=gv('g-wm');
+  ctx.font=`900 ${50*s}px 'Orbitron',sans-serif`;
+  const gnW=ctx.measureText(gameName).width;
+  const bR=23*s, hgap=12*s, hx=(W-(bR*2+hgap+gnW))/2, hcy=50*s;
+  ctx.save();
+  ctx.beginPath(); ctx.arc(hx+bR,hcy,bR,0,Math.PI*2);
+  const bc=ctx.createRadialGradient(hx+bR,hcy,0,hx+bR,hcy,bR);
+  bc.addColorStop(0,'#1a2040'); bc.addColorStop(1,'#0a0e1a');
+  ctx.fillStyle=bc; ctx.fill(); ctx.strokeStyle='#f0c040'; ctx.lineWidth=2*s; ctx.stroke();
+  ctx.font=`900 ${9*s}px 'Orbitron',sans-serif`;
+  ctx.fillStyle='#f0c040'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('EA',hx+bR,hcy-6*s); ctx.fillText('SPORTS',hx+bR,hcy+5*s); ctx.restore();
+  ctx.font=`900 ${50*s}px 'Orbitron',sans-serif`;
+  ctx.fillStyle='#fff'; ctx.textAlign='left'; ctx.textBaseline='middle';
+  ctx.shadowColor='rgba(0,0,0,0.8)'; ctx.shadowBlur=10*s;
+  ctx.fillText(gameName,hx+bR*2+hgap,hcy); ctx.shadowBlur=0;
+  ctx.font=`400 ${24*s}px 'Bebas Neue',sans-serif`;
+  ctx.fillStyle='#94a3b8'; ctx.textAlign='center'; ctx.textBaseline='top';
+  ctx.fillText(subTitle, W/2, 86*s);
+
+  // IMAGE LAYOUT
+  const DIFF_W=80*s, IMG_GAP=DIFF_W+20*s, PAD=20*s;
+  const IMG_W=(W-PAD*2-IMG_GAP)/2;
+  const IMG_H=IMG_W*1.05;
+  const IMG_Y=115*s;
+  const P1X=PAD, P2X=PAD+IMG_W+IMG_GAP;
+  const P1_CX=P1X+IMG_W/2, P2_CX=P2X+IMG_W/2, DIFF_CX=W/2;
+
+  // Player name + rating labels above images
+  const p1Name=gv('p1-name'), p1Rat=gv('p1-rat'), p1Pos=gv('p1-pos');
+  const p2Name=gv('p2-name'), p2Rat=gv('p2-rat'), p2Pos=gv('p2-pos');
+
+  // P1 IMAGE
+  ctx.save();
+  ctx.beginPath(); ctx.roundRect(P1X,IMG_Y,IMG_W,IMG_H,14*s); ctx.clip();
+  const p1bg=ctx.createLinearGradient(P1X,IMG_Y,P1X,IMG_Y+IMG_H);
+  p1bg.addColorStop(0,'#1a1060'); p1bg.addColorStop(1,'#060818');
+  ctx.fillStyle=p1bg; ctx.fillRect(P1X,IMG_Y,IMG_W,IMG_H);
+  if(imgs.p1){
+    const iw=imgs.p1.naturalWidth||imgs.p1.width, ih=imgs.p1.naturalHeight||imgs.p1.height;
+    const sc=Math.max(IMG_W/iw,IMG_H/ih);
+    const dw=iw*sc, dh=ih*sc;
+    ctx.drawImage(imgs.p1,P1X+(IMG_W-dw)/2,IMG_Y,dw,dh);
+  } else {
+    ctx.globalAlpha=0.08; ctx.font=`${90*s}px serif`; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillStyle='#fff'; ctx.fillText('📸',P1_CX,IMG_Y+IMG_H/2); ctx.globalAlpha=1;
+  }
+  ctx.restore();
+
+  // P1 name overlay at bottom of image
+  ctx.save();
+  ctx.beginPath(); ctx.roundRect(P1X,IMG_Y,IMG_W,IMG_H,14*s); ctx.clip();
+  const p1fade=ctx.createLinearGradient(0,IMG_Y+IMG_H*0.7,0,IMG_Y+IMG_H);
+  p1fade.addColorStop(0,'transparent'); p1fade.addColorStop(1,'rgba(0,0,0,0.75)');
+  ctx.fillStyle=p1fade; ctx.fillRect(P1X,IMG_Y+IMG_H*0.7,IMG_W,IMG_H*0.3);
+  ctx.restore();
+  ctx.font=`400 ${28*s}px 'Bebas Neue',sans-serif`;
+  ctx.fillStyle='#ffffff'; ctx.textAlign='center'; ctx.textBaseline='bottom';
+  ctx.shadowColor='rgba(0,0,0,0.9)'; ctx.shadowBlur=8*s;
+  ctx.fillText(p1Name, P1_CX, IMG_Y+IMG_H-8*s);
+  ctx.font=`700 ${14*s}px 'Rajdhani',sans-serif`;
+  ctx.fillStyle='rgba(255,255,255,0.6)';
+  ctx.fillText(`${p1Rat} · ${p1Pos}`, P1_CX, IMG_Y+IMG_H-34*s);
+  ctx.shadowBlur=0;
+
+  // P2 IMAGE
+  ctx.save();
+  ctx.beginPath(); ctx.roundRect(P2X,IMG_Y,IMG_W,IMG_H,14*s); ctx.clip();
+  const p2bg=ctx.createLinearGradient(P2X,IMG_Y,P2X,IMG_Y+IMG_H);
+  p2bg.addColorStop(0,'#1a1060'); p2bg.addColorStop(1,'#060818');
+  ctx.fillStyle=p2bg; ctx.fillRect(P2X,IMG_Y,IMG_W,IMG_H);
+  if(imgs.p2){
+    const iw=imgs.p2.naturalWidth||imgs.p2.width, ih=imgs.p2.naturalHeight||imgs.p2.height;
+    const sc=Math.max(IMG_W/iw,IMG_H/ih);
+    const dw=iw*sc, dh=ih*sc;
+    ctx.drawImage(imgs.p2,P2X+(IMG_W-dw)/2,IMG_Y,dw,dh);
+  } else {
+    ctx.globalAlpha=0.08; ctx.font=`${90*s}px serif`; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillStyle='#fff'; ctx.fillText('📸',P2_CX,IMG_Y+IMG_H/2); ctx.globalAlpha=1;
+  }
+  ctx.restore();
+
+  // P2 name overlay
+  ctx.save();
+  ctx.beginPath(); ctx.roundRect(P2X,IMG_Y,IMG_W,IMG_H,14*s); ctx.clip();
+  const p2fade=ctx.createLinearGradient(0,IMG_Y+IMG_H*0.7,0,IMG_Y+IMG_H);
+  p2fade.addColorStop(0,'transparent'); p2fade.addColorStop(1,'rgba(0,0,0,0.75)');
+  ctx.fillStyle=p2fade; ctx.fillRect(P2X,IMG_Y+IMG_H*0.7,IMG_W,IMG_H*0.3);
+  ctx.restore();
+  ctx.font=`400 ${28*s}px 'Bebas Neue',sans-serif`;
+  ctx.fillStyle='#ffffff'; ctx.textAlign='center'; ctx.textBaseline='bottom';
+  ctx.shadowColor='rgba(0,0,0,0.9)'; ctx.shadowBlur=8*s;
+  ctx.fillText(p2Name, P2_CX, IMG_Y+IMG_H-8*s);
+  ctx.font=`700 ${14*s}px 'Rajdhani',sans-serif`;
+  ctx.fillStyle='rgba(255,255,255,0.6)';
+  ctx.fillText(`${p2Rat} · ${p2Pos}`, P2_CX, IMG_Y+IMG_H-34*s);
+  ctx.shadowBlur=0;
+
+  // VS in center gap
+  ctx.font=`900 ${36*s}px 'Bebas Neue',sans-serif`;
+  const vsG=ctx.createLinearGradient(0,0,W,0);
+  vsG.addColorStop(0,'#f0c040'); vsG.addColorStop(1,'#ffd700');
+  ctx.fillStyle=vsG; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.shadowColor='rgba(240,192,64,0.5)'; ctx.shadowBlur=16*s;
+  ctx.fillText('VS', DIFF_CX, IMG_Y+IMG_H/2);
+  ctx.shadowBlur=0;
+
+  // STATS ROWS
+  const ST_Y=IMG_Y+IMG_H+14*s;
+  const ROW_H=68*s, ROW_GAP=5*s;
+  const VAL_BOX_W=IMG_W*0.7, VAL_BOX_H=ROW_H-10*s;
+
+  STAT_LABELS.forEach((stat,i)=>{
+    const p1v=gn(`s${i}p1`), p2v=gn(`s${i}p2`);
+    const ry=ST_Y+i*(ROW_H+ROW_GAP);
+    const mid=ry+ROW_H/2;
+    const diff=p1v-p2v;
+
+    // Row separator
+    if(i>0){
+      ctx.save(); ctx.globalAlpha=0.07; ctx.strokeStyle='#fff'; ctx.lineWidth=1*s;
+      ctx.beginPath(); ctx.moveTo(PAD,ry-ROW_GAP/2); ctx.lineTo(W-PAD,ry-ROW_GAP/2); ctx.stroke();
+      ctx.restore();
+    }
+
+    const p1Win=p1v>p2v, p1Lose=p1v<p2v;
+    const p2Win=p2v>p1v, p2Lose=p2v<p1v;
+    const p1Col=p1Win?'#4ade80':p1Lose?'#f87171':'#ffffff';
+    const p2Col=p2Win?'#4ade80':p2Lose?'#f87171':'#ffffff';
+    const p1Bg=p1Win?'rgba(74,222,128,0.16)':p1Lose?'rgba(248,113,113,0.14)':'rgba(255,255,255,0.05)';
+    const p2Bg=p2Win?'rgba(74,222,128,0.16)':p2Lose?'rgba(248,113,113,0.14)':'rgba(255,255,255,0.05)';
+
+    // P1 value box — centered under P1 image
+    ctx.beginPath(); ctx.roundRect(P1_CX-VAL_BOX_W/2,ry+5*s,VAL_BOX_W,VAL_BOX_H,8*s);
+    ctx.fillStyle=p1Bg; ctx.fill();
+    ctx.font=`400 ${40*s}px 'Bebas Neue',sans-serif`;
+    ctx.fillStyle=p1Col; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.shadowColor=p1Col+'66'; ctx.shadowBlur=(p1Win||p1Lose)?8*s:0;
+    ctx.fillText(p1v, P1_CX, mid-8*s); ctx.shadowBlur=0;
+    ctx.font=`700 ${11*s}px 'Orbitron',sans-serif`;
+    ctx.fillStyle=p1Col; ctx.globalAlpha=0.65;
+    ctx.fillText(stat.short, P1_CX, mid+18*s); ctx.globalAlpha=1;
+
+    // P2 value box — centered under P2 image
+    ctx.beginPath(); ctx.roundRect(P2_CX-VAL_BOX_W/2,ry+5*s,VAL_BOX_W,VAL_BOX_H,8*s);
+    ctx.fillStyle=p2Bg; ctx.fill();
+    ctx.font=`400 ${40*s}px 'Bebas Neue',sans-serif`;
+    ctx.fillStyle=p2Col; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.shadowColor=p2Col+'66'; ctx.shadowBlur=(p2Win||p2Lose)?8*s:0;
+    ctx.fillText(p2v, P2_CX, mid-8*s); ctx.shadowBlur=0;
+    ctx.font=`700 ${11*s}px 'Orbitron',sans-serif`;
+    ctx.fillStyle=p2Col; ctx.globalAlpha=0.65;
+    ctx.fillText(stat.short, P2_CX, mid+18*s); ctx.globalAlpha=1;
+
+    // Stat label above diff — at canvas center
+    ctx.font=`600 ${16*s}px 'Rajdhani',sans-serif`;
+    ctx.fillStyle='rgba(255,255,255,0.4)';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(stat.label, DIFF_CX, mid-14*s);
+
+    // Diff badge — at canvas center
+    const diffText=diff>0?`+${diff}`:diff===0?'=':`${diff}`;
+    const diffCol=diff>0?'#4ade80':diff<0?'#f87171':'#94a3b8';
+    const diffBg=diff>0?'rgba(74,222,128,0.18)':diff<0?'rgba(248,113,113,0.18)':'rgba(148,163,184,0.1)';
+    const dw=64*s, dh=28*s;
+    ctx.beginPath(); ctx.roundRect(DIFF_CX-dw/2,mid+4*s,dw,dh,7*s);
+    ctx.fillStyle=diffBg; ctx.fill();
+    ctx.strokeStyle=diffCol; ctx.lineWidth=1.2*s; ctx.stroke();
+    ctx.font=`700 ${18*s}px 'Rajdhani',sans-serif`;
+    ctx.fillStyle=diffCol; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(diffText, DIFF_CX, mid+4*s+dh/2);
+  });
+
+  // WATERMARK
+  if(wm){
+    ctx.font=`700 ${14*s}px 'Orbitron',sans-serif`;
+    ctx.fillStyle='rgba(255,255,255,0.2)'; ctx.textAlign='center'; ctx.textBaseline='bottom';
+    ctx.fillText(wm, W/2, H-14*s);
+  }
+}
+
+function draw(){ renderAt(C.getContext('2d'),1080,1080); }
+
+async function doExport(){
+  document.getElementById('lov').classList.add('show');
+  await new Promise(r=>setTimeout(r,60));
+  const oc=document.createElement('canvas');
+  oc.width=2160; oc.height=2160;
+  renderAt(oc.getContext('2d'),2160,2160);
+  await new Promise(r=>setTimeout(r,100));
+  oc.toBlob(blob=>{
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url; a.download=`stats_comparison_${Date.now()}.png`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(()=>{
+      const w=window.open('','_blank');
+      if(w){w.document.write(`<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><style>*{margin:0;padding:0}body{background:#000;display:flex;flex-direction:column;align-items:center;padding:14px;gap:10px}p{color:#fff;font-family:sans-serif;font-size:14px;text-align:center}img{max-width:100%;border-radius:8px}</style></head><body><p>📱 Long press → Save to Photos</p><img src="${url}"></body></html>`);w.document.close();}
+    },300);
+    setTimeout(()=>URL.revokeObjectURL(url),6000);
+    setZoom(+document.querySelector('.zbar input').value);
+    document.getElementById('lov').classList.remove('show');
+  },'image/png');
+}
+
+window.addEventListener('load',()=>{
+  C.width=1080; C.height=1080;
+  setZoom(44);
+  setTimeout(draw,200);
+  setTimeout(draw,900);
+});
+</script>
+</body>
+</html>
