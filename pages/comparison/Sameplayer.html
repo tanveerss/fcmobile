@@ -76,25 +76,11 @@ canvas{display:block}
   </div>
 
   <div class="sec">Player 1</div>
-  <label class="cl">Name</label>
-  <input type="text" id="p1-name" value="HERNÁNDEZ" oninput="draw()">
-  <label class="cl">Rating · Position</label>
-  <div class="r2">
-    <input type="text" id="p1-rat" value="117" oninput="draw()">
-    <input type="text" id="p1-pos" value="LB" oninput="draw()">
-  </div>
   <label class="cl">Card Image</label>
   <div class="upl"><input type="file" accept="image/*" onchange="loadImg(event,'p1')"><span class="upl-ic">📸</span><span class="upl-tx">Upload card</span></div>
   <img class="upl-prev" id="prev-p1">
 
   <div class="sec">Player 2</div>
-  <label class="cl">Name</label>
-  <input type="text" id="p2-name" value="HERNÁNDEZ" oninput="draw()">
-  <label class="cl">Rating · Position</label>
-  <div class="r2">
-    <input type="text" id="p2-rat" value="119" oninput="draw()">
-    <input type="text" id="p2-pos" value="LB" oninput="draw()">
-  </div>
   <label class="cl">Card Image</label>
   <div class="upl"><input type="file" accept="image/*" onchange="loadImg(event,'p2')"><span class="upl-ic">📸</span><span class="upl-tx">Upload card</span></div>
   <img class="upl-prev" id="prev-p2">
@@ -153,9 +139,12 @@ function renderAt(ctx, W, H){
   const g=ctx.createRadialGradient(W*0.3,H*0.2,0,W/2,H/2,W*0.85);
   g.addColorStop(0,c1); g.addColorStop(1,c2);
   ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
-  const b1=ctx.createRadialGradient(0,0,0,0,0,W*0.6);
-  b1.addColorStop(0,'rgba(70,20,150,0.15)'); b1.addColorStop(1,'transparent');
+  const b1=ctx.createRadialGradient(W*0.2,H*0.1,0,W*0.2,H*0.1,W*0.7);
+  b1.addColorStop(0,'rgba(100,40,220,0.28)'); b1.addColorStop(1,'transparent');
   ctx.fillStyle=b1; ctx.fillRect(0,0,W,H);
+  const b3=ctx.createRadialGradient(W*0.8,H*0.9,0,W*0.8,H*0.9,W*0.5);
+  b3.addColorStop(0,'rgba(20,80,220,0.22)'); b3.addColorStop(1,'transparent');
+  ctx.fillStyle=b3; ctx.fillRect(0,0,W,H);
 
   // Stars
   [[0.08,0.06,1.8],[0.32,0.04,2.1],[0.61,0.07,1.9],[0.88,0.09,2.2],[0.52,0.23,2.3],[0.84,0.41,1.8],[0.15,0.55,1.4],[0.75,0.6,1.6],[0.25,0.8,1.5],[0.9,0.75,1.3]].forEach(([rx,ry,r])=>{
@@ -201,10 +190,18 @@ function renderAt(ctx, W, H){
   ctx.fillText(subTitle, W/2, 86*s);
 
   // IMAGE LAYOUT
-  const DIFF_W=80*s, IMG_GAP=DIFF_W+20*s, PAD=20*s;
-  const IMG_W=(W-PAD*2-IMG_GAP)/2;
-  const IMG_H=IMG_W*1.05;
-  const IMG_Y=115*s;
+  // LAYOUT MATH (at 1080px):
+  // IMG_W fixed at 330px (not full half-width)
+  // Card ratio ~1.4 → IMG natural H = 330*1.4 = 462px, clipped to 360px
+  // Header=105, Image=360, gap=15, 6rows*96=576, wm=24 → total=1080 ✓
+  const IMG_Y  = 105*s;
+  const IMG_W  = 330*s;           // fixed small width
+  const IMG_H  = 360*s;           // hard clip height
+  const DIFF_W = 80*s;
+  // Center both images with gap between them
+  const TOTAL_IMG = IMG_W*2 + DIFF_W + 24*s;
+  const PAD = (W - TOTAL_IMG) / 2;
+  const IMG_GAP = DIFF_W + 24*s;
   const P1X=PAD, P2X=PAD+IMG_W+IMG_GAP;
   const P1_CX=P1X+IMG_W/2, P2_CX=P2X+IMG_W/2, DIFF_CX=W/2;
 
@@ -212,85 +209,53 @@ function renderAt(ctx, W, H){
   const p1Name=gv('p1-name'), p1Rat=gv('p1-rat'), p1Pos=gv('p1-pos');
   const p2Name=gv('p2-name'), p2Rat=gv('p2-rat'), p2Pos=gv('p2-pos');
 
-  // P1 IMAGE
-  ctx.save();
-  ctx.beginPath(); ctx.roundRect(P1X,IMG_Y,IMG_W,IMG_H,14*s); ctx.clip();
-  const p1bg=ctx.createLinearGradient(P1X,IMG_Y,P1X,IMG_Y+IMG_H);
-  p1bg.addColorStop(0,'#1a1060'); p1bg.addColorStop(1,'#060818');
-  ctx.fillStyle=p1bg; ctx.fillRect(P1X,IMG_Y,IMG_W,IMG_H);
-  if(imgs.p1){
-    const iw=imgs.p1.naturalWidth||imgs.p1.width, ih=imgs.p1.naturalHeight||imgs.p1.height;
-    const sc=Math.max(IMG_W/iw,IMG_H/ih);
-    const dw=iw*sc, dh=ih*sc;
-    ctx.drawImage(imgs.p1,P1X+(IMG_W-dw)/2,IMG_Y,dw,dh);
-  } else {
-    ctx.globalAlpha=0.08; ctx.font=`${90*s}px serif`; ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillStyle='#fff'; ctx.fillText('📸',P1_CX,IMG_Y+IMG_H/2); ctx.globalAlpha=1;
+  // Draw image — clipped to IMG_H, scale by width
+  function drawPlayerImg(img, bx, by, bw, cx) {
+    if(img){
+      const iw=img.naturalWidth||img.width, ih=img.naturalHeight||img.height;
+      const sc=bw/iw;
+      const dh=ih*sc;
+      ctx.save();
+      ctx.beginPath(); ctx.rect(bx, by, bw, IMG_H); ctx.clip();
+      ctx.drawImage(img, bx, by, bw, dh);
+      ctx.restore();
+      return Math.min(dh, IMG_H);
+    } else {
+      ctx.globalAlpha=0.15; ctx.font=`${70*s}px serif`;
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillStyle='#fff'; ctx.fillText('\u{1F4F8}',cx,by+IMG_H/2);
+      ctx.globalAlpha=1;
+      return IMG_H;
+    }
   }
-  ctx.restore();
+    const p1H = drawPlayerImg(imgs.p1, P1X, IMG_Y, IMG_W, P1_CX);
+  const p2H = drawPlayerImg(imgs.p2, P2X, IMG_Y, IMG_W, P2_CX);
+  const ACTUAL_IMG_H = Math.max(p1H, p2H);
 
-  // P1 name overlay at bottom of image
+  // VS — drawn with current animation state (set by animation loop)
+  const vsPulse = window._vsPulse || 0;
+  const vsScale = 1 + Math.sin(vsPulse) * 0.08;
+  const vsGlow  = 16 + Math.sin(vsPulse) * 14;
+  const vsAlpha = 0.5 + Math.sin(vsPulse) * 0.3;
   ctx.save();
-  ctx.beginPath(); ctx.roundRect(P1X,IMG_Y,IMG_W,IMG_H,14*s); ctx.clip();
-  const p1fade=ctx.createLinearGradient(0,IMG_Y+IMG_H*0.7,0,IMG_Y+IMG_H);
-  p1fade.addColorStop(0,'transparent'); p1fade.addColorStop(1,'rgba(0,0,0,0.75)');
-  ctx.fillStyle=p1fade; ctx.fillRect(P1X,IMG_Y+IMG_H*0.7,IMG_W,IMG_H*0.3);
-  ctx.restore();
-  ctx.font=`400 ${28*s}px 'Bebas Neue',sans-serif`;
-  ctx.fillStyle='#ffffff'; ctx.textAlign='center'; ctx.textBaseline='bottom';
-  ctx.shadowColor='rgba(0,0,0,0.9)'; ctx.shadowBlur=8*s;
-  ctx.fillText(p1Name, P1_CX, IMG_Y+IMG_H-8*s);
-  ctx.font=`700 ${14*s}px 'Rajdhani',sans-serif`;
-  ctx.fillStyle='rgba(255,255,255,0.6)';
-  ctx.fillText(`${p1Rat} · ${p1Pos}`, P1_CX, IMG_Y+IMG_H-34*s);
-  ctx.shadowBlur=0;
-
-  // P2 IMAGE
-  ctx.save();
-  ctx.beginPath(); ctx.roundRect(P2X,IMG_Y,IMG_W,IMG_H,14*s); ctx.clip();
-  const p2bg=ctx.createLinearGradient(P2X,IMG_Y,P2X,IMG_Y+IMG_H);
-  p2bg.addColorStop(0,'#1a1060'); p2bg.addColorStop(1,'#060818');
-  ctx.fillStyle=p2bg; ctx.fillRect(P2X,IMG_Y,IMG_W,IMG_H);
-  if(imgs.p2){
-    const iw=imgs.p2.naturalWidth||imgs.p2.width, ih=imgs.p2.naturalHeight||imgs.p2.height;
-    const sc=Math.max(IMG_W/iw,IMG_H/ih);
-    const dw=iw*sc, dh=ih*sc;
-    ctx.drawImage(imgs.p2,P2X+(IMG_W-dw)/2,IMG_Y,dw,dh);
-  } else {
-    ctx.globalAlpha=0.08; ctx.font=`${90*s}px serif`; ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillStyle='#fff'; ctx.fillText('📸',P2_CX,IMG_Y+IMG_H/2); ctx.globalAlpha=1;
-  }
-  ctx.restore();
-
-  // P2 name overlay
-  ctx.save();
-  ctx.beginPath(); ctx.roundRect(P2X,IMG_Y,IMG_W,IMG_H,14*s); ctx.clip();
-  const p2fade=ctx.createLinearGradient(0,IMG_Y+IMG_H*0.7,0,IMG_Y+IMG_H);
-  p2fade.addColorStop(0,'transparent'); p2fade.addColorStop(1,'rgba(0,0,0,0.75)');
-  ctx.fillStyle=p2fade; ctx.fillRect(P2X,IMG_Y+IMG_H*0.7,IMG_W,IMG_H*0.3);
-  ctx.restore();
-  ctx.font=`400 ${28*s}px 'Bebas Neue',sans-serif`;
-  ctx.fillStyle='#ffffff'; ctx.textAlign='center'; ctx.textBaseline='bottom';
-  ctx.shadowColor='rgba(0,0,0,0.9)'; ctx.shadowBlur=8*s;
-  ctx.fillText(p2Name, P2_CX, IMG_Y+IMG_H-8*s);
-  ctx.font=`700 ${14*s}px 'Rajdhani',sans-serif`;
-  ctx.fillStyle='rgba(255,255,255,0.6)';
-  ctx.fillText(`${p2Rat} · ${p2Pos}`, P2_CX, IMG_Y+IMG_H-34*s);
-  ctx.shadowBlur=0;
-
-  // VS in center gap
+  ctx.translate(DIFF_CX, IMG_Y+IMG_H/2);
+  ctx.scale(vsScale, vsScale);
   ctx.font=`900 ${36*s}px 'Bebas Neue',sans-serif`;
-  const vsG=ctx.createLinearGradient(0,0,W,0);
+  const vsG=ctx.createLinearGradient(-40,0,40,0);
   vsG.addColorStop(0,'#f0c040'); vsG.addColorStop(1,'#ffd700');
   ctx.fillStyle=vsG; ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.shadowColor='rgba(240,192,64,0.5)'; ctx.shadowBlur=16*s;
-  ctx.fillText('VS', DIFF_CX, IMG_Y+IMG_H/2);
+  ctx.shadowColor=`rgba(240,192,64,${vsAlpha})`;
+  ctx.shadowBlur=vsGlow*s;
+  ctx.fillText('VS', 0, 0);
   ctx.shadowBlur=0;
+  ctx.restore();
 
   // STATS ROWS
-  const ST_Y=IMG_Y+IMG_H+14*s;
-  const ROW_H=68*s, ROW_GAP=5*s;
-  const VAL_BOX_W=IMG_W*0.7, VAL_BOX_H=ROW_H-10*s;
+  const ST_Y = IMG_Y + IMG_H + 20*s;  // always starts 20px below image cap
+  const ROW_H = 82*s;
+  const ROW_GAP = 8*s;
+  const VAL_BOX_W = IMG_W * 0.78;
+  const VAL_BOX_H = ROW_H - 12*s;
 
   STAT_LABELS.forEach((stat,i)=>{
     const p1v=gn(`s${i}p1`), p2v=gn(`s${i}p2`);
@@ -353,18 +318,44 @@ function renderAt(ctx, W, H){
     ctx.fillText(diffText, DIFF_CX, mid+4*s+dh/2);
   });
 
-  // WATERMARK
+  // WATERMARK — visible, just above bottom
   if(wm){
-    ctx.font=`700 ${14*s}px 'Orbitron',sans-serif`;
-    ctx.fillStyle='rgba(255,255,255,0.2)'; ctx.textAlign='center'; ctx.textBaseline='bottom';
-    ctx.fillText(wm, W/2, H-14*s);
+    ctx.font=`700 ${18*s}px 'Orbitron',sans-serif`;
+    ctx.fillStyle='rgba(255,255,255,0.55)'; ctx.textAlign='center'; ctx.textBaseline='bottom';
+    ctx.shadowColor='rgba(0,0,0,0.8)'; ctx.shadowBlur=8*s;
+    ctx.fillText(wm, W/2, H-18*s);
+    ctx.shadowBlur=0;
   }
 }
 
 function draw(){ renderAt(C.getContext('2d'),1080,1080); }
 
+// Animation loop — only animates VS, rest is static
+let _animFrame = null;
+let _animRunning = false;
+
+function startAnim() {
+  if(_animRunning) return;
+  _animRunning = true;
+  let t = 0;
+  function loop() {
+    t += 0.06;
+    window._vsPulse = t;
+    draw();
+    _animFrame = requestAnimationFrame(loop);
+  }
+  loop();
+}
+
+function stopAnim() {
+  _animRunning = false;
+  if(_animFrame) cancelAnimationFrame(_animFrame);
+}
+
 async function doExport(){
   document.getElementById('lov').classList.add('show');
+  stopAnim(); // pause animation during export
+  window._vsPulse = 0; // static VS position for export
   await new Promise(r=>setTimeout(r,60));
   const oc=document.createElement('canvas');
   oc.width=2160; oc.height=2160;
@@ -382,14 +373,14 @@ async function doExport(){
     setTimeout(()=>URL.revokeObjectURL(url),6000);
     setZoom(+document.querySelector('.zbar input').value);
     document.getElementById('lov').classList.remove('show');
+    startAnim(); // restart animation after export
   },'image/png');
 }
 
 window.addEventListener('load',()=>{
   C.width=1080; C.height=1080;
   setZoom(44);
-  setTimeout(draw,200);
-  setTimeout(draw,900);
+  setTimeout(()=>{ startAnim(); }, 500);
 });
 </script>
 </body>
