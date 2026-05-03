@@ -63,7 +63,7 @@ canvas{display:block}
   <label class="cl">Subtitle</label>
   <input type="text" id="g-sub" value="WHO IS BETTER?" oninput="draw()">
   <label class="cl">Watermark</label>
-  <input type="text" id="g-wm" value="@game_enclaveofficial" oninput="draw()">
+  <input type="text" id="g-wm" value="Follow @game_enclaveofficial" oninput="draw()">
 
   <div class="sec">Background</div>
   <div class="bgs">
@@ -321,7 +321,7 @@ function renderAt(ctx, W, H){
   // WATERMARK — visible, just above bottom
   if(wm){
     ctx.font=`700 ${18*s}px 'Orbitron',sans-serif`;
-    ctx.fillStyle='rgba(255,255,255,0.55)'; ctx.textAlign='center'; ctx.textBaseline='bottom';
+    ctx.fillStyle='rgba(255,255,255,0.85)'; ctx.textAlign='center'; ctx.textBaseline='bottom';
     ctx.shadowColor='rgba(0,0,0,0.8)'; ctx.shadowBlur=8*s;
     ctx.fillText(wm, W/2, H-18*s);
     ctx.shadowBlur=0;
