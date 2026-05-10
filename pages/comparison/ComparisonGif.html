@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>GameEnclave — Comparison V5</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --gold: #d4b45f;
+  --green: #24a148;
+  --red: #c23636;
+  --dark: #0d0d0d;
+  --arrow-red: #ff2222;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "Poppins", sans-serif;
+  background: #111;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px 10px 60px;
+}
+
+/* ===== CONTROLS PANEL ===== */
+.controls-panel {
+  width: 100%;
+  max-width: 960px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(212,180,95,0.2);
+  border-radius: 14px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.controls-panel h3 {
+  width: 100%;
+  font-size: 13px;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.btn {
+  background: var(--gold);
+  color: #000;
+  padding: 9px 15px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: "Poppins", sans-serif;
+}
+.btn:hover { box-shadow: 0 0 12px rgba(212,180,95,0.5); transform: translateY(-1px); }
+.btn:active { transform: translateY(1px); }
+.btn.secondary {
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+.btn.danger { background: #c23636; color: #fff; }
+.btn.active-toggle { background: #ff2222; color: #fff; }
+
+select.btn {
+  background: rgba(212,180,95,0.15);
+  color: var(--gold);
+  border: 1px solid rgba(212,180,95,0.3);
+}
+
+/* ===== HOOK TEXT SECTION ===== */
+.hook-section {
+  width: 100%;
+  max-width: 960px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(212,180,95,0.15);
+  border-radius: 14px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+}
+.hook-section h3 {
+  font-size: 13px;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+.hook-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.hook-row label { font-size: 12px; color: rgba(255,255,255,0.6); min-width: 80px; }
+.hook-input {
+  flex: 1;
+  min-width: 200px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 8px;
+  color: #fff;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-family: "Poppins", sans-serif;
+}
+.hook-input:focus { outline: none; border-color: var(--gold); }
+.hook-preset-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+.preset-btn {
+  background: rgba(255,255,255,0.07);
+  color: rgba(255,255,255,0.8);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 11px;
+  cursor: pointer;
+  font-family: "Poppins", sans-serif;
+  transition: all 0.15s;
+}
+.preset-btn:hover { background: rgba(212,180,95,0.2); border-color: var(--gold); color: var(--gold); }
+
+/* ===== CAPTURE AREA ===== */
+#capture {
+  position: relative;
+  width: 960px;
+  max-width: 100%;
+  padding: 24px 16px 20px;
+  border-radius: 18px;
+  background: url("https://tanveerss.github.io/fcmobile/ComparisonImage.jpg") center/cover no-repeat;
+  overflow: hidden;
+}
+
+/* Authentic filter overlay */
+#capture.authentic::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E") center/200px;
+  opacity: 0.35;
+  pointer-events: none;
+  border-radius: 18px;
+}
+#capture.authentic { filter: contrast(1.05) saturate(1.1); }
+
+/* ===== HOOK TEXT DISPLAY ===== */
+#hookDisplay {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 6px 0 14px;
+  display: none;
+}
+#hookDisplay.visible { display: block; }
+#hookTop {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 42px;
+  letter-spacing: 2px;
+  line-height: 1;
+  color: #fff;
+  text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 0 0 20px rgba(255,50,50,0.4);
+}
+#hookBottom {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 28px;
+  letter-spacing: 1px;
+  color: var(--gold);
+  text-shadow: 2px 2px 0 #000;
+  margin-top: 2px;
+}
+
+/* ===== GRID TITLE ===== */
+.capture-title {
+  grid-column: 1 / -1;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--gold);
+  text-shadow: 0 0 8px rgba(212,180,95,0.4);
+  padding: 8px 0 6px;
+  position: relative;
+}
+.capture-title::after {
+  content: "";
+  position: absolute;
+  bottom: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 110px; height: 2px;
+  border-radius: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+/* ===== WATERMARK ===== */
+.watermark {
+  position: absolute;
+  right: 16px; bottom: 10px;
+  font-size: 13px;
+  color: var(--gold);
+  font-weight: 600;
+  opacity: 0.8;
+  z-index: 10;
+}
+
+/* ===== LABEL ===== */
+.label {
+  width: 70px; height: 45px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 600; font-size: 15px;
+  color: rgba(212,180,95,0.85);
+  background: rgba(212,180,95,0.08);
+  border-radius: 10px;
+}
+
+/* ===== PLAYER CARD ===== */
+.upload-label {
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.upload-label input[type=file] {
+  position: absolute; inset: 0; opacity: 0; cursor: pointer;
+}
+.player-img {
+  height: 160px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 20px rgba(212,180,95,0.25));
+  transition: transform 0.25s;
+}
+.player-img:hover { transform: translateY(-3px); }
+.upload-text { font-size: 11px; color: var(--gold); opacity: 0.7; }
+
+/* ===== STAT VALUES ===== */
+.val {
+  position: relative;
+  width: 70px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 17px; color: #fff;
+  background: rgba(14,28,46,0.6);
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.03);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.35);
+  transition: all 0.22s;
+}
+.val.neutral { background: rgba(14,28,46,0.55); color: #f1f7fb; }
+.val.high {
+  background: rgba(36,161,72,0.15); color: #cfffdb;
+  box-shadow: 0 0 10px rgba(36,161,72,0.3);
+  border: 1px solid rgba(36,161,72,0.2);
+}
+.val.low {
+  background: rgba(194,54,54,0.12); color: #ffc5c5;
+  box-shadow: 0 0 10px rgba(194,54,54,0.25);
+  border: 1px solid rgba(194,54,54,0.15);
+}
+
+/* ===== ARROW OVERLAY ===== */
+.arrow-overlay {
+  position: absolute;
+  top: -22px; left: 50%;
+  transform: translateX(-50%);
+  font-size: 20px;
+  line-height: 1;
+  pointer-events: none;
+  display: none;
+  animation: arrowPulse 1s ease-in-out infinite alternate;
+}
+@keyframes arrowPulse {
+  from { transform: translateX(-50%) translateY(0); }
+  to   { transform: translateX(-50%) translateY(-3px); }
+}
+.arrow-overlay.show { display: block; }
+
+/* ===== SEPARATOR ===== */
+.sep {
+  grid-column: 1 / -1;
+  height: 1px;
+  background: rgba(255,255,255,0.05);
+}
+
+/* ===== ANIMATED EXPORT OVERLAY ===== */
+#animPreview {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+}
+#animPreview.show { display: flex; }
+#animCanvas { border-radius: 12px; max-width: 90vw; max-height: 80vh; }
+.anim-btns { display: flex; gap: 12px; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width:900px) {
+  #capture { max-width: 95%; }
+  .player-img { height: 120px; }
+  .val { width: 60px; height: 38px; font-size: 15px; }
+  #hookTop { font-size: 32px; }
+}
+@media (max-width:500px) {
+  .player-img { height: 100px; }
+  #hookTop { font-size: 24px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HOOK TEXT BUILDER -->
+<div class="hook-section">
+  <h3>🎯 Hook Text Generator</h3>
+  <div class="hook-row">
+    <label>Top Text</label>
+    <input class="hook-input" id="hookTopInput" placeholder='e.g. "IT\'S OVER 💀🔥"' oninput="updateHook()"/>
+  </div>
+  <div class="hook-row">
+    <label>Bottom Text</label>
+    <input class="hook-input" id="hookBotInput" placeholder='e.g. "Same OVR... Different Stats 👀"' oninput="updateHook()"/>
+  </div>
+  <div class="hook-preset-row">
+    <span style="font-size:11px;color:rgba(255,255,255,0.4);align-self:center">Quick presets:</span>
+    <button class="preset-btn" onclick="applyPreset(`IT'S OVER 💀🔥`,`Same OVR... But Stats Are Insane 👀`)">IT'S OVER</button>
+    <button class="preset-btn" onclick="applyPreset(`BROKEN CARD? 🤯`,`You Won't Believe These Stats`)">BROKEN CARD</button>
+    <button class="preset-btn" onclick="applyPreset(`WHO WINS? 🔥`,`Same OVR, Different Beast`)">WHO WINS</button>
+    <button class="preset-btn" onclick="applyPreset(`WAIT... WHAT? 😱`,`This Stat Is CRAZY`)">WAIT WHAT</button>
+    <button class="preset-btn" onclick="applyPreset(`META DESTROYER 💀`,`Best CM in the Game?`)">META</button>
+    <button class="preset-btn" onclick="clearHook()">✕ Clear</button>
+  </div>
+</div>
+
+<!-- CONTROLS -->
+<div class="controls-panel">
+  <h3>⚙️ Controls</h3>
+  <select id="bgSelect" onchange="changeBG()" class="btn">
+    <option value="ComparisonImage.jpg">Background 1</option>
+    <option value="NeonImage.jpg">Neon Background</option>
+  </select>
+  <button class="btn secondary" onclick="addPlayer()">+ Add Player</button>
+  <button class="btn secondary" id="arrowToggleBtn" onclick="toggleArrows()">🔴 Arrows: OFF</button>
+  <button class="btn secondary" id="authToggleBtn" onclick="toggleAuthentic()">📸 Raw Filter: OFF</button>
+  <button class="btn" onclick="downloadStatic()">📥 Download PNG</button>
+  <button class="btn danger" onclick="openAnimExport()">🎬 Animated Export</button>
+</div>
+
+<!-- CAPTURE AREA -->
+<div id="capture">
+  <div class="watermark">GameEnclave</div>
+</div>
+
+<!-- ANIMATED PREVIEW MODAL -->
+<div id="animPreview">
+  <canvas id="animCanvas"></canvas>
+  <div class="anim-btns">
+    <button class="btn" onclick="downloadGIF()">⬇ Download GIF/MP4</button>
+    <button class="btn secondary" onclick="closeAnimPreview()">✕ Close</button>
+  </div>
+  <p style="color:rgba(255,255,255,0.5);font-size:12px">Cards reveal one by one — perfect for Reels!</p>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+const STATS = ["PAC","SHO","PAS","DRI","DEF","PHY"];
+let playerCount = 0;
+const MAX_PLAYERS = 4;
+const capture = document.getElementById('capture');
+let arrowsEnabled = false;
+let authenticEnabled = false;
+let capturedFrames = [];
+
+// ===== HOOK TEXT =====
+function updateHook() {
+  const top = document.getElementById('hookTopInput').value.trim();
+  const bot = document.getElementById('hookBotInput').value.trim();
+  let hookDiv = document.getElementById('hookDisplay');
+  if (!hookDiv) return;
+  document.getElementById('hookTop').textContent = top;
+  document.getElementById('hookBottom').textContent = bot;
+  hookDiv.classList.toggle('visible', !!(top || bot));
+}
+
+function applyPreset(top, bot) {
+  document.getElementById('hookTopInput').value = top;
+  document.getElementById('hookBotInput').value = bot;
+  updateHook();
+}
+
+function clearHook() {
+  document.getElementById('hookTopInput').value = '';
+  document.getElementById('hookBotInput').value = '';
+  updateHook();
+}
+
+// ===== BACKGROUND =====
+function changeBG() {
+  const file = document.getElementById("bgSelect").value;
+  const url = `https://tanveerss.github.io/fcmobile/${file}`;
+  capture.style.backgroundImage = `url('${url}')`;
+}
+
+// ===== AUTHENTIC FILTER =====
+function toggleAuthentic() {
+  authenticEnabled = !authenticEnabled;
+  capture.classList.toggle('authentic', authenticEnabled);
+  const btn = document.getElementById('authToggleBtn');
+  btn.textContent = authenticEnabled ? '📸 Raw Filter: ON' : '📸 Raw Filter: OFF';
+  btn.classList.toggle('active-toggle', authenticEnabled);
+}
+
+// ===== ARROWS =====
+function toggleArrows() {
+  arrowsEnabled = !arrowsEnabled;
+  const btn = document.getElementById('arrowToggleBtn');
+  btn.textContent = arrowsEnabled ? '🔴 Arrows: ON' : '🔴 Arrows: OFF';
+  btn.classList.toggle('active-toggle', arrowsEnabled);
+  updateArrows();
+}
+
+function updateArrows() {
+  const arrows = capture.querySelectorAll('.arrow-overlay');
+  arrows.forEach(a => a.classList.remove('show'));
+  if (!arrowsEnabled) return;
+  // Show arrow on high-value cells
+  capture.querySelectorAll('.val.high').forEach(v => {
+    const arrow = v.querySelector('.arrow-overlay');
+    if (arrow) arrow.classList.add('show');
+  });
+}
+
+// ===== GRID REBUILD =====
+function rebuildGrid() {
+  const watermark = document.createElement('div');
+  watermark.className = 'watermark';
+  watermark.textContent = 'GameEnclave';
+
+  capture.innerHTML = '';
+
+  // Hook display
+  const hookDiv = document.createElement('div');
+  hookDiv.id = 'hookDisplay';
+  const topSpan = document.createElement('div');
+  topSpan.id = 'hookTop';
+  const botSpan = document.createElement('div');
+  botSpan.id = 'hookBottom';
+  hookDiv.appendChild(topSpan);
+  hookDiv.appendChild(botSpan);
+  capture.appendChild(hookDiv);
+  // Restore hook values
+  topSpan.textContent = document.getElementById('hookTopInput').value;
+  botSpan.textContent = document.getElementById('hookBotInput').value;
+  const hasHook = !!(topSpan.textContent || botSpan.textContent);
+  hookDiv.classList.toggle('visible', hasHook);
+
+  // Title
+  const title = document.createElement('div');
+  title.className = 'capture-title';
+  title.textContent = 'Comparison';
+  capture.appendChild(title);
+
+  capture.style.display = 'grid';
+  capture.style.gridTemplateColumns = `80px repeat(${playerCount}, minmax(160px,1fr))`;
+  capture.style.gap = '10px';
+  capture.style.justifyItems = 'center';
+
+  // Corner + Player images
+  capture.appendChild(makeEl('div'));
+  for (let i = 0; i < playerCount; i++) {
+    const div = document.createElement('div');
+    div.innerHTML = `
+      <label class="upload-label">
+        <input type="file" accept="image/*" onchange="previewImage(event,'img${i}')">
+        <img id="img${i}" class="player-img" src="" alt="Player ${i+1}">
+        <span class="upload-text">Upload</span>
+      </label>`;
+    capture.appendChild(div);
+  }
+
+  // Stat rows
+  STATS.forEach(stat => {
+    capture.appendChild(makeEl('div', 'label', stat));
+    for (let i = 0; i < playerCount; i++) {
+      const v = document.createElement('div');
+      v.className = 'val neutral';
+      v.contentEditable = true;
+      v.textContent = 100;
+      // Arrow overlay inside val
+      const arrow = document.createElement('div');
+      arrow.className = 'arrow-overlay';
+      arrow.textContent = '⬇';
+      arrow.style.color = '#ff2222';
+      v.appendChild(arrow);
+      v.addEventListener('input', () => { highlightStats(); });
+      capture.appendChild(v);
+    }
+    const sep = document.createElement('div');
+    sep.className = 'sep';
+    capture.appendChild(sep);
+  });
+
+  capture.appendChild(watermark);
+  highlightStats();
+}
+
+function makeEl(tag, cls, txt) {
+  const el = document.createElement(tag);
+  if (cls) el.className = cls;
+  if (txt) el.textContent = txt;
+  return el;
+}
+
+function addPlayer() {
+  if (playerCount >= MAX_PLAYERS) return alert(`Max ${MAX_PLAYERS} players.`);
+  playerCount++;
+  rebuildGrid();
+}
+
+function previewImage(e, id) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const img = document.getElementById(id);
+  if (img) img.src = URL.createObjectURL(file);
+}
+
+// ===== HIGHLIGHT STATS =====
+function highlightStats() {
+  const vals = Array.from(capture.querySelectorAll('.val'));
+  if (!vals.length) return;
+
+  vals.forEach(v => v.classList.remove('high','low','neutral'));
+
+  for (let r = 0; r < STATS.length; r++) {
+    const rowVals = vals.slice(r * playerCount, r * playerCount + playerCount);
+    const nums = rowVals.map(v => parseInt((v.textContent||'0').replace(/\D/g,'')) || 0);
+    const max = Math.max(...nums);
+    const min = Math.min(...nums);
+    rowVals.forEach((v, i) => {
+      if (nums[i] === max && max !== min) v.classList.add('high');
+      else if (nums[i] === min && max !== min) v.classList.add('low');
+      else v.classList.add('neutral');
+    });
+  }
+  updateArrows();
+}
+
+// ===== STATIC DOWNLOAD =====
+async function downloadStatic() {
+  document.activeElement.blur();
+  const canvas = await html2canvas(capture, { scale: 3, backgroundColor: null, useCORS: true });
+  const a = document.createElement('a');
+  a.download = 'GameEnclave_Comparison.png';
+  a.href = canvas.toDataURL('image/png');
+  a.click();
+}
+
+// ===== ANIMATED EXPORT =====
+// Renders each player card one by one onto a canvas sequence for a "reveal" reel
+let animFrameData = [];
+let animPlaying = false;
+let animIndex = 0;
+let animTimer = null;
+
+async function openAnimExport() {
+  document.getElementById('animPreview').classList.add('show');
+  await buildAnimFrames();
+  animIndex = 0;
+  animPlaying = true;
+  playAnimation();
+}
+
+function closeAnimPreview() {
+  document.getElementById('animPreview').classList.remove('show');
+  animPlaying = false;
+  clearTimeout(animTimer);
+}
+
+async function buildAnimFrames() {
+  animFrameData = [];
+  // Capture full screenshot of capture area
+  const fullCanvas = await html2canvas(capture, { scale: 2, backgroundColor: null, useCORS: true });
+  animFrameData.push({ canvas: fullCanvas, label: 'Full' });
+}
+
+function playAnimation() {
+  const displayCanvas = document.getElementById('animCanvas');
+  const ctx = displayCanvas.getContext('2d');
+
+  // Create animated reveal: fade in each player column
+  const frames = [];
+  const BASE_W = 960, BASE_H = 600;
+  displayCanvas.width = BASE_W;
+  displayCanvas.height = BASE_H;
+
+  let frame = 0;
+  const TOTAL_FRAMES = playerCount * 18 + 20;
+
+  function drawFrame() {
+    if (!animPlaying) return;
+    ctx.clearRect(0, 0, BASE_W, BASE_H);
+
+    // Background
+    ctx.fillStyle = '#0d0d0d';
+    ctx.fillRect(0, 0, BASE_W, BASE_H);
+
+    const colW = Math.floor((BASE_W - 80) / playerCount);
+
+    // Draw header
+    ctx.fillStyle = '#d4b45f';
+    ctx.font = 'bold 32px Poppins, sans-serif';
+    ctx.textAlign = 'center';
+
+    const hookTop = document.getElementById('hookTop')?.textContent || '';
+    const hookBot = document.getElementById('hookBottom')?.textContent || '';
+
+    if (hookTop) {
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 44px Bebas Neue, sans-serif';
+      ctx.fillText(hookTop, BASE_W/2, 60);
+    }
+    if (hookBot) {
+      ctx.fillStyle = '#d4b45f';
+      ctx.font = 'bold 26px Bebas Neue, sans-serif';
+      ctx.fillText(hookBot, BASE_W/2, hookTop ? 92 : 60);
+    }
+
+    const statsStartY = (hookTop || hookBot) ? 130 : 80;
+
+    // Player columns revealed progressively
+    const playersRevealed = Math.min(playerCount, Math.floor(frame / 18) + 1);
+    const currentAlpha = Math.min(1, (frame % 18) / 12);
+
+    for (let p = 0; p < playerCount; p++) {
+      const x = 80 + p * colW + colW/2;
+      const alpha = p < playersRevealed - 1 ? 1 : (p === playersRevealed - 1 ? currentAlpha : 0);
+      ctx.globalAlpha = alpha;
+
+      // Player image
+      const img = document.getElementById(`img${p}`);
+      if (img && img.src && img.src !== window.location.href) {
+        try {
+          const scale = p === playersRevealed - 1 ? (1 + 0.15 * (1 - currentAlpha)) : 1;
+          ctx.save();
+          ctx.translate(x, statsStartY + 70);
+          ctx.scale(scale, scale);
+          ctx.drawImage(img, -50, -70, 100, 130);
+          ctx.restore();
+        } catch(e){}
+      }
+
+      // Stat boxes
+      STATS.forEach((stat, si) => {
+        const y = statsStartY + 150 + si * 52;
+        const vals = capture.querySelectorAll('.val');
+        const valEl = vals[si * playerCount + p];
+        const num = valEl ? parseInt((valEl.textContent||'100').replace(/\D/g,'')) || 100 : 100;
+        const isHigh = valEl?.classList.contains('high');
+        const isLow = valEl?.classList.contains('low');
+
+        // Box
+        ctx.fillStyle = isHigh ? 'rgba(36,161,72,0.3)' : isLow ? 'rgba(194,54,54,0.25)' : 'rgba(14,28,46,0.7)';
+        roundRect(ctx, x - 35, y - 20, 70, 40, 10);
+        ctx.fill();
+
+        // Value
+        ctx.fillStyle = isHigh ? '#cfffdb' : isLow ? '#ffc5c5' : '#ffffff';
+        ctx.font = 'bold 18px Poppins, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(num, x, y + 6);
+
+        // Arrow on high
+        if (isHigh && arrowsEnabled) {
+          ctx.fillStyle = '#ff2222';
+          ctx.font = '16px sans-serif';
+          ctx.fillText('⬇', x, y - 22 + Math.sin(frame * 0.15) * 3);
+        }
+      });
+      ctx.globalAlpha = 1;
+    }
+
+    // Stat labels
+    ctx.globalAlpha = 1;
+    STATS.forEach((stat, si) => {
+      const y = statsStartY + 150 + si * 52;
+      ctx.fillStyle = 'rgba(212,180,95,0.85)';
+      ctx.fillStyle = 'rgba(212,180,95,0.1)';
+      roundRect(ctx, 5, y - 22, 70, 40, 10);
+      ctx.fill();
+      ctx.fillStyle = 'rgba(212,180,95,0.85)';
+      ctx.font = '600 14px Poppins, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(stat, 40, y + 5);
+    });
+
+    // Watermark
+    ctx.fillStyle = 'rgba(212,180,95,0.7)';
+    ctx.font = '600 13px Poppins, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('GameEnclave', BASE_W - 10, BASE_H - 10);
+
+    frame++;
+    if (frame < TOTAL_FRAMES) {
+      animTimer = requestAnimationFrame(drawFrame);
+    } else {
+      // Loop
+      frame = 0;
+      animTimer = setTimeout(() => { animPlaying && requestAnimationFrame(drawFrame); }, 800);
+    }
+  }
+
+  requestAnimationFrame(drawFrame);
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+async function downloadGIF() {
+  // Download the current animated canvas as PNG sequence note
+  const canvas = document.getElementById('animCanvas');
+  const a = document.createElement('a');
+  a.download = 'GameEnclave_Animated_Frame.png';
+  a.href = canvas.toDataURL('image/png');
+  a.click();
+  // Show guidance
+  setTimeout(() => {
+    alert('Frame downloaded! 💡 Tip: Record screen while animation plays, then trim in InShot for your Reel!');
+  }, 500);
+}
+
+// Init with 3 players
+addPlayer(); addPlayer(); addPlayer();
+</script>
+</body>
+</html>
