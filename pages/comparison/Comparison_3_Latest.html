@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>FC Mobile Advanced 3 Player Builder</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800;900&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:#07111d;
+    font-family:'Montserrat',sans-serif;
+    color:white;
+    padding:20px;
+}
+
+/* ======================================================
+EDITOR PANEL
+====================================================== */
+
+.editor-panel{
+
+    max-width:1600px;
+
+    margin:auto;
+    margin-bottom:28px;
+
+    padding:24px;
+
+    border-radius:26px;
+
+    background:
+    linear-gradient(180deg,#142740,#0b1522);
+
+    border:1px solid rgba(120,180,255,0.08);
+
+    box-shadow:
+    0 15px 40px rgba(0,0,0,0.45);
+}
+
+.editor-title{
+
+    font-size:34px;
+    font-weight:900;
+
+    color:#ffd86d;
+}
+
+.editor-sub{
+
+    margin-top:8px;
+    margin-bottom:26px;
+
+    color:#8ea8c6;
+}
+
+.title-input{
+
+    width:100%;
+
+    margin-bottom:20px;
+
+    background:#09121d;
+
+    border:none;
+    outline:none;
+
+    padding:18px 20px;
+
+    border-radius:16px;
+
+    color:white;
+
+    font-size:24px;
+    font-weight:900;
+}
+
+.player-editor-grid{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(340px,1fr));
+
+    gap:18px;
+}
+
+.editor-card{
+
+    background:
+    linear-gradient(180deg,#14273f,#0d1724);
+
+    border-radius:22px;
+
+    padding:18px;
+
+    border:1px solid rgba(120,180,255,0.05);
+}
+
+.editor-card h3{
+
+    color:#ffd86d;
+
+    margin-bottom:14px;
+
+    font-size:18px;
+}
+
+/* upload */
+
+.upload-box{
+
+    width:100%;
+    height:160px;
+
+    border-radius:18px;
+
+    overflow:hidden;
+
+    position:relative;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    text-align:center;
+
+    background:#091320;
+
+    border:1px dashed rgba(130,190,255,0.16);
+
+    color:#81bfff;
+
+    font-weight:700;
+
+    margin-bottom:16px;
+}
+
+.upload-box img{
+
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+}
+
+.upload-box input{
+
+    position:absolute;
+    inset:0;
+
+    opacity:0;
+
+    cursor:pointer;
+}
+
+/* stats */
+
+.stats-editor{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(3,1fr);
+
+    gap:10px;
+}
+
+.stat-input{
+
+    background:#09121d;
+
+    border-radius:14px;
+
+    padding:10px;
+
+    border:1px solid rgba(120,180,255,0.05);
+}
+
+.stat-input label{
+
+    display:block;
+
+    font-size:12px;
+    font-weight:700;
+
+    color:#81bfff;
+
+    margin-bottom:4px;
+}
+
+.stat-input input{
+
+    width:100%;
+
+    background:none;
+    border:none;
+    outline:none;
+
+    color:white;
+
+    font-size:18px;
+    font-weight:800;
+}
+
+/* reward editor */
+
+.reward-editor{
+
+    margin-top:16px;
+
+    display:grid;
+
+    grid-template-columns:
+    100px 1fr;
+
+    gap:12px;
+}
+
+.reward-upload{
+
+    height:100px;
+
+    border-radius:18px;
+
+    overflow:hidden;
+
+    position:relative;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:#091320;
+
+    border:1px dashed rgba(255,215,90,0.18);
+
+    color:#ffd86d;
+
+    font-size:12px;
+    font-weight:800;
+
+    text-align:center;
+}
+
+.reward-upload img{
+
+    width:100%;
+    height:100%;
+
+    object-fit:contain;
+
+    padding:10px;
+}
+
+.reward-upload input{
+
+    position:absolute;
+    inset:0;
+
+    opacity:0;
+
+    cursor:pointer;
+}
+
+.reward-value{
+
+    background:#09121d;
+
+    border-radius:16px;
+
+    padding:14px;
+
+    border:1px solid rgba(255,215,90,0.08);
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+
+.reward-value label{
+
+    font-size:12px;
+    font-weight:700;
+
+    color:#ffd86d;
+
+    margin-bottom:6px;
+}
+
+.reward-value input{
+
+    background:none;
+    border:none;
+    outline:none;
+
+    color:white;
+
+    font-size:24px;
+    font-weight:900;
+}
+
+/* button */
+
+.download-btn{
+
+    width:100%;
+
+    margin-top:26px;
+
+    padding:18px;
+
+    border:none;
+
+    border-radius:18px;
+
+    background:
+    linear-gradient(90deg,#ffd86d,#f4c122);
+
+    color:black;
+
+    font-size:20px;
+    font-weight:900;
+
+    cursor:pointer;
+}
+
+/* ======================================================
+POST
+====================================================== */
+
+#post{
+
+    width:1080px;
+    height:1080px;
+
+    margin:auto;
+
+    position:relative;
+
+    overflow:hidden;
+
+    border-radius:40px;
+
+    background:
+    radial-gradient(circle at top,#163d67 0%,transparent 30%),
+    linear-gradient(180deg,#020811 0%,#02060c 100%);
+}
+
+/* background */
+
+.bg-light1{
+
+    position:absolute;
+
+    width:600px;
+    height:600px;
+
+    border-radius:50%;
+
+    background:#114dff14;
+
+    filter:blur(150px);
+
+    top:-220px;
+    left:-160px;
+}
+
+.bg-light2{
+
+    position:absolute;
+
+    width:480px;
+    height:480px;
+
+    border-radius:50%;
+
+    background:#00aaff10;
+
+    filter:blur(130px);
+
+    bottom:-180px;
+    right:-120px;
+}
+
+.field-overlay{
+
+    position:absolute;
+
+    inset:0;
+
+    background:
+    linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px);
+
+    background-size:100% 90px;
+
+    opacity:0.10;
+}
+
+/* ======================================================
+TOP
+====================================================== */
+
+.left-logo{
+
+    position:absolute;
+
+    top:34px;
+    left:38px;
+
+    z-index:20;
+
+    text-transform:uppercase;
+
+    line-height:0.95;
+}
+
+.left-logo .ea{
+
+    font-size:16px;
+    font-weight:700;
+
+    letter-spacing:3px;
+
+    opacity:0.82;
+}
+
+.left-logo .fc{
+
+    font-size:34px;
+    font-weight:900;
+
+    letter-spacing:-1px;
+}
+
+.right-logo{
+
+    position:absolute;
+
+    top:38px;
+    right:40px;
+
+    font-size:42px;
+    font-weight:900;
+
+    color:white;
+
+    opacity:0.16;
+
+    transform:skew(-10deg);
+
+    letter-spacing:-3px;
+}
+
+/* ======================================================
+TITLE
+====================================================== */
+
+.main-title{
+
+    position:absolute;
+
+    top:118px;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    width:94%;
+
+    text-align:center;
+
+    text-transform:uppercase;
+
+    color:white;
+
+    font-weight:900;
+
+    font-size:58px;
+
+    line-height:1;
+
+    letter-spacing:-2px;
+
+    white-space:nowrap;
+
+    text-shadow:
+    0 0 35px rgba(255,255,255,0.05);
+
+    outline:none;
+}
+
+/* ======================================================
+GRID
+====================================================== */
+
+.grid{
+
+    position:absolute;
+
+    top:220px;
+    left:20px;
+    right:20px;
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(3,1fr);
+
+    gap:10px;
+}
+
+/* ======================================================
+PLAYER BLOCK
+====================================================== */
+
+.player-block{
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+
+/* card image */
+
+.image-wrap{
+
+    width:100%;
+    height:320px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.image-wrap img{
+
+    max-width:100%;
+    max-height:100%;
+
+    object-fit:contain;
+
+    transform:scale(1.08);
+
+    filter:
+    drop-shadow(0 18px 20px rgba(0,0,0,0.32));
+}
+
+/* divider */
+
+.divider{
+
+    width:72%;
+    height:2px;
+
+    margin-top:0px;
+    margin-bottom:16px;
+
+    background:
+    linear-gradient(
+    90deg,
+    transparent,
+    rgba(0,195,255,0.45),
+    transparent
+    );
+
+    box-shadow:
+    0 0 10px rgba(0,195,255,0.08);
+}
+
+/* stats */
+
+.stats-grid{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(3,1fr);
+
+    gap:8px;
+
+    width:94%;
+}
+
+.stat-box{
+
+    background:
+    linear-gradient(
+    180deg,
+    rgba(18,33,52,0.94),
+    rgba(10,18,28,0.94)
+    );
+
+    border-radius:12px;
+
+    padding:12px 6px;
+
+    text-align:center;
+
+    border:1px solid rgba(120,180,255,0.04);
+}
+
+.stat-value{
+
+    font-size:26px;
+    font-weight:900;
+
+    line-height:1;
+
+    color:white;
+}
+
+.stat-label{
+
+    margin-top:4px;
+
+    font-size:11px;
+    font-weight:700;
+
+    color:#83bfff;
+
+    letter-spacing:0.5px;
+}
+
+/* ======================================================
+REWARD BOX
+====================================================== */
+
+.reward-box{
+
+    margin-top:18px;
+
+    width:180px;
+    height:88px;
+
+    border-radius:22px;
+
+    background:
+    linear-gradient(
+    180deg,
+    rgba(22,34,50,0.95),
+    rgba(8,14,24,0.95)
+    );
+
+    border:1px solid rgba(255,215,90,0.08);
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+
+    box-shadow:
+    0 0 24px rgba(255,215,90,0.04);
+}
+
+.reward-box img{
+
+    width:34px;
+    height:34px;
+
+    object-fit:contain;
+
+    margin-bottom:6px;
+}
+
+.reward-text{
+
+    font-size:24px;
+    font-weight:900;
+
+    color:#ffd86d;
+
+    line-height:1;
+}
+
+/* ======================================================
+CTA
+====================================================== */
+
+.cta-section{
+
+    position:absolute;
+
+    bottom:18px;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    width:100%;
+
+    text-align:center;
+}
+
+.cta-small{
+
+    font-size:18px;
+    font-weight:700;
+
+    color:#77c8ff;
+
+    letter-spacing:3px;
+
+    margin-bottom:8px;
+
+    opacity:0.9;
+
+    outline:none;
+}
+
+.cta-main{
+
+    font-size:40px;
+    font-weight:900;
+
+    text-transform:uppercase;
+
+    letter-spacing:-2px;
+
+    color:white;
+
+    text-shadow:
+    0 0 25px rgba(255,255,255,0.08);
+
+    outline:none;
+}
+
+.cta-emojis{
+
+    margin-top:2px;
+
+    font-size:38px;
+
+    outline:none;
+}
+
+.footer{
+
+    position:absolute;
+
+    bottom:4px;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    font-size:16px;
+    font-weight:700;
+
+    color:#ffffff88;
+
+    letter-spacing:1px;
+
+    outline:none;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- ======================================================
+EDITOR
+====================================================== -->
+
+<div class="editor-panel">
+
+    <div class="editor-title">
+        FC Mobile Advanced 3 Player Builder
+    </div>
+
+    <div class="editor-sub">
+        Upload player cards, stats, custom currency icons & values
+    </div>
+
+    <input
+    type="text"
+    id="titleInput"
+    class="title-input"
+    value="118 OVR LW BATTLE"
+    oninput="updateTitle(this.value)"
+    >
+
+    <div class="player-editor-grid" id="editorGrid"></div>
+
+    <button class="download-btn" onclick="downloadPost()">
+        Download HD Image
+    </button>
+
+</div>
+
+<!-- ======================================================
+POST
+====================================================== -->
+
+<div id="post">
+
+    <div class="bg-light1"></div>
+    <div class="bg-light2"></div>
+    <div class="field-overlay"></div>
+
+    <!-- LEFT LOGO -->
+
+    <div class="left-logo">
+
+        <div class="ea">
+            EA SPORTS
+        </div>
+
+        <div class="fc">
+            FC MOBILE
+        </div>
+
+    </div>
+
+    <!-- RIGHT LOGO -->
+
+    <div class="right-logo">
+        FC
+    </div>
+
+    <!-- TITLE -->
+
+    <div
+    class="main-title"
+    id="mainTitle"
+    contenteditable="true"
+    >
+        118 OVR LW BATTLE
+    </div>
+
+    <!-- PLAYERS -->
+
+    <div class="grid" id="cardsGrid"></div>
+
+    <!-- CTA -->
+
+    <div class="cta-section">
+
+        <div
+        class="cta-small"
+        contenteditable="true"
+        >
+            WHO ARE YOU PICKING?
+        </div>
+
+        <div
+        class="cta-main"
+        contenteditable="true"
+        >
+            COMMENT BELOW
+        </div>
+
+        <div
+        class="cta-emojis"
+        contenteditable="true"
+        >
+            🔥🥶👀
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+
+    <div
+    class="footer"
+    contenteditable="true"
+    >
+        GameEnclave
+    </div>
+
+</div>
+
+<script>
+
+const players = [
+
+{
+image:"",
+rewardIcon:"",
+reward:"18000",
+pac:90,
+sho:90,
+pas:90,
+dri:90,
+def:90,
+phy:90
+},
+
+{
+image:"",
+rewardIcon:"",
+reward:"250",
+pac:90,
+sho:90,
+pas:90,
+dri:90,
+def:90,
+phy:90
+},
+
+{
+image:"",
+rewardIcon:"",
+reward:"5000",
+pac:90,
+sho:90,
+pas:90,
+dri:90,
+def:90,
+phy:90
+}
+
+];
+
+const editorGrid =
+document.getElementById("editorGrid");
+
+const cardsGrid =
+document.getElementById("cardsGrid");
+
+/* ======================================================
+TITLE
+====================================================== */
+
+function updateTitle(value){
+
+document.getElementById("mainTitle").innerHTML =
+value;
+
+}
+
+/* ======================================================
+EDITOR
+====================================================== */
+
+function createStatInput(index,label,key,value){
+
+return `
+
+<div class="stat-input">
+
+<label>${label}</label>
+
+<input
+type="number"
+value="${value}"
+oninput="updateStat(${index},'${key}',this.value)"
+>
+
+</div>
+
+`;
+
+}
+
+function renderEditors(){
+
+editorGrid.innerHTML = "";
+
+players.forEach((player,index)=>{
+
+const card =
+document.createElement("div");
+
+card.className = "editor-card";
+
+card.innerHTML = `
+
+<h3>Player ${index+1}</h3>
+
+<!-- PLAYER CARD -->
+
+<label class="upload-box">
+
+${
+player.image
+?
+`<img src="${player.image}">`
+:
+`<div>
+UPLOAD PLAYER CARD
+</div>`
+}
+
+<input
+type="file"
+accept="image/*"
+onchange="uploadImage(event,${index})"
+>
+
+</label>
+
+<!-- STATS -->
+
+<div class="stats-editor">
+
+${createStatInput(index,"PAC","pac",player.pac)}
+${createStatInput(index,"SHO","sho",player.sho)}
+${createStatInput(index,"PAS","pas",player.pas)}
+
+${createStatInput(index,"DRI","dri",player.dri)}
+${createStatInput(index,"DEF","def",player.def)}
+${createStatInput(index,"PHY","phy",player.phy)}
+
+</div>
+
+<!-- REWARD -->
+
+<div class="reward-editor">
+
+<label class="reward-upload">
+
+${
+player.rewardIcon
+?
+`<img src="${player.rewardIcon}">`
+:
+`UPLOAD<br>ICON`
+}
+
+<input
+type="file"
+accept="image/*"
+onchange="uploadRewardIcon(event,${index})"
+>
+
+</label>
+
+<div class="reward-value">
+
+<label>VALUE</label>
+
+<input
+type="text"
+value="${player.reward}"
+oninput="updateReward(${index},this.value)"
+>
+
+</div>
+
+</div>
+
+`;
+
+editorGrid.appendChild(card);
+
+});
+
+}
+
+/* ======================================================
+STAT BOX
+====================================================== */
+
+function stat(label,value){
+
+return `
+
+<div class="stat-box">
+
+<div class="stat-value">
+${value}
+</div>
+
+<div class="stat-label">
+${label}
+</div>
+
+</div>
+
+`;
+
+}
+
+/* ======================================================
+RENDER
+====================================================== */
+
+function renderCards(){
+
+cardsGrid.innerHTML = "";
+
+players.forEach(player=>{
+
+const block =
+document.createElement("div");
+
+block.className = "player-block";
+
+block.innerHTML = `
+
+<div class="image-wrap">
+
+${
+player.image
+?
+`<img src="${player.image}">`
+:
+`<img src="https://via.placeholder.com/500x700/0b1727/ffffff?text=UPLOAD">`
+}
+
+</div>
+
+<div class="divider"></div>
+
+<div class="stats-grid">
+
+${stat("PAC",player.pac)}
+${stat("SHO",player.sho)}
+${stat("PAS",player.pas)}
+
+${stat("DRI",player.dri)}
+${stat("DEF",player.def)}
+${stat("PHY",player.phy)}
+
+</div>
+
+<div class="reward-box">
+
+${
+player.rewardIcon
+?
+`<img src="${player.rewardIcon}">`
+:
+`<div style="font-size:26px;">🎁</div>`
+}
+
+<div class="reward-text">
+${player.reward}
+</div>
+
+</div>
+
+`;
+
+cardsGrid.appendChild(block);
+
+});
+
+}
+
+/* ======================================================
+UPDATE STATS
+====================================================== */
+
+function updateStat(index,key,value){
+
+players[index][key] = value;
+
+renderCards();
+
+}
+
+/* ======================================================
+UPDATE REWARD
+====================================================== */
+
+function updateReward(index,value){
+
+players[index].reward = value;
+
+renderCards();
+
+}
+
+/* ======================================================
+UPLOAD PLAYER IMAGE
+====================================================== */
+
+function uploadImage(event,index){
+
+const file = event.target.files[0];
+
+if(!file) return;
+
+const reader = new FileReader();
+
+reader.onload = function(e){
+
+players[index].image = e.target.result;
+
+renderEditors();
+renderCards();
+
+};
+
+reader.readAsDataURL(file);
+
+}
+
+/* ======================================================
+UPLOAD REWARD ICON
+====================================================== */
+
+function uploadRewardIcon(event,index){
+
+const file = event.target.files[0];
+
+if(!file) return;
+
+const reader = new FileReader();
+
+reader.onload = function(e){
+
+players[index].rewardIcon = e.target.result;
+
+renderEditors();
+renderCards();
+
+};
+
+reader.readAsDataURL(file);
+
+}
+
+/* ======================================================
+DOWNLOAD
+====================================================== */
+
+async function downloadPost(){
+
+const canvas = await html2canvas(
+document.getElementById("post"),
+{
+scale:5,
+useCORS:true,
+backgroundColor:null
+}
+);
+
+const link =
+document.createElement("a");
+
+link.download =
+"fcmobile-poster.png";
+
+link.href =
+canvas.toDataURL("image/png",1);
+
+link.click();
+
+}
+
+/* ======================================================
+INIT
+====================================================== */
+
+renderEditors();
+renderCards();
+
+</script>
+
+</body>
+</html>
